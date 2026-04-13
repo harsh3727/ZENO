@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZENO — Zero-waste Expense & Net-growth Optimizer</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --g:#1a5c35;--g2:#206b3e;--g3:#2d8a54;--g4:#3da86a;--g5:#52c282;
+  --gl:#e6f4ed;--gxl:#f0f9f4;--gs:#d0eadb;
+  --white:#fff;--off:#f8f9f6;--surf:#f2f5f0;--bg4:#e8ede4;
+  --border:rgba(0,80,40,.08);--border2:rgba(0,80,40,.14);--border3:rgba(0,80,40,.22);
+  --gold:#b8860b;--gold2:#d4a017;--gold-l:#fdf6e3;
+  --red:#c0392b;--red2:#e74c3c;--red-l:#fdf0ef;
+  --blue:#1a4a8a;--blue-l:#eef3fb;
+  --text:#0d1f14;--t2:#3d5c46;--t3:#7a9c84;--t4:#adc5b4;
+  --fh:'Cormorant Garamond',serif;--fb:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace;
+  --r:14px;--rsm:9px;--rxs:5px;
+  --sh:0 2px 16px rgba(0,80,40,.08);--sh2:0 6px 32px rgba(0,80,40,.14);--sh3:0 1px 4px rgba(0,80,40,.06);
+}
+html{font-size:14px}
+body{background:var(--off);color:var(--text);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--g4);border-radius:4px}
+
+/* ═══ AUTH SCREENS ═══ */
+#authScreen{position:fixed;inset:0;z-index:9999;display:flex;background:var(--off)}
+.auth-left{width:42%;background:linear-gradient(160deg,var(--g) 0%,#0a2d17 100%);display:flex;flex-direction:column;justify-content:space-between;padding:48px 44px;position:relative;overflow:hidden}
+.auth-left::before{content:'ZENO';position:absolute;bottom:-30px;left:-10px;font-family:var(--fh);font-size:180px;color:rgba(255,255,255,.04);font-weight:700;line-height:1;pointer-events:none}
+.auth-brand .logo{font-family:var(--fh);font-size:44px;letter-spacing:4px;color:#fff;font-weight:700;line-height:1}
+.auth-brand .tagline{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;margin-top:6px}
+.auth-pitch h2{font-family:var(--fh);font-size:32px;color:#fff;font-weight:600;line-height:1.3;margin-bottom:16px}
+.auth-pitch p{font-size:13px;color:rgba(255,255,255,.55);line-height:1.7}
+.auth-stats{display:flex;gap:28px}
+.auth-stat span{display:block;font-family:var(--fm);font-size:22px;color:#fff;font-weight:600}
+.auth-stat label{font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.8px;margin-top:3px}
+
+.auth-right{flex:1;display:flex;align-items:center;justify-content:center;padding:40px}
+.auth-box{width:100%;max-width:420px}
+.auth-tab-row{display:flex;border-bottom:2px solid var(--border);margin-bottom:28px}
+.auth-tab{flex:1;text-align:center;padding:11px;font-size:14px;font-weight:500;cursor:pointer;color:var(--t3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .18s}
+.auth-tab.active{color:var(--g);border-bottom-color:var(--g)}
+.auth-panel{display:none}.auth-panel.active{display:block}
+.auth-greeting{font-family:var(--fh);font-size:28px;color:var(--g);font-weight:700;margin-bottom:6px}
+.auth-sub{font-size:13px;color:var(--t3);margin-bottom:26px}
+.auth-form-row{margin-bottom:16px}
+.auth-label{display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:6px;letter-spacing:.2px}
+.auth-input{width:100%;background:var(--surf);border:1.5px solid var(--border2);border-radius:var(--rsm);padding:11px 14px;font-family:var(--fb);font-size:13px;color:var(--text);outline:none;transition:all .18s}
+.auth-input:focus{border-color:var(--g3);background:var(--white);box-shadow:0 0 0 3px rgba(26,92,53,.08)}
+.auth-input::placeholder{color:var(--t4)}
+.auth-btn{width:100%;background:var(--g);color:#fff;border:none;border-radius:var(--rsm);padding:13px;font-family:var(--fb);font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:all .18s;margin-top:6px}
+.auth-btn:hover{background:var(--g2);box-shadow:0 4px 16px rgba(26,92,53,.28)}
+.auth-divider{text-align:center;color:var(--t4);font-size:12px;margin:18px 0;position:relative}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border)}
+.auth-divider::before{left:0}.auth-divider::after{right:0}
+.auth-error{background:var(--red-l);border:1px solid rgba(192,57,43,.2);border-radius:var(--rsm);padding:10px 13px;font-size:12px;color:var(--red);margin-bottom:14px;display:none}
+.auth-error.show{display:block}
+.demo-btn{width:100%;background:var(--gxl);color:var(--g);border:1.5px solid var(--border2);border-radius:var(--rsm);padding:11px;font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;transition:all .18s;margin-top:10px}
+.demo-btn:hover{background:var(--gl);border-color:var(--g3)}
+.strength-bar{height:3px;border-radius:99px;background:var(--border);margin-top:6px;overflow:hidden}
+.strength-fill{height:100%;border-radius:99px;transition:all .3s;width:0}
+
+/* ═══ SHELL ═══ */
+#appScreen{display:none}
+.shell{display:flex;min-height:100vh}
+.sidebar{width:242px;min-height:100vh;background:var(--g);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0;box-shadow:4px 0 24px rgba(0,80,40,.18)}
+.main{flex:1;overflow-y:auto;background:var(--off)}
+.page{display:none;padding:30px 36px;animation:fu .3s ease;max-width:1100px}
+.page.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ SIDEBAR ═══ */
+.sb-top{padding:24px 20px 18px;border-bottom:1px solid rgba(255,255,255,.12)}
+.logo{font-family:var(--fh);font-size:40px;letter-spacing:4px;color:#fff;font-weight:700;line-height:1}
+.logo-sub{font-size:9px;color:rgba(255,255,255,.45);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;line-height:1.5}
+.nav-sec{padding:16px 18px 5px;font-size:9px;letter-spacing:1.8px;color:rgba(255,255,255,.35);text-transform:uppercase;font-weight:600}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 14px;margin:2px 8px;border-radius:var(--rsm);cursor:pointer;font-size:13px;color:rgba(255,255,255,.65);transition:all .18s;border:1px solid transparent}
+.nav-item:hover{background:rgba(255,255,255,.09);color:#fff}
+.nav-item.active{background:rgba(255,255,255,.17);color:#fff;border-color:rgba(255,255,255,.18);font-weight:500}
+.ni{font-size:15px;width:20px;text-align:center;opacity:.85;flex-shrink:0}
+.sb-bot{margin-top:auto;padding:14px 10px;border-top:1px solid rgba(255,255,255,.1)}
+.user-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--rsm);background:rgba(255,255,255,.1);cursor:pointer;transition:all .18s}
+.user-row:hover{background:rgba(255,255,255,.16)}
+.av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--g4),var(--g5));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,.25)}
+.user-name{font-size:13px;font-weight:600;color:#fff}
+.user-sub{font-size:10px;color:rgba(255,255,255,.45)}
+.sb-logout{display:flex;align-items:center;gap:8px;padding:8px 12px;margin-top:6px;border-radius:var(--rsm);cursor:pointer;font-size:12px;color:rgba(255,255,255,.45);transition:all .18s}
+.sb-logout:hover{color:rgba(255,100,100,.8);background:rgba(255,50,50,.08)}
+
+/* ═══ LAYOUT ═══ */
+.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}
+.g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}.mb24{margin-bottom:24px}
+
+/* ═══ CARDS ═══ */
+.card{background:var(--white);border:1px solid var(--border2);border-radius:var(--r);padding:22px 24px;box-shadow:var(--sh3)}
+.card-g{background:linear-gradient(135deg,var(--g),#0d3318);border-radius:var(--r);padding:22px 24px;box-shadow:var(--sh2)}
+
+/* ═══ TYPOGRAPHY ═══ */
+.pg-title{font-family:var(--fh);font-size:40px;letter-spacing:2px;color:var(--g);margin-bottom:4px;font-weight:700;line-height:1.1}
+.pg-sub{font-size:13px;color:var(--t3);margin-bottom:24px}
+.sec-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.lbl{font-size:10px;letter-spacing:.9px;text-transform:uppercase;color:var(--t3);margin-bottom:7px;font-weight:600}
+
+/* ═══ STAT CHIPS ═══ */
+.sc{background:var(--surf);border:1px solid var(--border);border-radius:var(--rsm);padding:16px 18px;transition:all .2s}
+.sc:hover{box-shadow:var(--sh);border-color:var(--border2)}
+.sc .l{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px;font-weight:600}
+.sc .v{font-family:var(--fm);font-size:22px;color:var(--text);font-weight:500}
+.sc .s{font-size:11px;color:var(--t3);margin-top:5px}
+.sc-g{background:var(--gl);border-color:rgba(26,92,53,.15)}
+.sc-go{background:var(--gold-l);border-color:rgba(184,134,11,.15)}
+.sc-r{background:var(--red-l);border-color:rgba(192,57,43,.15)}
+.sc-b{background:var(--blue-l);border-color:rgba(26,74,138,.15)}
+
+/* ═══ BADGES ═══ */
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:.3px}
+.bg{background:var(--gl);color:var(--g)}
+.br{background:var(--red-l);color:var(--red)}
+.ba{background:var(--gold-l);color:var(--gold)}
+.bb{background:var(--blue-l);color:var(--blue)}
+
+/* ═══ BUTTONS ═══ */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:var(--rsm);font-family:var(--fb);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .18s}
+.btn-p{background:var(--g);color:#fff;box-shadow:0 2px 10px rgba(26,92,53,.22)}
+.btn-p:hover{background:var(--g2);transform:translateY(-1px);box-shadow:0 4px 18px rgba(26,92,53,.3)}
+.btn-o{background:transparent;color:var(--g);border:1.5px solid var(--g3)}
+.btn-o:hover{background:var(--gl)}
+.btn-d{background:var(--red);color:#fff}.btn-d:hover{background:#a93226}
+.btn-go{background:var(--gold);color:#fff}
+.btn-sm{padding:7px 13px;font-size:12px}
+
+/* ═══ FORM ═══ */
+.fr{margin-bottom:15px}
+.fl{font-size:12px;color:var(--t2);margin-bottom:6px;display:block;font-weight:600}
+.fi{width:100%;background:var(--surf);border:1.5px solid var(--border2);border-radius:var(--rsm);padding:10px 13px;color:var(--text);font-family:var(--fb);font-size:13px;outline:none;transition:all .18s}
+.fi:focus{border-color:var(--g3);background:var(--white);box-shadow:0 0 0 3px rgba(26,92,53,.08)}
+.fi::placeholder{color:var(--t4)}
+select.fi option{background:#fff}
+
+/* ═══ PROGRESS ═══ */
+.pt{height:6px;background:var(--bg4);border-radius:99px;overflow:hidden}
+.pf{height:100%;border-radius:99px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+
+/* ═══ TABS ═══ */
+.tabs{display:flex;gap:2px;border-bottom:2px solid var(--border);margin-bottom:22px}
+.tab{padding:10px 18px;font-size:13px;cursor:pointer;color:var(--t3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .18s;font-weight:500}
+.tab.active{color:var(--g);border-bottom-color:var(--g);font-weight:600}
+.tab:hover:not(.active){color:var(--t2)}
+
+/* ═══ TABLE ═══ */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{font-size:10px;text-transform:uppercase;letter-spacing:.9px;color:var(--t3);padding:9px 12px;text-align:left;border-bottom:2px solid var(--border2);font-weight:600}
+.tbl td{padding:11px 12px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle}
+.tbl tr:last-child td{border:none}
+.tbl tr:hover td{background:var(--gxl)}
+
+/* ═══ WALLET HERO ═══ */
+.wh{background:linear-gradient(135deg,var(--g) 0%,#0f3d22 100%);border-radius:var(--r);padding:28px 30px;position:relative;overflow:hidden;margin-bottom:22px;box-shadow:var(--sh2)}
+.wh::before{content:'ZENO';position:absolute;right:-10px;top:-22px;font-family:var(--fh);font-size:120px;color:rgba(255,255,255,.05);pointer-events:none;line-height:1;font-weight:700}
+.wh-lbl{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.wh-val{font-family:var(--fh);font-size:54px;letter-spacing:2px;color:#fff;line-height:1;margin:8px 0;font-weight:600}
+.wh-row{display:flex;gap:30px;margin-top:20px;flex-wrap:wrap}
+.wh-item label{font-size:10px;color:rgba(255,255,255,.42);display:block;margin-bottom:3px;letter-spacing:.8px;text-transform:uppercase}
+.wh-item span{font-family:var(--fm);font-size:15px;color:rgba(255,255,255,.9)}
+
+/* ═══ TRIGGER ALERT ═══ */
+.ta{background:linear-gradient(135deg,#fff9f0,#fff3e0);border:1.5px solid var(--gold2);border-radius:var(--r);padding:16px 20px;display:flex;align-items:center;gap:16px;margin-bottom:22px;box-shadow:0 2px 12px rgba(184,134,11,.1)}
+.ta-title{font-size:14px;font-weight:600;color:var(--gold);margin-bottom:3px}
+.ta-sub{font-size:12px;color:var(--t2)}
+
+/* ═══ DASHBOARD HERO ═══ */
+.dash-hero{background:linear-gradient(135deg,var(--g) 0%,#0d3318 100%);border-radius:var(--r);padding:26px 30px;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh2);overflow:hidden;position:relative}
+.dash-hero::after{content:'₹';position:absolute;right:24px;top:-14px;font-family:var(--fh);font-size:160px;color:rgba(255,255,255,.04);font-weight:700;pointer-events:none}
+.dh-label{font-family:var(--fh);font-size:13px;color:rgba(255,255,255,.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.dh-val{font-family:var(--fh);font-size:52px;color:#fff;letter-spacing:2px;font-weight:600;line-height:1}
+.dh-sub{font-size:12px;color:rgba(255,255,255,.45);margin-top:6px}
+.dhr{display:flex;gap:30px;flex-shrink:0}
+.dhr-item label{font-size:10px;color:rgba(255,255,255,.42);display:block;margin-bottom:4px;letter-spacing:.8px;text-transform:uppercase}
+.dhr-item span{font-family:var(--fm);font-size:18px;color:#fff;font-weight:500}
+
+/* ═══ ADVISOR ═══ */
+.ac{background:var(--gxl);border:1.5px solid rgba(26,92,53,.15);border-radius:var(--r);padding:20px 22px;margin-bottom:13px}
+.ac-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:12px}
+.ac-save{font-family:var(--fm);font-size:24px;color:var(--g);font-weight:600}
+.ac-invest{font-size:13px;color:var(--gold);margin-top:3px;font-weight:500}
+.ac-steps{display:flex;flex-direction:column;gap:11px}
+.ac-step{display:flex;align-items:flex-start;gap:11px;font-size:13px;color:var(--t2);line-height:1.6}
+.ac-num{width:22px;height:22px;min-width:22px;border-radius:50%;background:var(--g);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px}
+
+/* ═══ MILESTONE ═══ */
+.ms{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--surf);border-radius:var(--rsm);border:1px solid var(--border);margin-bottom:10px;transition:all .18s}
+.ms:hover{box-shadow:var(--sh3);border-color:var(--border2)}
+.ms-icon{font-size:22px;width:36px;text-align:center;flex-shrink:0}
+.ms-body{flex:1;min-width:0}
+.ms-name{font-size:13px;font-weight:600}
+.ms-sub{font-size:11px;color:var(--t3);margin-top:2px}
+
+/* ═══ BRAND CARDS ═══ */
+.brand-eco{display:grid;grid-template-columns:repeat(auto-fit,minmax(138px,1fr));gap:11px;margin-bottom:20px}
+.bc{background:var(--surf);border:1.5px solid var(--border);border-radius:var(--rsm);padding:14px;cursor:pointer;transition:all .2s;text-align:center}
+.bc:hover,.bc.sel{border-color:var(--g3);background:var(--gxl);box-shadow:var(--sh3)}
+.bc .bi{font-size:22px;margin-bottom:7px}
+.bc .bn{font-size:12px;font-weight:600}
+.bc .bp{font-size:10px;color:var(--t3);margin-top:2px}
+.bc .bv{font-family:var(--fm);font-size:14px;margin-top:6px;font-weight:600}
+
+/* ═══ MODE TOGGLE ═══ */
+.mt{display:flex;background:var(--surf);border:1.5px solid var(--border2);border-radius:var(--rsm);padding:4px;margin-bottom:22px;gap:3px;width:fit-content}
+.mt-btn{padding:8px 18px;border-radius:7px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--t3);transition:all .18s}
+.mt-btn.active{background:var(--g);color:#fff;box-shadow:0 2px 8px rgba(26,92,53,.2)}
+
+/* ═══ SCORE RING ═══ */
+.srw{position:relative;width:106px;height:106px;flex-shrink:0}
+.sr-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.sr-num{font-family:var(--fh);font-size:30px;color:var(--g);line-height:1;font-weight:700}
+.sr-lbl{font-size:9px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;font-weight:600}
+
+/* ═══ PROFILE CARDS ═══ */
+.pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
+.pc{background:var(--surf);border:1.5px solid var(--border);border-radius:var(--rsm);padding:13px;cursor:pointer;transition:all .2s;text-align:center}
+.pc.active,.pc:hover{border-color:var(--g3);background:var(--gxl)}
+.pc-age{font-family:var(--fh);font-size:22px;color:var(--g);font-weight:600}
+.pc-lbl{font-size:11px;color:var(--t2);margin:3px 0;font-weight:500}
+
+/* ═══ VOUCHER ═══ */
+.voucher{background:linear-gradient(135deg,var(--gxl),#e4f5ec);border:1.5px solid rgba(26,92,53,.2);border-radius:var(--r);padding:20px 24px;position:relative;overflow:hidden;margin-bottom:13px;box-shadow:var(--sh3)}
+.voucher::after{content:'';position:absolute;right:-18px;top:50%;transform:translateY(-50%);width:36px;height:36px;background:var(--off);border-radius:50%;border:1px solid var(--border)}
+.voucher::before{content:'';position:absolute;left:-18px;top:50%;transform:translateY(-50%);width:36px;height:36px;background:var(--off);border-radius:50%;border:1px solid var(--border)}
+.v-brand{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--t3);font-weight:600}
+.v-amount{font-family:var(--fh);font-size:40px;letter-spacing:1px;color:var(--g);margin:5px 0;font-weight:700}
+.v-exp{font-size:11px;color:var(--t3)}
+.v-lock{position:absolute;top:14px;right:28px}
+
+/* ═══ PROFILE PAGE ═══ */
+.profile-cover{background:linear-gradient(135deg,var(--g),#0a2d17);border-radius:var(--r);padding:30px 32px;margin-bottom:24px;position:relative;overflow:hidden;box-shadow:var(--sh2)}
+.profile-cover::before{content:'';position:absolute;right:-40px;top:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,.04)}
+.profile-av-lg{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--g4),var(--g5));display:flex;align-items:center;justify-content:center;font-family:var(--fh);font-size:28px;font-weight:700;color:#fff;border:3px solid rgba(255,255,255,.25);margin-bottom:14px}
+.profile-name{font-family:var(--fh);font-size:32px;color:#fff;font-weight:700;letter-spacing:1px}
+.profile-meta{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px}
+.profile-badges{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.profile-badge{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:20px;padding:5px 13px;font-size:11px;font-weight:600;color:rgba(255,255,255,.85)}
+.profile-stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.pstat{background:var(--white);border:1px solid var(--border2);border-radius:var(--rsm);padding:16px 18px;text-align:center;box-shadow:var(--sh3)}
+.pstat .pval{font-family:var(--fh);font-size:26px;color:var(--g);font-weight:700}
+.pstat .plbl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px;font-weight:600}
+.edit-field{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid var(--border)}
+.edit-field:last-child{border:none}
+.ef-lbl{font-size:12px;font-weight:600;color:var(--t2);width:130px;flex-shrink:0}
+.ef-val{flex:1;font-size:13px;color:var(--text)}
+.ef-edit{font-size:12px;color:var(--g);cursor:pointer;font-weight:600;padding:4px 10px;border:1px solid var(--border2);border-radius:var(--rxs);transition:all .18s}
+.ef-edit:hover{background:var(--gl);border-color:var(--g3)}
+
+/* ═══ AI PANEL ═══ */
+.ai-panel{background:var(--white);border:1.5px solid var(--border2);border-radius:var(--r);display:flex;flex-direction:column;height:560px;box-shadow:var(--sh)}
+.ai-hdr{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px;background:var(--gxl);border-radius:var(--r) var(--r) 0 0}
+.ai-dot{width:9px;height:9px;border-radius:50%;background:var(--g4);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.ai-title{font-family:var(--fh);font-size:18px;font-weight:700;color:var(--g);letter-spacing:.5px}
+.ai-status{font-size:10px;color:var(--t3);margin-left:auto;padding:3px 9px;background:var(--white);border:1px solid var(--border);border-radius:20px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.ai-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:13px}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:fu .25s ease}
+.msg-u{flex-direction:row-reverse}
+.msg-av{width:28px;height:28px;min-width:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+.msg-av-ai{background:var(--g);color:#fff}
+.msg-av-u{background:var(--gold);color:#fff}
+.bubble{max-width:84%;padding:11px 15px;border-radius:12px;font-size:13px;line-height:1.65}
+.bubble-ai{background:var(--surf);border:1px solid var(--border2);color:var(--text)}
+.bubble-u{background:var(--g);color:#fff}
+.bubble p{margin-bottom:6px}.bubble p:last-child{margin:0}
+.bubble strong{color:var(--g4)}
+.bubble-u strong{color:#b0f0c8}
+.bubble ul{margin:6px 0 0 15px}.bubble li{margin-bottom:3px}
+.typing{display:flex;align-items:center;gap:5px;padding:9px 13px;background:var(--surf);border:1px solid var(--border2);border-radius:12px;width:fit-content}
+.typing span{width:6px;height:6px;border-radius:50%;background:var(--g3);animation:bnc .8s infinite}
+.typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bnc{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+.qps{display:flex;flex-wrap:wrap;gap:6px;padding:10px 14px;border-top:1px solid var(--border);background:var(--surf)}
+.qp{background:var(--white);border:1px solid var(--border2);border-radius:20px;padding:6px 12px;font-size:11px;color:var(--t2);cursor:pointer;transition:all .18s;font-weight:500}
+.qp:hover{border-color:var(--g3);color:var(--g);background:var(--gl)}
+.ai-inp-row{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--white);border-radius:0 0 var(--r) var(--r)}
+.ai-inp{flex:1;background:var(--surf);border:1.5px solid var(--border2);border-radius:var(--rsm);padding:10px 13px;color:var(--text);font-family:var(--fb);font-size:13px;outline:none;transition:all .18s}
+.ai-inp:focus{border-color:var(--g3);background:var(--white)}
+.ai-inp::placeholder{color:var(--t4)}
+.ai-send{background:var(--g);border:none;border-radius:var(--rsm);width:37px;height:37px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0;transition:all .18s}
+.ai-send:hover{background:var(--g2);transform:scale(1.05)}
+
+/* ═══ SETTINGS ═══ */
+.settings-section{margin-bottom:24px}
+.settings-section-title{font-family:var(--fh);font-size:20px;color:var(--g);font-weight:600;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.kv{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.kv:last-child{border:none}
+.kv-k{color:var(--t3);font-weight:400}
+.kv-v{font-family:var(--fm);font-weight:500;color:var(--text)}
+
+/* ═══ MODAL ═══ */
+.modal-bd{display:none;position:fixed;inset:0;background:rgba(0,20,10,.55);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-bd.show{display:flex}
+.modal{background:var(--white);border:1px solid var(--border2);border-radius:var(--r);padding:28px;max-width:460px;width:92%;animation:fu .25s ease;box-shadow:var(--sh2)}
+.modal-title{font-family:var(--fh);font-size:28px;letter-spacing:1px;color:var(--g);margin-bottom:6px;font-weight:700}
+.modal-amt{font-family:var(--fm);font-size:38px;color:var(--gold);margin:12px 0;font-weight:600}
+
+/* ═══ INSIGHT ═══ */
+.insight{background:var(--surf);border-radius:var(--rsm);padding:12px 15px;border-left:3px solid;font-size:13px;color:var(--t2);line-height:1.65;margin-bottom:9px}
+
+/* ═══ PRGS ═══ */
+.prw{margin-bottom:15px}
+.prw-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.prw-lbl{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:7px}
+.prw-nums{font-family:var(--fm);font-size:12px;color:var(--t3)}
+
+/* ═══ SPEND LINE ═══ */
+.sl{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--border)}
+.sl:last-child{border:none}
+.sl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.sl-cat{font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.sl-num{font-family:var(--fm);font-size:12px;white-space:nowrap;color:var(--t2)}
+
+/* ═══ CHART ═══ */
+.cw{position:relative;height:185px;margin-top:12px}
+
+/* ═══ TOAST ═══ */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--g);color:#fff;font-weight:600;font-size:13px;padding:12px 18px;border-radius:var(--rsm);transform:translateY(60px);opacity:0;transition:all .3s;z-index:9998;box-shadow:var(--sh2)}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:900px){
+  .auth-left{display:none}
+  .auth-right{padding:24px}
+  .g4{grid-template-columns:1fr 1fr}
+  .sidebar{width:200px}
+  .page{padding:20px 18px}
+  .dhr{display:none}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════
+     AUTH SCREEN
+══════════════════════════════════ -->
+<div id="authScreen">
+  <div class="auth-left">
+    <div class="auth-brand">
+      <div class="logo">ZENO</div>
+      <div class="tagline">Zero-waste Expense & Net-growth Optimizer</div>
+    </div>
+    <div class="auth-pitch">
+      <h2>Turn every rupee of cashback into lasting wealth</h2>
+      <p>ZENO replaces cashback dependency with genuine financial empowerment — budgeting, smart voucher allocation, and automatic micro-investment in one platform.</p>
+    </div>
+    <div class="auth-stats">
+      <div class="auth-stat"><span>₹3.2L</span><label>Avg user invested</label></div>
+      <div class="auth-stat"><span>12.3%</span><label>Portfolio XIRR</label></div>
+      <div class="auth-stat"><span>4.8x</span><label>Cashback utilised</label></div>
+    </div>
+  </div>
+  <div class="auth-right">
+    <div class="auth-box">
+      <div class="auth-tab-row">
+        <div class="auth-tab active" onclick="switchAuthTab('login')">Sign In</div>
+        <div class="auth-tab" onclick="switchAuthTab('signup')">Create Account</div>
+      </div>
+
+      <!-- LOGIN -->
+      <div class="auth-panel active" id="loginPanel">
+        <div class="auth-greeting">Welcome back</div>
+        <div class="auth-sub">Sign in to your ZENO account</div>
+        <div class="auth-error" id="loginErr"></div>
+        <div class="auth-form-row">
+          <label class="auth-label">Email Address</label>
+          <input class="auth-input" type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email">
+        </div>
+        <div class="auth-form-row">
+          <label class="auth-label">Password</label>
+          <input class="auth-input" type="password" id="loginPwd" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <button class="auth-btn" onclick="doLogin()">Sign In to ZENO</button>
+        <div class="auth-divider">or</div>
+        <button class="demo-btn" onclick="demoLogin()">▶ Try Demo Account</button>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="auth-panel" id="signupPanel">
+        <div class="auth-greeting">Get started</div>
+        <div class="auth-sub">Create your ZENO account in seconds</div>
+        <div class="auth-error" id="signupErr"></div>
+        <div class="auth-form-row">
+          <label class="auth-label">Full Name</label>
+          <input class="auth-input" id="signupName" placeholder="Arjun Kumar">
+        </div>
+        <div class="auth-form-row">
+          <label class="auth-label">Email Address</label>
+          <input class="auth-input" type="email" id="signupEmail" placeholder="you@example.com">
+        </div>
+        <div class="auth-form-row">
+          <label class="auth-label">Age</label>
+          <input class="auth-input" type="number" id="signupAge" placeholder="28" min="18" max="80">
+        </div>
+        <div class="auth-form-row">
+          <label class="auth-label">Monthly Income (₹)</label>
+          <input class="auth-input" type="number" id="signupIncome" placeholder="50000">
+        </div>
+        <div class="auth-form-row">
+          <label class="auth-label">Password</label>
+          <input class="auth-input" type="password" id="signupPwd" placeholder="Min 8 characters" oninput="checkStrength(this.value)">
+          <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        </div>
+        <button class="auth-btn" onclick="doSignup()">Create My Account</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════
+     APP SCREEN
+══════════════════════════════════ -->
+<div id="appScreen">
+<div class="shell">
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-top">
+    <div class="logo">ZENO</div>
+    <div class="logo-sub">Zero-waste Expense &<br>Net-growth Optimizer</div>
+  </div>
+  <div class="nav-sec">Overview</div>
+  <div class="nav-item active" onclick="nav('dashboard',this)"><span class="ni">⬡</span>Dashboard</div>
+  <div class="nav-item" onclick="nav('wallet',this)"><span class="ni">◎</span>Smart Wallet</div>
+  <div class="nav-item" onclick="nav('expenses',this)"><span class="ni">▤</span>Expense Builder</div>
+  <div class="nav-item" onclick="nav('advisor',this)"><span class="ni">◈</span>Voucher Advisor</div>
+  <div class="nav-sec">Wealth</div>
+  <div class="nav-item" onclick="nav('goals',this)"><span class="ni">◎</span>Goals</div>
+  <div class="nav-item" onclick="nav('invest',this)"><span class="ni">↑</span>Invest</div>
+  <div class="nav-item" onclick="nav('ledger',this)"><span class="ni">☰</span>Ledger</div>
+  <div class="nav-sec">Intelligence</div>
+  <div class="nav-item" onclick="nav('ai',this)"><span class="ni">◆</span>ZENO AI Agent</div>
+  <div class="nav-sec">Account</div>
+  <div class="nav-item" onclick="nav('profile',this)"><span class="ni">👤</span>My Profile</div>
+  <div class="nav-item" onclick="nav('settings',this)"><span class="ni">⚙</span>Settings</div>
+  <div class="sb-bot">
+    <div class="user-row" onclick="nav('profile',document.querySelector('[onclick*=profile]'))">
+      <div class="av" id="sbAv">AK</div>
+      <div><div class="user-name" id="sbName">Arjun Kumar</div><div class="user-sub" id="sbSub">Age 28 · Growth Mode</div></div>
+    </div>
+    <div class="sb-logout" onclick="doLogout()">⎋ Sign Out</div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+<!-- ══ DASHBOARD ══ -->
+<div class="page active" id="page-dashboard">
+  <div class="pg-title">Dashboard</div>
+  <div class="pg-sub" id="dashDate">Your financial empowerment snapshot</div>
+
+  <div class="ta" id="trigAlert">
+    <div style="font-size:22px;flex-shrink:0">⚡</div>
+    <div style="flex:1">
+      <div class="ta-title">Auto-Invest Trigger — Cashback crossed ₹1,000</div>
+      <div class="ta-sub">You have <span id="alertCB">₹1,842</span> idle. Invest now before you spend it impulsively.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-shrink:0">
+      <button class="btn btn-go btn-sm" onclick="showModal()">Invest Now</button>
+      <button class="btn btn-o btn-sm" onclick="document.getElementById('trigAlert').style.display='none'">Later</button>
+    </div>
+  </div>
+
+  <div class="dash-hero mb20">
+    <div>
+      <div class="dh-label">Month Surplus</div>
+      <div class="dh-val" id="dhSurplus">₹6,450</div>
+      <div class="dh-sub" id="dhSub">From ₹50,000 income · Every rupee should grow</div>
+    </div>
+    <div class="dhr">
+      <div class="dhr-item"><label>Cashback Pool</label><span id="dhCB">₹1,842</span></div>
+      <div class="dhr-item"><label>Invested</label><span id="dhInv">₹8,960</span></div>
+      <div class="dhr-item"><label>XIRR</label><span>12.3%</span></div>
+    </div>
+  </div>
+
+  <div class="g4 mb20">
+    <div class="sc sc-g"><div class="l">Eco-Wallet</div><div class="v" id="dashEco">₹4,287</div><div class="s">↑ ₹312 this month</div></div>
+    <div class="sc"><div class="l">Wealth Score</div><div class="v" id="dashScore">72/100</div><div class="s">+8 pts this month</div></div>
+    <div class="sc sc-go"><div class="l">Active Goals</div><div class="v">3</div><div class="s">₹8,333/mo needed</div></div>
+    <div class="sc sc-r"><div class="l">Locked Vouchers</div><div class="v" id="dashVouchers">2</div><div class="s" id="dashVoucherVal">Worth ₹5,800</div></div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="sec-title">Empowerment Score <span class="badge bg" id="scoreBadge">+8 pts</span></div>
+      <div style="display:flex;align-items:center;gap:20px">
+        <div class="srw">
+          <svg style="transform:rotate(-90deg)" viewBox="0 0 106 106" width="106" height="106">
+            <circle cx="53" cy="53" r="44" fill="none" stroke="var(--bg4)" stroke-width="7"/>
+            <circle cx="53" cy="53" r="44" fill="none" stroke="var(--g)" stroke-width="7" stroke-linecap="round" stroke-dasharray="276" stroke-dashoffset="78" id="scoreC" style="transition:stroke-dashoffset 1.2s ease"/>
+          </svg>
+          <div class="sr-val"><div class="sr-num" id="scoreN">72</div><div class="sr-lbl">Score</div></div>
+        </div>
+        <div style="flex:1">
+          <div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="color:var(--t3)">Cashback reinvested</span><span style="color:var(--g);font-family:var(--fm)">68%</span></div><div class="pt"><div class="pf" style="width:68%;background:var(--g)"></div></div></div>
+          <div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="color:var(--t3)">Goal completion</span><span style="color:var(--gold);font-family:var(--fm)">45%</span></div><div class="pt"><div class="pf" style="width:45%;background:var(--gold)"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span style="color:var(--t3)">Expense discipline</span><span style="color:var(--blue);font-family:var(--fm)">81%</span></div><div class="pt"><div class="pf" style="width:81%;background:var(--blue)"></div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card"><div class="sec-title">Cashback vs Invested (6M)</div><div class="cw"><canvas id="dashChart"></canvas></div></div>
+  </div>
+
+  <div class="card mb20">
+    <div class="sec-title">Budget Health <span style="font-size:11px;font-weight:400;color:var(--t3)" id="dashIncLabel">Income ₹50,000</span></div>
+    <div id="dashBudget"></div>
+  </div>
+  <div class="card">
+    <div class="sec-title">Cashback Substitution Opportunities <span class="badge bg" id="dashOppBadge">₹1,410 real cash to free</span></div>
+    <div id="dashOpp"></div>
+  </div>
+</div>
+
+<!-- ══ WALLET ══ -->
+<div class="page" id="page-wallet">
+  <div class="pg-title">Smart Wallet</div>
+  <div class="pg-sub">Unified Eco-Wallet across brand families · Smart locked voucher management</div>
+  <div class="mt">
+    <button class="mt-btn active" onclick="wMode('eco',this)">🔓 Eco-Wallet</button>
+    <button class="mt-btn" onclick="wMode('locked',this)">🔒 Locked Vouchers</button>
+  </div>
+  <div id="ecoMode">
+    <div class="wh">
+      <div class="wh-lbl">Total Eco-Balance · Spend anywhere within same brand family</div>
+      <div class="wh-val">₹4,287</div>
+      <div class="wh-row">
+        <div class="wh-item"><label>Fashion</label><span>₹420</span></div>
+        <div class="wh-item"><label>Grocery</label><span>₹310</span></div>
+        <div class="wh-item"><label>Electronics</label><span>₹680</span></div>
+        <div class="wh-item"><label>Fuel</label><span>₹432</span></div>
+        <div class="wh-item"><label>Previous</label><span>₹2,445</span></div>
+      </div>
+    </div>
+    <div class="sec-title mb12">Brand Ecosystem Brands</div>
+    <div class="brand-eco" id="brandEco"></div>
+    <div class="card">
+      <div class="sec-title">Spend Simulator</div>
+      <div class="g2">
+        <div class="fr"><label class="fl">Spend Eco-Balance at</label>
+          <select class="fi" id="spendBrand">
+            <option>JioMart (Reliance)</option><option>Reliance Trends (Reliance)</option>
+            <option>Reliance Digital (Reliance)</option><option>BigBasket (Tata)</option>
+            <option>Croma (Tata)</option>
+          </select>
+        </div>
+        <div class="fr"><label class="fl">Amount (₹)</label><input class="fi" type="number" id="spendAmt" placeholder="e.g. 500" oninput="simSpend()"></div>
+      </div>
+      <div id="spendResult" style="display:none;background:var(--gxl);border:1px solid rgba(26,92,53,.15);border-radius:var(--rsm);padding:14px;font-size:13px;color:var(--t2);line-height:1.7"></div>
+    </div>
+  </div>
+  <div id="lockedMode" style="display:none">
+    <div class="card mb20"><div class="sec-title">Your Locked Vouchers</div><div id="voucherList"></div></div>
+    <div class="card">
+      <div class="sec-title">Add New Voucher</div>
+      <div class="g2">
+        <div class="fr"><label class="fl">Brand / App</label><input class="fi" id="vBrand" placeholder="e.g. Myntra"></div>
+        <div class="fr"><label class="fl">Value (₹)</label><input class="fi" type="number" id="vAmt" placeholder="e.g. 5000"></div>
+        <div class="fr"><label class="fl">Expiry</label><input class="fi" type="date" id="vExp"></div>
+        <div class="fr"><label class="fl">Category</label><select class="fi" id="vCat"><option>Fashion / Clothing</option><option>Grocery</option><option>Electronics</option><option>Dining</option><option>Travel</option><option>Health</option></select></div>
+      </div>
+      <button class="btn btn-p" onclick="addVoucher()">+ Add Voucher & Get Smart Plan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ EXPENSES ══ -->
+<div class="page" id="page-expenses">
+  <div class="pg-title">Expense Builder</div>
+  <div class="pg-sub">Structure your monthly budget — ZENO uses this to optimise every cashback & voucher</div>
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="sec-title">Income & Profile</div>
+      <div class="fr"><label class="fl">Monthly Take-Home (₹)</label><input class="fi" type="number" id="income" value="50000" oninput="recalc()"></div>
+      <div class="fr"><label class="fl">Your Age</label><input class="fi" type="number" id="ageInp" value="28" oninput="updateProfile()"></div>
+      <div class="fl" style="margin-bottom:9px">Life Stage</div>
+      <div class="pc-grid" id="profileCards"></div>
+    </div>
+    <div class="card"><div class="sec-title">Monthly Summary</div><div id="expSummary"></div></div>
+  </div>
+  <div class="card mb20">
+    <div class="sec-title">Expense Categories <button class="btn btn-o btn-sm" onclick="addExpRow()">+ Add</button></div>
+    <div style="overflow-x:auto">
+      <table class="tbl">
+        <thead><tr><th style="width:22%">Category</th><th style="width:17%">Budget (₹)</th><th style="width:17%">Actual (₹)</th><th style="width:15%">Cashback</th><th style="width:14%">Ecosystem</th><th style="width:15%">Status</th></tr></thead>
+        <tbody id="expTable"></tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card"><div class="sec-title">Budget vs Actual</div><div class="cw" style="height:210px"><canvas id="expChart"></canvas></div></div>
+</div>
+
+<!-- ══ ADVISOR ══ -->
+<div class="page" id="page-advisor">
+  <div class="pg-title">Voucher Advisor</div>
+  <div class="pg-sub">Enter any locked voucher — ZENO maps it to your expenses to free real money for investment</div>
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="sec-title">Your Voucher</div>
+      <div class="fr"><label class="fl">Brand (locked to this brand only)</label><select class="fi" id="avBrand" onchange="runAdvisor()"><option>Myntra</option><option>Swiggy</option><option>MakeMyTrip</option><option>Nykaa</option><option>BigBasket</option><option>BookMyShow</option><option>Zomato</option><option>Amazon</option><option>Flipkart</option><option>PharmEasy</option></select></div>
+      <div class="fr"><label class="fl">Voucher Value (₹)</label><input class="fi" type="number" id="avAmt" value="5000" oninput="runAdvisor()"></div>
+      <div class="fr"><label class="fl">Expiry</label><input class="fi" type="date" id="avExp"></div>
+      <div style="background:var(--red-l);border:1px solid rgba(192,57,43,.15);border-radius:var(--rsm);padding:12px 14px;font-size:12px;color:var(--t2);line-height:1.65">🔒 This voucher is <strong style="color:var(--red)">locked</strong> to this brand only. ZENO finds which of your budgeted expenses it can cover — so you invest the freed real cash instead.</div>
+    </div>
+    <div class="card">
+      <div class="sec-title">Real Money Freed</div>
+      <div class="lbl">Optimal usage per your expense structure</div>
+      <div style="font-family:var(--fh);font-size:54px;letter-spacing:2px;color:var(--g);font-weight:700;line-height:1;margin:8px 0" id="avFreed">₹4,000</div>
+      <div style="font-size:13px;color:var(--t3);margin:9px 0;line-height:1.5">of real bank money freed — redirect to investment instead of spending from your account.</div>
+      <div style="font-family:var(--fh);font-size:24px;color:var(--gold);font-weight:600" id="avInvest">→ ₹4,000 into SIP</div>
+      <div style="font-size:12px;color:var(--t3);margin-top:5px" id="avGrowth">At 12% p.a. → ₹7,180 in 5 years</div>
+    </div>
+  </div>
+  <div class="card mb20"><div class="sec-title">Smart Spending Plan</div><div id="advisorPlan"></div></div>
+  <div class="card"><div class="sec-title">Expense Structure Match</div><div id="advisorExp"></div></div>
+</div>
+
+<!-- ══ GOALS ══ -->
+<div class="page" id="page-goals">
+  <div class="pg-title">Goals</div>
+  <div class="pg-sub">Age-based financial milestones — turning every rupee saved into real wealth</div>
+  <div class="card mb20"><div class="sec-title">Life Stage Profile <span class="badge bg" id="profBadge">Early Career · 26–35</span></div><div id="profDetail"></div></div>
+  <div style="font-family:var(--fh);font-size:22px;color:var(--g);font-weight:600;margin-bottom:16px">Financial Goals</div>
+  <div id="goalList" class="mb24"></div>
+  <div style="font-family:var(--fh);font-size:22px;color:var(--g);font-weight:600;margin-bottom:16px">Wealth Milestones</div>
+  <div id="msList"></div>
+</div>
+
+<!-- ══ INVEST ══ -->
+<div class="page" id="page-invest">
+  <div class="pg-title">Invest</div>
+  <div class="pg-sub">Growth portfolio — sweep surplus & cashback into compounding instruments</div>
+  <div class="wh mb20">
+    <div class="wh-lbl">Total Portfolio Value</div>
+    <div class="wh-val" id="portVal">₹10,632</div>
+    <div class="wh-row">
+      <div class="wh-item"><label>Invested</label><span id="portInvested">₹8,960</span></div>
+      <div class="wh-item"><label>Returns</label><span style="color:#b0f0c8">+₹1,672</span></div>
+      <div class="wh-item"><label>XIRR</label><span>12.3%</span></div>
+      <div class="wh-item"><label>Auto-Sweep</label><span style="color:#b0f0c8">Active ✓</span></div>
+    </div>
+  </div>
+  <div class="g2 mb20">
+    <div class="card"><div class="sec-title">Instruments</div><div id="invList"></div></div>
+    <div class="card"><div class="sec-title">Allocation</div><div class="cw"><canvas id="pieChart"></canvas></div></div>
+  </div>
+  <div class="card">
+    <div class="sec-title">Manual Sweep</div>
+    <div class="g2">
+      <div class="fr"><label class="fl">Amount (₹)</label><input class="fi" type="number" id="sweepAmt" placeholder="Enter amount"></div>
+      <div class="fr"><label class="fl">Destination</label><select class="fi" id="sweepTgt"><option>Digital Gold</option><option>Flexi Cap MF</option><option>Bluechip Fund</option><option>Liquid MF</option><option>NPS</option><option>PPF</option></select></div>
+    </div>
+    <button class="btn btn-p" onclick="doSweep()">⬆ Sweep to Wealth</button>
+  </div>
+</div>
+
+<!-- ══ LEDGER ══ -->
+<div class="page" id="page-ledger">
+  <div class="pg-title">Ledger</div>
+  <div class="pg-sub">Complete transaction history — every earn, spend, invest, and sweep</div>
+  <div class="tabs" id="ledgTabs">
+    <div class="tab active" onclick="ledgFilter('all',this)">All</div>
+    <div class="tab" onclick="ledgFilter('earn',this)">Earned</div>
+    <div class="tab" onclick="ledgFilter('spend',this)">Spent</div>
+    <div class="tab" onclick="ledgFilter('invest',this)">Invested</div>
+    <div class="tab" onclick="ledgFilter('sweep',this)">Sweeps</div>
+  </div>
+  <div class="card"><div style="overflow-x:auto"><table class="tbl" style="table-layout:auto"><thead><tr><th>Date</th><th>Description</th><th>Brand</th><th>Type</th><th>Amount</th></tr></thead><tbody id="ledgBody"></tbody></table></div></div>
+</div>
+
+<!-- ══ AI AGENT ══ -->
+<div class="page" id="page-ai">
+  <div class="pg-title">ZENO AI Agent</div>
+  <div class="pg-sub">Real-time financial intelligence with your complete context loaded</div>
+  <div id="apiKeyBanner" style="background:var(--gold-l);border:1.5px solid var(--gold2);border-radius:var(--rsm);padding:12px 16px;font-size:13px;color:var(--t2);margin-bottom:18px;display:flex;align-items:center;gap:12px">
+    <span style="font-size:18px">⚙️</span>
+    <span>Add your <strong>Groq API key</strong> in <strong style="cursor:pointer;color:var(--g);text-decoration:underline" onclick="nav('settings',document.querySelector('[onclick*=settings]'))">Settings → AI Configuration</strong> to activate live AI. Get a free key at console.groq.com</span>
+    <button class="btn btn-o btn-sm" style="margin-left:auto;flex-shrink:0" onclick="nav('settings',document.querySelector('[onclick*=settings]'))">Go to Settings</button>
+  </div>
+  <div class="g2">
+    <div class="ai-panel">
+      <div class="ai-hdr">
+        <div class="ai-dot"></div>
+        <div class="ai-title">ZENO Intelligence</div>
+        <div class="ai-status" id="aiStatus">Ready</div>
+      </div>
+      <div class="ai-msgs" id="aiMsgs">
+        <div class="msg">
+          <div class="msg-av msg-av-ai">Z</div>
+          <div class="bubble bubble-ai">
+            <p>Hello! I'm <strong>ZENO Intelligence</strong> — your financial empowerment agent.</p>
+            <p>I have your complete profile loaded. Ask me anything specific about your money.</p>
+            <ul>
+              <li>How to use a locked voucher smartly</li>
+              <li>Which expenses cashback can substitute</li>
+              <li>How much to invest this month</li>
+              <li>Goal timeline for your age</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="qps">
+        <div class="qp" onclick="qpSend(this)">How to use my Myntra voucher smartly?</div>
+        <div class="qp" onclick="qpSend(this)">Am I saving enough for my age?</div>
+        <div class="qp" onclick="qpSend(this)">Which expenses can cashback cover?</div>
+        <div class="qp" onclick="qpSend(this)">Fastest path to ₹1L invested?</div>
+      </div>
+      <div class="ai-inp-row">
+        <input class="ai-inp" id="aiInp" placeholder="Ask ZENO about your finances..." onkeydown="if(event.key==='Enter')sendAI()">
+        <button class="ai-send" onclick="sendAI()">➤</button>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:15px">
+      <div class="card"><div class="sec-title">Context in Agent Memory</div><div id="aiContext"></div></div>
+      <div class="card" style="flex:1"><div class="sec-title">Live Insights</div><div id="aiInsights"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PROFILE ══ -->
+<div class="page" id="page-profile">
+  <div class="pg-title">My Profile</div>
+  <div class="pg-sub">Your account details, financial identity and empowerment journey</div>
+
+  <div class="profile-cover mb20">
+    <div class="profile-av-lg" id="profileAvLg">AK</div>
+    <div class="profile-name" id="profileNameDisp">Arjun Kumar</div>
+    <div class="profile-meta" id="profileMetaDisp">Age 28 · Early Career · Member since April 2026</div>
+    <div class="profile-badges">
+      <div class="profile-badge">🌱 First Invest</div>
+      <div class="profile-badge">🛡 Emergency 50%</div>
+      <div class="profile-badge">📈 Growth Mode</div>
+      <div class="profile-badge" id="profileStageBadge">Early Career</div>
+    </div>
+  </div>
+
+  <div class="profile-stat-grid mb20">
+    <div class="pstat"><div class="pval" id="pStatScore">72</div><div class="plbl">Wealth Score</div></div>
+    <div class="pstat"><div class="pval" id="pStatInvested">₹8,960</div><div class="plbl">Total Invested</div></div>
+    <div class="pstat"><div class="pval" id="pStatSurplus">₹6,450</div><div class="plbl">Month Surplus</div></div>
+    <div class="pstat"><div class="pval" id="pStatGoals">3</div><div class="plbl">Active Goals</div></div>
+  </div>
+
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="sec-title">Personal Details</div>
+      <div class="edit-field"><span class="ef-lbl">Full Name</span><span class="ef-val" id="efName">Arjun Kumar</span><span class="ef-edit" onclick="editField('name')">Edit</span></div>
+      <div class="edit-field"><span class="ef-lbl">Email</span><span class="ef-val" id="efEmail">arjun@example.com</span><span class="ef-edit" onclick="editField('email')">Edit</span></div>
+      <div class="edit-field"><span class="ef-lbl">Age</span><span class="ef-val" id="efAge">28</span><span class="ef-edit" onclick="editField('age')">Edit</span></div>
+      <div class="edit-field"><span class="ef-lbl">Monthly Income</span><span class="ef-val" id="efIncome">₹50,000</span><span class="ef-edit" onclick="editField('income')">Edit</span></div>
+      <div class="edit-field"><span class="ef-lbl">Life Stage</span><span class="ef-val" id="efStage">Early Career (26–35)</span><span class="ef-edit" onclick="nav('expenses',document.querySelector('[onclick*=expenses]'))">Change</span></div>
+    </div>
+    <div class="card">
+      <div class="sec-title">Financial Identity</div>
+      <div class="edit-field"><span class="ef-lbl">Risk Profile</span><span class="ef-val"><span class="badge br">Aggressive</span></span><span class="ef-edit" onclick="editRisk()">Update</span></div>
+      <div class="edit-field"><span class="ef-lbl">Primary Goal</span><span class="ef-val">Emergency Fund → Home</span><span class="ef-edit" onclick="nav('goals',document.querySelector('[onclick*=goals]'))">View</span></div>
+      <div class="edit-field"><span class="ef-lbl">SIP Frequency</span><span class="ef-val">Monthly</span><span class="ef-edit" onclick="editField('sip')">Edit</span></div>
+      <div class="edit-field"><span class="ef-lbl">Auto-Invest At</span><span class="ef-val" id="efTrigger">₹1,000 cashback</span><span class="ef-edit" onclick="editField('trigger')">Edit</span></div>
+      <div class="edit-field"><span class="ef-lbl">Member Since</span><span class="ef-val" id="efJoined">April 2026</span><span class="ef-edit" style="opacity:0;pointer-events:none">—</span></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="sec-title">Empowerment Journey</div>
+    <div style="display:flex;flex-direction:column;gap:0">
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🌱</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">First Investment Made</div><div style="font-size:11px;color:var(--t3)">March 2026 · ₹1,000 into Flexi Cap MF</div></div>
+        <span class="badge bg">Done</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--gl);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🛡️</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">Emergency Fund 50%</div><div style="font-size:11px;color:var(--t3)">February 2026 · ₹75,000 saved</div></div>
+        <span class="badge bg">Done</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid var(--border)">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--surf);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">📈</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">₹10,000 Invested</div><div style="font-size:11px;color:var(--t3)">In progress · ₹960 remaining</div></div>
+        <span class="badge ba">89%</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;padding:14px 0">
+        <div style="width:36px;height:36px;border-radius:50%;background:var(--surf);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0">🔥</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:600">3-Month No-Waste Streak</div><div style="font-size:11px;color:var(--t3)">2 of 3 months complete</div></div>
+        <span class="badge ba">67%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SETTINGS ══ -->
+ <div class="page" id="page-settings">
+  <div class="pg-title">Settings</div>
+ <div class="pg-sub">Configure ZENO — Groq API key, preferences, data management</div>
+  <div class="g2">
+    <div>
+      <div class="card mb20">
+        <div class="settings-section-title">AI Configuration (Groq)</div>
+        <div style="background:var(--gl);border:1px solid rgba(26,92,53,.15);border-radius:var(--rsm);padding:11px 14px;font-size:12px;color:var(--t2);margin-bottom:14px;line-height:1.6">
+          🆓 Groq is <strong>free</strong> for regular use. Get your key at <strong>console.groq.com</strong> → API Keys → Create Key. Key starts with <code style="background:var(--surf);padding:1px 5px;border-radius:3px">gsk_...</code>
+        </div>
+        <div class="fr">
+          <label class="fl">Groq API Key <span style="color:var(--t3);font-weight:400">(stored in browser only)</span></label>
+          <div style="display:flex;gap:8px">
+            <input class="fi" type="password" id="apiKeyInp" placeholder="gsk_..." style="flex:1">
+            <button class="btn btn-o btn-sm" onclick="toggleKeyVisibility()">Show</button>
+          </div>
+        </div>
+        <div class="fr">
+          <label class="fl">AI Model</label>
+          <select class="fi" id="apiModel">
+            <option value="llama-3.3-70b-versatile">Llama 3.3 70B — Recommended (Smart + Fast)</option>
+            <option value="llama-3.1-8b-instant">Llama 3.1 8B — Fastest (Economical)</option>
+            <option value="mixtral-8x7b-32768">Mixtral 8x7B — Balanced</option>
+            <option value="gemma2-9b-it">Gemma 2 9B — Compact</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:12px">
+          <button class="btn btn-p" onclick="saveApiKey()">Save API Key</button>
+          <button class="btn btn-o" onclick="testApi()">Test Connection</button>
+          <button class="btn btn-d btn-sm" onclick="clearApiKey()">Clear Key</button>
+        </div>
+        <div id="apiStatus" style="font-size:12px;color:var(--t3);padding:8px 0"></div>
+      </div>
+
+      <div class="card">
+        <div class="settings-section-title">Preferences</div>
+        <div class="fr"><label class="fl">Auto-invest trigger amount (₹)</label><input class="fi" type="number" id="trigAmt" value="1000"></div>
+        <div class="fr"><label class="fl">SIP Frequency</label><select class="fi"><option>Monthly</option><option>Weekly</option><option>Quarterly</option></select></div>
+        <div class="fr"><label class="fl">Currency</label><select class="fi"><option>₹ Indian Rupee</option><option>$ US Dollar</option><option>€ Euro</option></select></div>
+        <button class="btn btn-p" onclick="toast('✓ Preferences saved')">Save Preferences</button>
+      </div>
+    </div>
+
+     <div>
+      <div class="card mb20">
+        <div class="settings-section-title">Account</div>
+        <div class="edit-field"><span class="ef-lbl">Name</span><span class="ef-val" id="setName">Arjun Kumar</span></div>
+        <div class="edit-field"><span class="ef-lbl">Email</span><span class="ef-val" id="setEmail">arjun@example.com</span></div>
+        <div class="edit-field"><span class="ef-lbl">Member Since</span><span class="ef-val">April 2026</span></div>
+        <div style="margin-top:16px;display:flex;gap:10px">
+          <button class="btn btn-o" onclick="nav('profile',document.querySelector('[onclick*=profile]'))">View Profile</button>
+          <button class="btn btn-d btn-sm" onclick="doLogout()">Sign Out</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="settings-section-title">Data Management</div>
+        <p style="font-size:12px;color:var(--t3);margin-bottom:14px;line-height:1.6">Export your full ZENO data as JSON. Import to restore. Reset clears everything.</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <button class="btn btn-o" onclick="exportData()">⬇ Export All Data (JSON)</button>
+          <button class="btn btn-o" onclick="document.getElementById('importFile').click()">⬆ Import Data</button>
+          <button class="btn btn-d" onclick="resetData()">⚠ Reset All Data</button>
+        </div>
+        <input type="file" id="importFile" style="display:none" accept=".json" onchange="handleImport(event)">
+      </div>
+    </div>
+  </div>
+</div> 
+
+</div><!-- /main -->
+</div><!-- /shell -->
+</div><!--/appScreen -->
+
+<!-- INVEST MODAL -->
+<div class="modal-bd" id="invModal">
+  <div class="modal">
+    <div class="modal-title">Auto-Invest ⚡</div>
+    <div style="font-size:13px;color:var(--t3);margin-bottom:8px">Lock your cashback into growth before it gets spent</div>
+    <div class="modal-amt" id="modalAmt">₹1,842</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:13px">Choose destination:</div>
+    <div id="modalOpts"></div>
+    <div style="display:flex;gap:10px;margin-top:20px">
+      <button class="btn btn-p" style="flex:1" onclick="confirmInvest()">Invest Now ✦</button>
+      <button class="btn btn-o" onclick="document.getElementById('invModal').classList.remove('show')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-bd" id="editModal">
+  <div class="modal">
+    <div class="modal-title" id="editModalTitle">Edit Field</div>
+    <div class="fr" style="margin-top:16px"><label class="fl" id="editModalLabel">Value</label><input class="fi" id="editModalInput" placeholder="Enter new value"></div>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button class="btn btn-p" style="flex:1" onclick="saveEditField()">Save</button>
+      <button class="btn btn-o" onclick="document.getElementById('editModal').classList.remove('show')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════
+//  DATA
+// ════════════════════════════════════════
+const BRANDS = [
+  {name:'JioMart',parent:'Reliance',cat:'Grocery',icon:'🛒',bal:310,color:'#2d8a54'},
+  {name:'Reliance Trends',parent:'Reliance',cat:'Fashion',icon:'👗',bal:420,color:'#b8860b'},
+  {name:'Reliance Digital',parent:'Reliance',cat:'Electronics',icon:'📱',bal:680,color:'#1a4a8a'},
+  {name:'Jio-BP',parent:'Reliance',cat:'Fuel',icon:'⛽',bal:432,color:'#6b3fa0'},
+  {name:'AJIO',parent:'Reliance',cat:'Fashion',icon:'🧥',bal:0,color:'#c0392b'},
+  {name:'BigBasket',parent:'Tata',cat:'Grocery',icon:'🥦',bal:220,color:'#27ae60'},
+  {name:'Croma',parent:'Tata',cat:'Electronics',icon:'💻',bal:380,color:'#2980b9'},
+  {name:'Westside',parent:'Tata',cat:'Fashion',icon:'👔',bal:150,color:'#e67e22'},
+  {name:'HDFC Cards',parent:'HDFC',cat:'Finance',icon:'💳',bal:620,color:'#8e44ad'},
+  {name:'Amazon',parent:'Amazon',cat:'Shopping',icon:'📦',bal:185,color:'#d4a017'},
+];
+
+let EXPENSES = [
+  {cat:'Rent / EMI',budget:15000,actual:15000,cashback:0,color:'#c0392b',group:''},
+  {cat:'Grocery',budget:8000,actual:6200,cashback:310,color:'#2d8a54',group:'Reliance'},
+  {cat:'Fashion / Clothing',budget:5000,actual:3800,cashback:420,color:'#b8860b',group:'Reliance'},
+  {cat:'Electronics',budget:3000,actual:2100,cashback:680,color:'#1a4a8a',group:'Tata'},
+  {cat:'Fuel',budget:4000,actual:3100,cashback:432,color:'#6b3fa0',group:'Reliance'},
+  {cat:'Dining',budget:3200,actual:3250,cashback:0,color:'#e67e22',group:''},
+  {cat:'Health',budget:2000,actual:1400,cashback:0,color:'#3da86a',group:''},
+  {cat:'Subscriptions',budget:1500,actual:1500,cashback:0,color:'#8e44ad',group:''},
+  {cat:'Misc',budget:3300,actual:2700,cashback:0,color:'#7f8c8d',group:''},
+];
+
+let VOUCHERS = [
+  {brand:'Myntra',cat:'Fashion / Clothing',amt:5000,exp:'2026-05-31'},
+  {brand:'Swiggy',cat:'Dining',amt:800,exp:'2026-04-30'},
+];
+
+const INVESTMENTS = [
+  {name:'Digital Gold',icon:'🪙',ret:'8–12%',risk:'Low',allocated:3000,color:'#b8860b'},
+  {name:'Flexi Cap MF',icon:'📈',ret:'12–18%',risk:'Medium',allocated:4000,color:'#2d8a54'},
+  {name:'Bluechip Fund',icon:'🏛️',ret:'10–14%',risk:'Medium',allocated:1960,color:'#1a4a8a'},
+  {name:'Liquid MF',icon:'💧',ret:'6–7%',risk:'Low',allocated:0,color:'#6b3fa0'},
+  {name:'NPS',icon:'🏦',ret:'9–11%',risk:'Low',allocated:0,color:'#e67e22'},
+  {name:'PPF',icon:'📋',ret:'7.1%',risk:'None',allocated:0,color:'#27ae60'},
+];
+
+const PROFILES = [
+  {label:'Student',range:'18–25',risk:'Moderate',desc:'Build an emergency fund first. Start a ₹500/month SIP immediately — even small amounts compound massively over time.',goals:['₹50K Emergency Fund','₹2L wealth by 25']},
+  {label:'Early Career',range:'26–35',risk:'Aggressive',desc:'Maximum growth window. Prioritise SIPs, plan for home, and never waste cashback — every idle rupee is an opportunity cost.',goals:['₹1.5L Emergency Fund','Home in 7 yrs','₹50L by 35']},
+  {label:'Family Builder',range:'36–50',risk:'Balanced',desc:'Balance growth with protection. Child education fund, home loan pre-payment, and building retirement corpus.',goals:['Child Education ₹30L','₹1Cr Retirement']},
+  {label:'Pre-Retirement',range:'50+',risk:'Conservative',desc:'Capital protection and passive income. Shift to guaranteed returns and build steady income streams.',goals:['₹2Cr Corpus','₹40K/mo passive income']},
+];
+
+let LEDGER = [
+  {date:'Apr 11',desc:'Cashback on fashion purchase',brand:'Reliance Trends',type:'earn',amt:420},
+  {date:'Apr 10',desc:'Eco-wallet spend at JioMart',brand:'JioMart',type:'spend',amt:-320},
+  {date:'Apr 9',desc:'Electronics cashback',brand:'Croma (Tata)',type:'earn',amt:680},
+  {date:'Apr 8',desc:'Month-end sweep → Digital Gold',brand:'Growth List',type:'sweep',amt:-1500},
+  {date:'Apr 7',desc:'Fuel cashback',brand:'Jio-BP',type:'earn',amt:432},
+  {date:'Apr 5',desc:'Auto-invest trigger',brand:'Flexi Cap MF',type:'invest',amt:-1000},
+  {date:'Apr 4',desc:'Grocery cashback',brand:'BigBasket (Tata)',type:'earn',amt:220},
+  {date:'Apr 2',desc:'HDFC card cashback',brand:'HDFC Bank',type:'earn',amt:620},
+];
+
+const BCAT = {Myntra:'Fashion / Clothing',Swiggy:'Dining',MakeMyTrip:'Misc',Nykaa:'Health',BigBasket:'Grocery',BookMyShow:'Dining',Zomato:'Dining',Amazon:'Misc',Flipkart:'Misc',PharmEasy:'Health'};
+
+let USER = {name:'',email:'',age:28,income:50000,profile:1,joined:''};
+let state = {score:72,invested:8960,cashback:1842,selProfile:1,selInvest:'Digital Gold',ledgFilter:'all',editField:''};
+let aiHistory = [];
+
+// ════════════════════════════════════════
+//  AUTH
+// ════════════════════════════════════════
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',i===(tab==='login'?0:1)));
+  document.getElementById('loginPanel').classList.toggle('active', tab==='login');
+  document.getElementById('signupPanel').classList.toggle('active', tab==='signup');
+}
+
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 4000);
+}
+
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim();
+  const pwd = document.getElementById('loginPwd').value;
+  if(!email||!pwd){showErr('loginErr','Please enter your email and password.');return;}
+  if(!email.includes('@')){showErr('loginErr','Enter a valid email address.');return;}
+  if(pwd.length<6){showErr('loginErr','Password must be at least 6 characters.');return;}
+  const saved = localStorage.getItem('zeno_user_'+email);
+  if(saved) { USER = JSON.parse(saved); }
+  else { USER = {name: email.split('@')[0].replace(/[^a-zA-Z ]/g,' ').trim()||'User', email, age:28, income:50000, profile:1, joined: new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})}; }
+  launchApp();
+}
+
+function doSignup() {
+  const name = document.getElementById('signupName').value.trim();
+  const email = document.getElementById('signupEmail').value.trim();
+  const age = parseInt(document.getElementById('signupAge').value)||0;
+  const income = parseFloat(document.getElementById('signupIncome').value)||0;
+  const pwd = document.getElementById('signupPwd').value;
+  if(!name||!email||!age||!income||!pwd){showErr('signupErr','Please fill in all fields.');return;}
+  if(!email.includes('@')){showErr('signupErr','Enter a valid email address.');return;}
+  if(pwd.length<8){showErr('signupErr','Password must be at least 8 characters.');return;}
+  if(age<18||age>80){showErr('signupErr','Enter a valid age between 18 and 80.');return;}
+  USER = {name, email, age, income, profile: age<26?0:age<=35?1:age<=50?2:3, joined: new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})};
+  localStorage.setItem('zeno_user_'+email, JSON.stringify(USER));
+  state.income = income;
+  launchApp();
+}
+
+function demoLogin() {
+  USER = {name:'Arjun Kumar', email:'demo@zeno.app', age:28, income:50000, profile:1, joined:'April 2026'};
+  launchApp();
+}
+
+function launchApp() {
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('appScreen').style.display='block';
+  state.income = USER.income || 50000;
+  state.selProfile = USER.profile || 1;
+  document.getElementById('ageInp').value = USER.age || 28;
+  document.getElementById('income').value = USER.income || 50000;
+  updateUserMeta();
+  renderAll();
+  setTimeout(()=>{
+    const c = document.getElementById('scoreC');
+    if(c) c.style.strokeDashoffset = 276*(1-state.score/100);
+  },600);
+}
+
+function doLogout() {
+  document.getElementById('appScreen').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+  document.getElementById('loginEmail').value='';
+  document.getElementById('loginPwd').value='';
+  aiHistory = [];
+  USER = {};
+}
+
+function checkStrength(pwd) {
+  const fill = document.getElementById('strengthFill');
+  let score = 0;
+  if(pwd.length>=8) score++;
+  if(/[A-Z]/.test(pwd)) score++;
+  if(/[0-9]/.test(pwd)) score++;
+  if(/[^A-Za-z0-9]/.test(pwd)) score++;
+  const colors=['#e74c3c','#e67e22','#f1c40f','#2ecc71'];
+  fill.style.width=(score*25)+'%';
+  fill.style.background=colors[score-1]||'var(--border)';
+}
+
+// ════════════════════════════════════════
+//  NAVIGATION
+// ════════════════════════════════════════
+function nav(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el) el.classList.add('active');
+  if(id==='ai'){renderAIContext();renderAIInsights();}
+  if(id==='profile') renderProfile();
+}
+
+// ════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════
+function toast(msg, type='g') {
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=type==='r'?'var(--red)':type==='go'?'var(--gold)':'var(--g)';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),3200);
+}
+
+function fmt(txt) {
+  return '<p>'+txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>')+'</p>';
+}
+
+function updateUserMeta() {
+  const n = USER.name||'User';
+  const initials = n.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('sbAv').textContent = initials;
+  document.getElementById('sbName').textContent = n;
+  document.getElementById('sbSub').textContent = `Age ${USER.age||28} · ${PROFILES[state.selProfile].label}`;
+  document.getElementById('setName').textContent = n;
+  document.getElementById('setEmail').textContent = USER.email||'';
+}
+
+// ════════════════════════════════════════
+//  RENDER ALL
+// ════════════════════════════════════════
+function renderAll() {
+  document.getElementById('dashDate').textContent = new Date().toLocaleDateString('en-IN',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
+  renderBrandEco(); renderExpenseTable(); renderExpSummary();
+  renderProfileCards(); renderProfileDetail(); runAdvisor(); renderAdvisorExp();
+  renderGoals(); renderMilestones(); renderInvList(); renderLedger();
+  renderDashBudget(); renderDashOpp(); renderAIContext(); renderAIInsights();
+  updateUserMeta(); updateDashHero(); renderVouchers();
+  initCharts();
+}
+
+function updateDashHero() {
+  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
+  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
+  const sur=state.income-tA;
+  document.getElementById('dhSurplus').textContent=`₹${Math.max(0,sur).toLocaleString()}`;
+  document.getElementById('dhSub').textContent=`From ₹${state.income.toLocaleString()} income · Every rupee should grow`;
+  document.getElementById('dhCB').textContent=`₹${tC.toLocaleString()}`;
+  document.getElementById('dhInv').textContent=`₹${state.invested.toLocaleString()}`;
+  document.getElementById('dashIncLabel').textContent=`Income ₹${state.income.toLocaleString()}`;
+  document.getElementById('alertCB').textContent=`₹${tC.toLocaleString()}`;
+  const vTotal=VOUCHERS.reduce((a,v)=>a+v.amt,0);
+  document.getElementById('dashVouchers').textContent=VOUCHERS.length;
+  document.getElementById('dashVoucherVal').textContent=`Worth ₹${vTotal.toLocaleString()}`;
+}
+
+function renderBrandEco() {
+  const el=document.getElementById('brandEco');
+  if(!el) return;
+  el.innerHTML=BRANDS.map(b=>`
+    <div class="bc" onclick="this.classList.toggle('sel')">
+      <div class="bi">${b.icon}</div>
+      <div class="bn">${b.name}</div>
+      <div class="bp">${b.parent}</div>
+      <div class="bv" style="color:${b.color}">₹${b.bal.toLocaleString()}</div>
+    </div>`).join('');
+}
+
+function wMode(mode,btn) {
+  document.querySelectorAll('.mt-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('ecoMode').style.display=mode==='eco'?'block':'none';
+  document.getElementById('lockedMode').style.display=mode==='locked'?'block':'none';
+  if(mode==='locked') renderVouchers();
+}
+
+function simSpend() {
+  const amt=parseFloat(document.getElementById('spendAmt').value)||0;
+  const brand=document.getElementById('spendBrand').value;
+  const res=document.getElementById('spendResult');
+  if(!amt){res.style.display='none';return;}
+  const rem=4287-amt;
+  res.style.display='block';
+  res.innerHTML=`✅ Spending <strong style="color:var(--g)">₹${amt.toLocaleString()}</strong> from Eco-Wallet at <strong>${brand}</strong><br>
+Balance after: <strong style="color:var(--g)">₹${rem.toLocaleString()}</strong><br>
+Cashback earned from any brand in this family is fully interoperable — no brand lock-in.<br>
+<span style="color:var(--gold);font-weight:600">💡 You saved ₹${amt.toLocaleString()} real cash. Redirect it to your SIP?</span>`;
+}
+
+function renderVouchers() {
+  const el=document.getElementById('voucherList');
+  if(!el) return;
+  if(!VOUCHERS.length){el.innerHTML='<div style="text-align:center;padding:20px;color:var(--t3)">No vouchers yet. Add one below.</div>';return;}
+  el.innerHTML=VOUCHERS.map((v,i)=>`
+    <div class="voucher">
+      <div class="v-brand">🔒 ${v.brand}</div>
+      <div class="v-amount">₹${v.amt.toLocaleString()}</div>
+      <div class="v-exp">Valid till ${v.exp} · ${v.cat}</div>
+      <div class="v-lock"><span class="badge br">LOCKED</span></div>
+      <div style="position:absolute;bottom:12px;right:28px"><button class="btn btn-o btn-sm" style="font-size:11px" onclick="VOUCHERS.splice(${i},1);renderVouchers();updateDashHero();toast('Voucher removed')">Remove</button></div>
+    </div>`).join('');
+}
+
+function addVoucher() {
+  const brand=document.getElementById('vBrand').value.trim();
+  const amt=parseFloat(document.getElementById('vAmt').value)||0;
+  const exp=document.getElementById('vExp').value||'2026-12-31';
+  const cat=document.getElementById('vCat').value;
+  if(!brand||!amt){toast('Enter brand and amount','r');return;}
+  VOUCHERS.push({brand,cat,amt,exp});
+  renderVouchers(); updateDashHero();
+  document.getElementById('vBrand').value='';
+  document.getElementById('vAmt').value='';
+  toast('✓ Voucher added — check Advisor for smart plan');
+}
+
+function renderExpenseTable() {
+  document.getElementById('expTable').innerHTML=EXPENSES.map((e,i)=>{
+    const sur=e.budget-e.actual;
+    return `<tr>
+      <td><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${e.color};margin-right:8px"></span>${e.cat}</td>
+      <td><input type="number" value="${e.budget}" style="background:var(--surf);border:1px solid var(--border2);border-radius:5px;padding:5px 8px;color:var(--text);font-size:12px;width:85px" onchange="EXPENSES[${i}].budget=+this.value;recalc()"></td>
+      <td><input type="number" value="${e.actual}" style="background:var(--surf);border:1px solid var(--border2);border-radius:5px;padding:5px 8px;color:var(--text);font-size:12px;width:85px" onchange="EXPENSES[${i}].actual=+this.value;recalc()"></td>
+      <td><span style="font-family:var(--fm);color:var(--g);font-size:12px;font-weight:600">₹${e.cashback}</span></td>
+      <td><span style="font-size:11px;color:var(--t3)">${e.group||'—'}</span></td>
+      <td>
+        <span class="badge ${sur>=0?'bg':'br'}">${sur>=0?'+':''}₹${Math.abs(sur).toLocaleString()}</span>
+        <span onclick="EXPENSES.splice(${i},1);renderExpenseTable();recalc()" style="cursor:pointer;margin-left:8px;color:var(--t4);font-size:14px;font-weight:700" title="Remove">×</span>
+      </td>
+    </tr>`;
+  }).join('');
+  renderExpChart();
+}
+
+function addExpRow() {
+  EXPENSES.push({cat:'New Category',budget:1000,actual:0,cashback:0,color:'#7f8c8d',group:''});
+  renderExpenseTable();
+}
+
+function recalc() {
+  state.income=parseFloat(document.getElementById('income').value)||50000;
+  renderExpSummary(); renderExpenseTable(); renderDashBudget(); runAdvisor(); updateDashHero();
+}
+
+function renderExpSummary() {
+  const tB=EXPENSES.reduce((a,e)=>a+e.budget,0);
+  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
+  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
+  const sur=state.income-tA;
+  document.getElementById('expSummary').innerHTML=`
+    <div class="sc mb12"><div class="l">Total Budgeted</div><div class="v">₹${tB.toLocaleString()}</div></div>
+    <div class="sc mb12"><div class="l">Actual Spent</div><div class="v">₹${tA.toLocaleString()}</div></div>
+    <div class="sc sc-go mb12"><div class="l">Cashback Pool</div><div class="v">₹${tC.toLocaleString()}</div><div class="s">Can offset real expenses</div></div>
+    <div class="sc sc-g"><div class="l">Month Surplus</div><div class="v">₹${sur.toLocaleString()}</div><div class="s">→ Invest this immediately</div></div>`;
+}
+
+function updateProfile() {
+  const age=parseInt(document.getElementById('ageInp').value)||28;
+  USER.age=age;
+  state.selProfile=age<26?0:age<=35?1:age<=50?2:3;
+  renderProfileCards(); renderProfileDetail(); updateUserMeta();
+}
+
+function renderProfileCards() {
+  document.getElementById('profileCards').innerHTML=PROFILES.map((p,i)=>`
+    <div class="pc ${i===state.selProfile?'active':''}" onclick="state.selProfile=${i};renderProfileCards();renderProfileDetail()">
+      <div class="pc-age">${p.range}</div><div class="pc-lbl">${p.label}</div>
+      <span class="badge ${['ba','br','bb','bg'][i]}" style="font-size:9px">${p.risk}</span>
+    </div>`).join('');
+}
+
+function renderProfileDetail() {
+  const p=PROFILES[state.selProfile];
+  const el=document.getElementById('profBadge');
+  if(el) el.textContent=`${p.label} · ${p.range}`;
+  const det=document.getElementById('profDetail');
+  if(det) det.innerHTML=`<div style="font-size:13px;color:var(--t2);margin-bottom:13px;line-height:1.7">${p.desc}</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">${p.goals.map(g=>`<span class="badge bg" style="font-size:11px;padding:5px 13px">${g}</span>`).join('')}</div>`;
+}
+
+function runAdvisor() {
+  const vAmt=parseFloat(document.getElementById('avAmt')?.value)||5000;
+  const vBrand=document.getElementById('avBrand')?.value||'Myntra';
+  const tCat=BCAT[vBrand]||'Misc';
+  const exp=EXPENSES.find(e=>e.cat===tCat)||EXPENSES[EXPENSES.length-1];
+  const usable=Math.min(vAmt,exp.budget);
+  const growth=Math.round(usable*Math.pow(1.12,5));
+  const $=id=>document.getElementById(id);
+  if($('avFreed')) $('avFreed').textContent=`₹${usable.toLocaleString()}`;
+  if($('avInvest')) $('avInvest').textContent=`→ ₹${usable.toLocaleString()} into SIP`;
+  if($('avGrowth')) $('avGrowth').textContent=`At 12% p.a. → ₹${growth.toLocaleString()} in 5 years`;
+  const pl=$('advisorPlan');
+  if(!pl) return;
+  pl.innerHTML=`
+    <div class="ac">
+      <div class="ac-head">
+        <div>
+          <div style="font-size:14px;font-weight:600">${vBrand} — ₹${vAmt.toLocaleString()} (locked)</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:3px">Maps to "${tCat}" budget of ₹${exp.budget.toLocaleString()}</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0"><div class="ac-save">₹${usable.toLocaleString()} freed</div><div class="ac-invest">→ invest this</div></div>
+      </div>
+      <div class="ac-steps">
+        <div class="ac-step"><div class="ac-num">1</div>Use your ₹${vAmt.toLocaleString()} ${vBrand} voucher for <strong>${tCat}</strong> — you'd spend this anyway from your bank.</div>
+        <div class="ac-step"><div class="ac-num">2</div>This frees <strong>₹${usable.toLocaleString()} of real money</strong> that no longer needs to come from your bank account.</div>
+        <div class="ac-step"><div class="ac-num">3</div>Redirect <strong>₹${usable.toLocaleString()}</strong> into your SIP or Growth portfolio immediately.</div>
+        <div class="ac-step"><div class="ac-num">4</div>At 12% p.a., this becomes <strong style="color:var(--gold)">₹${growth.toLocaleString()}</strong> in 5 years. Your locked voucher created real wealth.</div>
+      </div>
+    </div>
+    ${vAmt>exp.budget?`<div class="ac"><div class="ac-head"><div style="font-size:13px;font-weight:600">Remaining ₹${(vAmt-exp.budget).toLocaleString()}</div></div><div class="ac-steps"><div class="ac-step"><div class="ac-num">5</div>Use remaining ₹${(vAmt-exp.budget).toLocaleString()} for ${EXPENSES.filter(e=>e.cat!==tCat).slice(0,2).map(e=>e.cat).join(' or ')} — freeing even more real cash to invest.</div></div></div>`:''}`;
+}
+
+function renderAdvisorExp() {
+  const el=document.getElementById('advisorExp');
+  if(!el) return;
+  el.innerHTML=EXPENSES.map(e=>{
+    const pct=Math.min(e.actual/e.budget*100,100);
+    const sur=e.budget-e.actual;
+    return `<div class="sl">
+      <div class="sl-dot" style="background:${e.color}"></div>
+      <div style="flex:1;min-width:0"><div class="sl-cat">${e.cat}</div><div class="pt" style="height:3px;margin-top:5px"><div class="pf" style="width:${pct.toFixed(0)}%;background:${e.color}"></div></div></div>
+      <div class="sl-num">₹${e.budget.toLocaleString()}</div>
+      <div class="sl-num">₹${e.actual.toLocaleString()}</div>
+      <div class="sl-num" style="color:var(--g)">CB:₹${e.cashback}</div>
+      <span class="badge ${sur>=0?'bg':'br'}" style="font-size:10px">${sur>=0?'+':''}₹${Math.abs(sur).toLocaleString()}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderGoals() {
+  const goals=[
+    {name:'Emergency Fund',target:150000,current:80000,monthly:2333,icon:'🛡️',color:'var(--g)'},
+    {name:'Home Down Payment',target:800000,current:120000,monthly:15000,icon:'🏠',color:'var(--gold)'},
+    {name:'Retirement Corpus',target:5000000,current:89600,monthly:8000,icon:'🌅',color:'var(--blue)'},
+  ];
+  const el=document.getElementById('goalList');
+  if(!el) return;
+  el.innerHTML=goals.map(g=>{
+    const pct=Math.round(g.current/g.target*100);
+    const mo=Math.ceil((g.target-g.current)/g.monthly);
+    return `<div class="card mb16">
+      <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px">
+        <div style="font-size:28px">${g.icon}</div>
+        <div style="flex:1"><div style="font-size:15px;font-weight:600">${g.name}</div><div style="font-size:12px;color:var(--t3);margin-top:3px">₹${g.current.toLocaleString()} of ₹${g.target.toLocaleString()} · ${mo} months at ₹${g.monthly.toLocaleString()}/mo</div></div>
+        <div style="text-align:right"><div style="font-family:var(--fh);font-size:28px;color:${g.color};font-weight:700">${pct}%</div></div>
+      </div>
+      <div class="pt"><div class="pf" style="width:${pct}%;background:${g.color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderMilestones() {
+  const ms=[
+    {name:'First ₹1,000 Invested',icon:'🌱',done:true,pct:100,sub:'Completed March 2026'},
+    {name:'Emergency Fund 50%',icon:'🛡️',done:true,pct:100,sub:'Completed February 2026'},
+    {name:'₹10,000 Invested',icon:'📈',done:false,pct:89,sub:'₹960 more to go'},
+    {name:'3-Month No-Waste Streak',icon:'🔥',done:false,pct:67,sub:'2 of 3 months clean'},
+    {name:'12-Month SIP Streak',icon:'🏆',done:false,pct:45,sub:'5.4 of 12 months'},
+  ];
+  const el=document.getElementById('msList');
+  if(!el) return;
+  el.innerHTML=ms.map(m=>`
+    <div class="ms">
+      <div class="ms-icon">${m.icon}</div>
+      <div class="ms-body"><div class="ms-name">${m.name}</div><div class="ms-sub">${m.sub}</div>
+        ${!m.done?`<div style="margin-top:7px"><div class="pt" style="height:3px"><div class="pf" style="width:${m.pct}%;background:var(--g)"></div></div></div>`:''}
+      </div>
+      <div style="flex-shrink:0">${m.done?'<span class="badge bg">✓ Done</span>':`<span class="badge ba">${m.pct}%</span>`}</div>
+    </div>`).join('');
+}
+
+function renderInvList() {
+  const el=document.getElementById('invList');
+  if(!el) return;
+  el.innerHTML=INVESTMENTS.map(inv=>`
+    <div style="display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all .18s" onclick="state.selInvest='${inv.name}';toast('Selected: ${inv.name}')">
+      <div style="font-size:20px;width:30px;text-align:center">${inv.icon}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${inv.name}</div><div style="font-size:11px;color:var(--t3)">${inv.ret} · ${inv.risk} Risk</div></div>
+      <div style="text-align:right"><div style="font-family:var(--fm);font-size:14px;color:${inv.color};font-weight:600">₹${inv.allocated.toLocaleString()}</div><div style="font-size:10px;color:var(--t4)">allocated</div></div>
+    </div>`).join('');
+}
+
+function doSweep() {
+  const amt=parseFloat(document.getElementById('sweepAmt').value)||0;
+  const tgt=document.getElementById('sweepTgt').value;
+  if(!amt){toast('Enter amount','r');return;}
+  const inv=INVESTMENTS.find(i=>i.name===tgt);
+  if(inv) inv.allocated+=amt;
+  state.invested+=amt;
+  state.score=Math.min(state.score+2,100);
+  LEDGER.unshift({date:'Now',desc:`Swept → ${tgt}`,brand:'Growth List',type:'sweep',amt:-amt});
+  renderInvList(); renderLedger(); renderPieChart();
+  document.getElementById('portVal').textContent=`₹${Math.round(state.invested*1.186).toLocaleString()}`;
+  document.getElementById('portInvested').textContent=`₹${state.invested.toLocaleString()}`;
+  document.getElementById('scoreN').textContent=state.score;
+  document.getElementById('dashScore').textContent=`${state.score}/100`;
+  document.getElementById('sweepAmt').value='';
+  updateProfileStats();
+  toast(`✓ ₹${amt.toLocaleString()} swept to ${tgt}`);
+}
+
+function ledgFilter(type,el) {
+  state.ledgFilter=type;
+  document.querySelectorAll('#ledgTabs .tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderLedger();
+}
+
+function renderLedger() {
+  const cmap={earn:'var(--g)',spend:'var(--red)',invest:'var(--gold)',sweep:'var(--blue)'};
+  const bmap={earn:'bg',spend:'br',invest:'ba',sweep:'bb'};
+  const list=state.ledgFilter==='all'?LEDGER:LEDGER.filter(t=>t.type===state.ledgFilter);
+  const el=document.getElementById('ledgBody');
+  if(!el) return;
+  el.innerHTML=list.map(t=>`
+    <tr>
+      <td style="color:var(--t3);white-space:nowrap;font-size:12px">${t.date}</td>
+      <td style="font-size:13px">${t.desc}</td>
+      <td style="font-size:12px;color:var(--t2)">${t.brand}</td>
+      <td><span class="badge ${bmap[t.type]||'bg'}">${t.type}</span></td>
+      <td style="font-family:var(--fm);color:${cmap[t.type]};font-weight:600;white-space:nowrap">${t.amt>0?'+':''}₹${Math.abs(t.amt).toLocaleString()}</td>
+    </tr>`).join('');
+}
+
+function renderDashBudget() {
+  const el=document.getElementById('dashBudget');
+  if(!el) return;
+  el.innerHTML=EXPENSES.slice(0,6).map(e=>{
+    const pct=Math.min(e.actual/e.budget*100,100);
+    const sur=e.budget-e.actual;
+    return `<div class="prw">
+      <div class="prw-meta">
+        <span class="prw-lbl">${e.cat}${e.cashback>0?` <span class="badge bg" style="font-size:9px">CB ₹${e.cashback}</span>`:''}</span>
+        <div style="display:flex;align-items:center;gap:9px">
+          <span class="prw-nums">₹${e.actual.toLocaleString()} / ₹${e.budget.toLocaleString()}</span>
+          <span class="badge ${sur>=0?'bg':'br'}" style="font-size:9px">${sur>=0?'+':''}₹${Math.abs(sur).toLocaleString()}</span>
+        </div>
+      </div>
+      <div class="pt"><div class="pf" style="width:${pct.toFixed(0)}%;background:${e.color}"></div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderDashOpp() {
+  const el=document.getElementById('dashOpp');
+  if(!el) return;
+  const withCB=EXPENSES.filter(e=>e.cashback>0);
+  const total=withCB.reduce((a,e)=>a+Math.min(e.cashback,e.actual),0);
+  const badge=document.getElementById('dashOppBadge');
+  if(badge) badge.textContent=`₹${total.toLocaleString()} real cash to free`;
+  el.innerHTML=withCB.map(e=>{
+    const freed=Math.min(e.cashback,e.actual);
+    return `<div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--border)">
+      <div style="width:9px;height:9px;border-radius:50%;background:${e.color};flex-shrink:0"></div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${e.cat}</div><div style="font-size:12px;color:var(--t3);margin-top:3px">Use ₹${e.cashback} cashback → real spend drops from ₹${e.actual.toLocaleString()} to ₹${(e.actual-freed).toLocaleString()}</div></div>
+      <div style="text-align:right;flex-shrink:0"><div style="font-family:var(--fm);font-size:16px;color:var(--g);font-weight:600">₹${freed.toLocaleString()} freed</div><div style="font-size:11px;color:var(--t3)">→ invest this</div></div>
+    </div>`;
+  }).join('');
+}
+
+function renderProfile() {
+  const n=USER.name||'User';
+  const initials=n.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('profileAvLg').textContent=initials;
+  document.getElementById('profileNameDisp').textContent=n;
+  document.getElementById('profileMetaDisp').textContent=`Age ${USER.age||28} · ${PROFILES[state.selProfile].label} · Member since ${USER.joined||'2026'}`;
+  document.getElementById('profileStageBadge').textContent=PROFILES[state.selProfile].label;
+  document.getElementById('efName').textContent=n;
+  document.getElementById('efEmail').textContent=USER.email||'—';
+  document.getElementById('efAge').textContent=USER.age||28;
+  document.getElementById('efIncome').textContent=`₹${(USER.income||50000).toLocaleString()}`;
+  document.getElementById('efStage').textContent=`${PROFILES[state.selProfile].label} (${PROFILES[state.selProfile].range})`;
+  document.getElementById('efJoined').textContent=USER.joined||'April 2026';
+  updateProfileStats();
+}
+
+function updateProfileStats() {
+  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
+  const sur=state.income-tA;
+  document.getElementById('pStatScore').textContent=state.score;
+  document.getElementById('pStatInvested').textContent=`₹${state.invested.toLocaleString()}`;
+  document.getElementById('pStatSurplus').textContent=`₹${Math.max(0,sur).toLocaleString()}`;
+}
+
+let currentEditField='';
+function editField(field) {
+  currentEditField=field;
+  const labels={name:'Full Name',email:'Email Address',age:'Age',income:'Monthly Income (₹)',sip:'SIP Frequency',trigger:'Auto-Invest Trigger (₹)'};
+  const vals={name:USER.name,email:USER.email,age:USER.age,income:USER.income||50000,sip:'Monthly',trigger:'1000'};
+  document.getElementById('editModalTitle').textContent=`Edit ${labels[field]||field}`;
+  document.getElementById('editModalLabel').textContent=labels[field]||field;
+  document.getElementById('editModalInput').value=vals[field]||'';
+  document.getElementById('editModal').classList.add('show');
+}
+
+function saveEditField() {
+  const val=document.getElementById('editModalInput').value.trim();
+  if(!val){toast('Enter a value','r');return;}
+  if(currentEditField==='name'){USER.name=val;updateUserMeta();renderProfile();}
+  else if(currentEditField==='email'){USER.email=val;document.getElementById('setEmail').textContent=val;}
+  else if(currentEditField==='age'){USER.age=parseInt(val)||28;document.getElementById('ageInp').value=USER.age;updateProfile();}
+  else if(currentEditField==='income'){USER.income=parseFloat(val)||50000;state.income=USER.income;document.getElementById('income').value=USER.income;recalc();}
+  document.getElementById('editModal').classList.remove('show');
+  if(USER.email) localStorage.setItem('zeno_user_'+USER.email, JSON.stringify(USER));
+  renderProfile();
+  toast('✓ Profile updated');
+}
+
+function editRisk() { toast('Risk profile assessment coming soon!','go'); }
+
+function renderAIContext() {
+  const el=document.getElementById('aiContext');
+  if(!el) return;
+  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
+  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
+  const sur=state.income-tA;
+  const rows=[['Income',`₹${state.income.toLocaleString()}`],['Expenses',`₹${tA.toLocaleString()}`],['Surplus',`₹${sur.toLocaleString()}`],['Cashback',`₹${tC.toLocaleString()}`],['Invested',`₹${state.invested.toLocaleString()}`],['Score',`${state.score}/100`],['Goals','3 active'],['Vouchers',`${VOUCHERS.length} locked`]];
+  el.innerHTML=rows.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--t3)">${k}</span><span style="font-family:var(--fm);font-weight:500">${v}</span></div>`).join('');
+}
+
+function renderAIInsights() {
+  const el=document.getElementById('aiInsights');
+  if(!el) return;
+  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
+  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
+  const sur=state.income-tA;
+  el.innerHTML=`
+    <div class="insight" style="border-color:var(--g)">💡 You have ₹${tC.toLocaleString()} in cashback — use it on matching expenses and redirect the freed cash to SIP.</div>
+    <div class="insight" style="border-color:var(--red2)">⚡ Emergency fund should be ₹1.5L at age ${USER.age||28}. Gap: ₹70K — just ₹2,333/mo for 3 months.</div>
+    <div class="insight" style="border-color:var(--gold)">📈 ₹${tC.toLocaleString()} invested today at 12% = ₹${Math.round(tC*1.762).toLocaleString()} in 5 years. Every month delayed = ₹${Math.round(tC*0.012).toLocaleString()} lost.</div>
+    <div class="insight" style="border-color:var(--blue)">🎯 Myntra voucher (₹5K) covers fashion budget (₹5K). Use it → invest ₹5K real cash.</div>`;
+}
+
+function initCharts() {
+  const el=document.getElementById('dashChart');
+  if(el){const ex=Chart.getChart('dashChart');if(ex)ex.destroy();
+    new Chart(el,{type:'bar',data:{labels:['Nov','Dec','Jan','Feb','Mar','Apr'],datasets:[
+      {label:'Cashback',data:[980,1200,1050,1400,1620,1842],backgroundColor:'rgba(192,57,43,.15)',borderColor:'var(--red)',borderWidth:1.5,borderRadius:5},
+      {label:'Invested',data:[0,400,500,700,850,980],backgroundColor:'rgba(26,92,53,.15)',borderColor:'var(--g)',borderWidth:1.5,borderRadius:5}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#7a9c84',font:{size:11}}},
+               y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#7a9c84',font:{size:11},callback:v=>'₹'+v/1000+'k'}}}}});
+  }
+  renderPieChart(); renderExpChart();
+}
+
+function renderExpChart() {
+  const ex=Chart.getChart('expChart');if(ex)ex.destroy();
+  const el=document.getElementById('expChart');if(!el)return;
+  new Chart(el,{type:'bar',data:{labels:EXPENSES.map(e=>e.cat.split('/')[0].trim()),datasets:[
+    {label:'Budget',data:EXPENSES.map(e=>e.budget),backgroundColor:'rgba(26,92,53,.12)',borderColor:'var(--g)',borderWidth:1.5,borderRadius:4},
+    {label:'Actual',data:EXPENSES.map(e=>e.actual),backgroundColor:'rgba(192,57,43,.18)',borderColor:'var(--red)',borderWidth:1.5,borderRadius:4}
+  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#7a9c84',font:{size:10},maxRotation:30,autoSkip:false}},
+             y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{color:'#7a9c84',font:{size:10},callback:v=>'₹'+v/1000+'k'}}}}});
+}
+
+function renderPieChart() {
+  const ex=Chart.getChart('pieChart');if(ex)ex.destroy();
+  const el=document.getElementById('pieChart');if(!el)return;
+  const active=INVESTMENTS.filter(i=>i.allocated>0);if(!active.length)return;
+  new Chart(el,{type:'doughnut',data:{labels:active.map(i=>i.name),datasets:[{data:active.map(i=>i.allocated),backgroundColor:active.map(i=>i.color+'22'),borderColor:active.map(i=>i.color),borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#3d5c46',font:{size:11},padding:12}}},cutout:'60%'}});
+}
+
+function showModal() {
+  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
+  document.getElementById('modalAmt').textContent=`₹${tC.toLocaleString()}`;
+  document.getElementById('modalOpts').innerHTML=INVESTMENTS.map(inv=>`
+    <div onclick="state.selInvest='${inv.name}';document.querySelectorAll('#modalOpts>div').forEach(d=>d.style.borderColor='var(--border2)');this.style.borderColor='var(--g)'"
+      style="display:flex;align-items:center;gap:11px;padding:11px 14px;background:var(--surf);border-radius:var(--rsm);margin-bottom:9px;cursor:pointer;border:1.5px solid var(--border2);transition:all .18s">
+      <span style="font-size:18px">${inv.icon}</span>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${inv.name}</div><div style="font-size:11px;color:var(--t3)">${inv.ret} · ${inv.risk} Risk</div></div>
+    </div>`).join('');
+  document.getElementById('invModal').classList.add('show');
+}
+
+function confirmInvest() {
+  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
+  const inv=INVESTMENTS.find(i=>i.name===state.selInvest)||INVESTMENTS[0];
+  inv.allocated+=tC;
+  state.invested+=tC;
+  state.score=Math.min(state.score+5,100);
+  LEDGER.unshift({date:'Now',desc:`Auto-invest → ${inv.name}`,brand:'Growth List',type:'invest',amt:-tC});
+  document.getElementById('invModal').classList.remove('show');
+  document.getElementById('trigAlert').style.display='none';
+  renderInvList(); renderLedger(); renderPieChart();
+  document.getElementById('scoreN').textContent=state.score;
+  document.getElementById('dashScore').textContent=`${state.score}/100`;
+  document.getElementById('portVal').textContent=`₹${Math.round(state.invested*1.186).toLocaleString()}`;
+  updateProfileStats();
+  toast(`✓ ₹${tC.toLocaleString()} invested in ${inv.name} — Score +5`);
+}
+
+// ════════════════════════════════════════
+//  SETTINGS — GROQ API KEY
+// ════════════════════════════════════════
+function toggleKeyVisibility() {
+  const inp=document.getElementById('apiKeyInp');
+  inp.type=inp.type==='password'?'text':'password';
+}
+
+function saveApiKey() {
+  const key=document.getElementById('apiKeyInp').value.trim();
+  const model=document.getElementById('apiModel').value;
+  if(!key){toast('Enter an API key first','r');return;}
+  localStorage.setItem('zeno_api_key',key);
+  localStorage.setItem('zeno_model',model);
+  document.getElementById('apiStatus').innerHTML='<span style="color:var(--g)">✓ Groq API key saved. AI Agent is now active!</span>';
+  const banner=document.getElementById('apiKeyBanner');
+  if(banner) banner.style.display='none';
+  toast('✓ API key saved — AI Agent is ready');
+}
+
+function clearApiKey() {
+  localStorage.removeItem('zeno_api_key');
+  document.getElementById('apiKeyInp').value='';
+  document.getElementById('apiStatus').innerHTML='<span style="color:var(--t3)">API key cleared.</span>';
+  toast('API key removed');
+}
+
+async function testApi() {
+  const key=localStorage.getItem('zeno_api_key');
+  const model=localStorage.getItem('zeno_model')||'llama-3.3-70b-versatile';
+  if(!key){toast('Save an API key first','r');return;}
+  document.getElementById('apiStatus').innerHTML='<span style="color:var(--t3)">Testing Groq connection...</span>';
+  try {
+    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${key}`},
+      body:JSON.stringify({
+        model,
+        max_tokens:20,
+        messages:[
+          {role:'system',content:'Reply in 3 words.'},
+          {role:'user',content:'Say: Connection successful.'}
+        ]
+      })
+    });
+    if(!r.ok) throw new Error(`HTTP ${r.status}`);
+    document.getElementById('apiStatus').innerHTML='<span style="color:var(--g)">✓ Groq connection successful — ZENO AI Agent is ready</span>';
+    toast('✓ Groq API connection working');
+  } catch(e) {
+    document.getElementById('apiStatus').innerHTML=`<span style="color:var(--red)">✗ Failed: ${e.message}. Check your Groq API key.</span>`;
+    toast('Connection failed — check your API key','r');
+  }
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  const saved=localStorage.getItem('zeno_api_key');
+  if(saved) document.getElementById('apiKeyInp').value=saved;
+  const savedModel=localStorage.getItem('zeno_model');
+  if(savedModel) document.getElementById('apiModel').value=savedModel;
+});
+
+// ════════════════════════════════════════
+//  DATA IMPORT / EXPORT
+// ════════════════════════════════════════
+function exportData() {
+  const data={expenses:EXPENSES,vouchers:VOUCHERS,state,investments:INVESTMENTS,ledger:LEDGER,user:USER,exported:new Date().toISOString()};
+  const a=document.createElement('a');
+  a.href='data:application/json,'+encodeURIComponent(JSON.stringify(data,null,2));
+  a.download=`zeno-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  toast('✓ Data exported');
+}
+
+function handleImport(event) {
+  const file=event.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try {
+      const data=JSON.parse(e.target.result);
+      if(data.expenses) EXPENSES.splice(0,EXPENSES.length,...data.expenses);
+      if(data.vouchers) VOUCHERS.splice(0,VOUCHERS.length,...data.vouchers);
+      if(data.state) Object.assign(state,data.state);
+      if(data.user) Object.assign(USER,data.user);
+      renderAll();
+      toast('✓ Data imported successfully');
+    } catch(err){toast('Import failed — invalid file','r');}
+  };
+  reader.readAsText(file);
+}
+
+function resetData() {
+  if(!confirm('This will reset all your ZENO data. Continue?')) return;
+  localStorage.removeItem('zeno_api_key');
+  location.reload();
+}
+
+// ════════════════════════════════════════
+//  AI AGENT — GROQ API
+// ════════════════════════════════════════
+function getSystemPrompt() {
+  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
+  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
+  const sur=state.income-tA;
+  return `You are ZENO Intelligence, a premium financial empowerment agent.
+
+Core philosophy: Every cashback, reward, and voucher should free up real money to invest — not just be spent. Financial empowerment means turning consumer rewards into lasting wealth.
+
+Platform context:
+- Eco-Wallet: cashback from brands in the same parent group (e.g. Reliance: JioMart, Reliance Trends, Reliance Digital, Jio-BP) is fully interoperable — spend anywhere within the group.
+- Locked Vouchers: cashback from standalone apps (Myntra, Swiggy, etc.) is locked to that brand. ZENO maps it to matching expense categories so the user can cover that spend with the voucher and invest the freed real cash.
+
+User profile:
+Name: ${USER.name||'User'} | Age: ${USER.age||28} | Life stage: ${PROFILES[state.selProfile].label}
+Income: ₹${state.income.toLocaleString()} | Expenses: ₹${tA.toLocaleString()} | Surplus: ₹${sur.toLocaleString()}
+Cashback pool: ₹${tC.toLocaleString()} | Portfolio: ₹${state.invested.toLocaleString()} at 12.3% XIRR | Score: ${state.score}/100
+
+Expenses:
+${EXPENSES.map(e=>`  ${e.cat}: Budget ₹${e.budget.toLocaleString()}, Actual ₹${e.actual.toLocaleString()}, Cashback ₹${e.cashback}${e.group?' ('+e.group+' ecosystem)':''}`).join('\n')}
+
+Locked vouchers: ${VOUCHERS.map(v=>`${v.brand} ₹${v.amt.toLocaleString()} (${v.cat}, expires ${v.exp})`).join('; ')||'None'}
+
+Goals: Emergency Fund ₹80K/₹1.5L · Home DP ₹1.2L/₹8L · Retirement ₹89K/₹50L
+
+Rules:
+- Always use specific rupee figures from the data
+- Bold key amounts with **₹X**
+- Give 2–3 clear, actionable steps
+- Max 200 words
+- Never mention any AI model or provider name`;
+}
+
+function addMsg(role, html) {
+  const msgs=document.getElementById('aiMsgs');
+  const d=document.createElement('div');
+  d.className='msg'+(role==='user'?' msg-u':'');
+  const avTxt=role==='ai'?'Z':(USER.name||'U')[0].toUpperCase();
+  const avCls=role==='ai'?'msg-av-ai':'msg-av-u';
+  const bCls=role==='ai'?'bubble-ai':'bubble-u';
+  d.innerHTML=role==='ai'
+    ?`<div class="msg-av ${avCls}">${avTxt}</div><div class="bubble ${bCls}">${html}</div>`
+    :`<div class="bubble ${bCls}">${html}</div><div class="msg-av ${avCls}">${avTxt}</div>`;
+  msgs.appendChild(d);
+  msgs.scrollTop=msgs.scrollHeight;
+}
+
+function showTyping() {
+  const msgs=document.getElementById('aiMsgs');
+  const d=document.createElement('div');d.className='msg';d.id='typing';
+  d.innerHTML=`<div class="msg-av msg-av-ai">Z</div><div class="typing"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+}
+
+function offlineResponse(msg) {
+  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
+  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
+  const sur=state.income-tA;
+  const m=msg.toLowerCase();
+  if(m.includes('myntra')||m.includes('voucher')||m.includes('locked'))
+    return `<p>Your ₹5,000 Myntra voucher maps to your <strong>Fashion/Clothing budget of ₹5,000</strong>.</p><p><strong>3-step plan:</strong><br>1. Use voucher for all fashion purchases this month<br>2. ₹5,000 real bank money is now freed<br>3. Sweep that ₹5,000 to Flexi Cap MF today → becomes ₹8,811 in 5 years at 12% p.a.</p>`;
+  if(m.includes('cashback')||m.includes('cover'))
+    return `<p>You have <strong>₹${tC.toLocaleString()} in cashback</strong> across brands.</p><p>Use ₹310 at JioMart (grocery), ₹420 at Reliance Trends (fashion), ₹680 at Reliance Digital (electronics) — all interoperable within the Reliance Eco-Wallet. Invest the freed <strong>₹${tC.toLocaleString()} real cash</strong> immediately.</p>`;
+  if(m.includes('invest')||m.includes('1l')||m.includes('lakh'))
+    return `<p>You need <strong>₹${Math.max(0,100000-state.invested).toLocaleString()} more</strong> to reach ₹1L invested.</p><p>At your surplus of ₹${sur.toLocaleString()}/mo, you can get there in <strong>${Math.ceil(Math.max(0,100000-state.invested)/Math.min(sur,8000))} months</strong>. Sweep your entire cashback pool of ₹${tC.toLocaleString()} now as a head start.</p>`;
+  if(m.includes('age')||m.includes('enough'))
+    return `<p>At age ${USER.age||28} (${PROFILES[state.selProfile].label} stage), your emergency fund should be <strong>₹1.5L</strong>. You're at ₹80K — just ₹2,333/mo for 3 months closes that gap.</p><p>Your surplus of <strong>₹${sur.toLocaleString()}/mo</strong> is healthy. Priority: emergency fund first, then increase SIP to ₹8,000/mo for your home goal.</p>`;
+  return `<p>Based on your profile: income <strong>₹${state.income.toLocaleString()}</strong>, surplus <strong>₹${sur.toLocaleString()}</strong>, cashback <strong>₹${tC.toLocaleString()}</strong>.</p><p>Key action: invest your full cashback pool of ₹${tC.toLocaleString()} immediately into your Growth List. Add your Groq API key in Settings for personalised real-time advice.</p>`;
+}
+
+async function sendAI() {
+  const inp=document.getElementById('aiInp');
+  const msg=inp.value.trim();
+  if(!msg) return;
+  inp.value='';
+  addMsg('user',`<p>${msg}</p>`);
+  aiHistory.push({role:'user',content:msg});
+  showTyping();
+  const statusEl=document.getElementById('aiStatus');
+  if(statusEl) statusEl.textContent='Thinking...';
+
+  const apiKey=localStorage.getItem('zeno_api_key');
+  if(!apiKey) {
+    document.getElementById('typing')?.remove();
+    if(statusEl) statusEl.textContent='Ready';
+    addMsg('ai',`<p>${offlineResponse(msg)}</p><p style="color:var(--t3);font-size:12px;margin-top:8px">For live personalised AI, add your Groq API key in Settings. It's free!</p>`);
+    return;
+  }
+
+  // ── GROQ API (OpenAI-compatible) ──
+  const model=localStorage.getItem('zeno_model')||'llama-3.3-70b-versatile';
+  try {
+    const r=await fetch('https://api.groq.com/openai/v1/chat/completions',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':`Bearer ${apiKey}`
+      },
+      body:JSON.stringify({
+        model,
+        max_tokens:800,
+        messages:[
+          {role:'system',content:getSystemPrompt()},
+          ...aiHistory
+        ]
+      })
+    });
+    document.getElementById('typing')?.remove();
+    if(statusEl) statusEl.textContent='Ready';
+    if(!r.ok){const err=await r.json().catch(()=>({}));throw new Error(err.error?.message||`HTTP ${r.status}`);}
+    const data=await r.json();
+    // Groq uses OpenAI response format
+    const reply=data.choices?.[0]?.message?.content||'No response received.';
+    aiHistory.push({role:'assistant',content:reply});
+    addMsg('ai',fmt(reply));
+  } catch(e) {
+    document.getElementById('typing')?.remove();
+    if(statusEl) statusEl.textContent='Ready';
+    addMsg('ai',offlineResponse(msg));
+  }
+}
+
+function qpSend(el) {
+  document.getElementById('aiInp').value=el.textContent;
+  sendAI();
+}
+
+setInterval(()=>{
+  const key=localStorage.getItem('zeno_api_key');
+  const banner=document.getElementById('apiKeyBanner');
+  if(banner) banner.style.display=key?'none':'flex';
+},500);
+</script>
+</body>
+</html>
