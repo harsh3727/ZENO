@@ -4,542 +4,495 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ZENO — Zero-waste Expense & Net-growth Optimizer</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --g:#1a5c35;--g2:#206b3e;--g3:#2d8a54;--g4:#3da86a;--g5:#52c282;
-  --gl:#e6f4ed;--gxl:#f0f9f4;
-  --white:#fff;--off:#f7f9f5;--surf:#f1f5ee;--bg4:#e4ebe0;
-  --border:rgba(0,80,40,.07);--border2:rgba(0,80,40,.13);
-  --gold:#b8860b;--gold2:#d4a017;--gold-l:#fdf6e3;
-  --red:#c0392b;--red-l:#fdf0ef;
-  --blue:#1a4a8a;--blue-l:#eef3fb;
-  --text:#0d1f14;--t2:#3d5c46;--t3:#7a9c84;--t4:#adc5b4;
-  --fh:'Cormorant Garamond',serif;--fb:'DM Sans',sans-serif;--fm:'JetBrains Mono',monospace;
-  --r:16px;--rsm:10px;--rxs:5px;
-  --sh:0 2px 20px rgba(0,80,40,.08);--sh2:0 8px 40px rgba(0,80,40,.16);--sh3:0 1px 6px rgba(0,80,40,.06);
+  --g:#0f4c2a;--g2:#155e35;--g3:#1e7a45;--g4:#28a05c;--g5:#3cc974;
+  --gl:#e8f5ed;--gxl:#f2fbf5;--gs:#d0eadb;
+  --w:#ffffff;--off:#f6faf7;--surf:#eef6f1;--b4:#deeee5;
+  --bdr:rgba(15,76,42,.08);--bdr2:rgba(15,76,42,.14);--bdr3:rgba(15,76,42,.24);
+  --gold:#c49a0a;--gold2:#e8b412;--gold-l:#fef9e7;
+  --red:#b5301f;--red2:#d9392a;--red-l:#fdf1ef;
+  --blue:#16407a;--blue-l:#ebf2fc;
+  --txt:#071a0f;--t2:#2d5040;--t3:#6b9478;--t4:#a8c8b5;
+  --fp:'Playfair Display',serif;--fb:'Outfit',sans-serif;--fm:'JetBrains Mono',monospace;
+  --r:18px;--rm:12px;--rs:8px;
+  --s1:0 2px 24px rgba(15,76,42,.07);--s2:0 8px 48px rgba(15,76,42,.14);--s3:0 20px 80px rgba(15,76,42,.2);
 }
-html{font-size:14px}
-body{background:var(--off);color:var(--text);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
+html{font-size:14px;scroll-behavior:smooth}
+body{background:var(--off);color:var(--txt);font-family:var(--fb);min-height:100vh;overflow-x:hidden}
 ::-webkit-scrollbar{width:4px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--g4);border-radius:4px}
 
-/* ══ GRAIN OVERLAY ══ */
-body::before{
-  content:'';position:fixed;inset:0;pointer-events:none;z-index:9997;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  opacity:.4;
+/* ═══ ANIMATED BG ═══ */
+.bg-mesh{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-mesh::before{content:'';position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(28,160,92,.06) 0%,transparent 65%);top:-300px;right:-200px;animation:meshDrift1 18s ease-in-out infinite}
+.bg-mesh::after{content:'';position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(60,201,116,.04) 0%,transparent 65%);bottom:-200px;left:-100px;animation:meshDrift2 14s ease-in-out infinite reverse}
+@keyframes meshDrift1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-60px,40px) scale(1.1)}66%{transform:translate(40px,-30px) scale(.95)}}
+@keyframes meshDrift2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(50px,-40px) scale(1.12)}}
+
+/* ═══ AUTH ═══ */
+#authScreen{position:fixed;inset:0;z-index:9999;display:flex}
+.al{
+  width:46%;background:linear-gradient(155deg,#061810 0%,#0a2e18 35%,#0f4c2a 70%,#082014 100%);
+  display:flex;flex-direction:column;justify-content:space-between;padding:56px 52px;
+  position:relative;overflow:hidden;
 }
+/* animated grid lines */
+.al-grid{position:absolute;inset:0;opacity:.06}
+.al-grid::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px);background-size:48px 48px}
+/* glowing orbs */
+.al-orb1{position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(60,201,116,.16) 0%,transparent 65%);bottom:-180px;right:-180px;animation:orbPulse 7s ease-in-out infinite}
+.al-orb2{position:absolute;width:280px;height:280px;border-radius:50%;background:radial-gradient(circle,rgba(200,160,20,.1) 0%,transparent 65%);top:80px;right:60px;animation:orbPulse 5s ease-in-out infinite reverse}
+@keyframes orbPulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.15);opacity:.7}}
+/* sweep lines */
+.al-lines{position:absolute;inset:0;pointer-events:none}
+.al-line{position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(60,201,116,.25),transparent);animation:sweep 5s ease-in-out infinite}
+.al-line:nth-child(1){top:22%;width:70%;left:-5%;animation-delay:0s}
+.al-line:nth-child(2){top:52%;width:85%;left:-5%;animation-delay:1.8s}
+.al-line:nth-child(3){top:76%;width:55%;left:-5%;animation-delay:3.5s}
+@keyframes sweep{0%{transform:translateX(-110%);opacity:0}45%,55%{opacity:1}100%{transform:translateX(230%);opacity:0}}
 
-/* ══ AUTH ══ */
-#authScreen{position:fixed;inset:0;z-index:9999;display:flex;background:var(--off);overflow:hidden}
-.auth-left{width:44%;background:linear-gradient(160deg,var(--g) 0%,#061a0c 100%);display:flex;flex-direction:column;justify-content:space-between;padding:52px 48px;position:relative;overflow:hidden}
+.al-logo{font-family:var(--fp);font-size:58px;letter-spacing:8px;color:#fff;font-weight:900;line-height:1;text-shadow:0 0 60px rgba(60,201,116,.4);animation:logoGlow 4s ease-in-out infinite}
+@keyframes logoGlow{0%,100%{text-shadow:0 0 40px rgba(60,201,116,.3)}50%{text-shadow:0 0 80px rgba(60,201,116,.6),0 0 120px rgba(60,201,116,.2)}}
+.al-tag{font-size:9.5px;color:rgba(255,255,255,.4);letter-spacing:2.5px;text-transform:uppercase;margin-top:10px}
+.al-pitch h2{font-family:var(--fp);font-size:38px;color:#fff;font-weight:700;line-height:1.28;margin-bottom:16px;font-style:italic}
+.al-pitch p{font-size:13px;color:rgba(255,255,255,.48);line-height:1.85}
+.al-stats{display:flex;gap:32px}
+.al-stat span{display:block;font-family:var(--fm);font-size:26px;color:var(--g5);font-weight:600}
+.al-stat label{font-size:10px;color:rgba(255,255,255,.38);text-transform:uppercase;letter-spacing:1px;margin-top:5px}
 
-/* floating orbs */
-.auth-left::after{content:'';position:absolute;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(82,194,130,.18) 0%,transparent 70%);bottom:-120px;right:-100px;animation:orbFloat 8s ease-in-out infinite}
-.orb2{position:absolute;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(212,160,23,.12) 0%,transparent 70%);top:60px;right:30px;animation:orbFloat 6s ease-in-out infinite reverse}
-@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-30px) scale(1.05)}}
+.ar{flex:1;display:flex;align-items:center;justify-content:center;padding:48px;background:var(--off);position:relative;overflow:hidden}
+.ar::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle at 20% 80%,rgba(15,76,42,.04) 0%,transparent 50%),radial-gradient(circle at 80% 20%,rgba(60,201,116,.03) 0%,transparent 50%)}
+.auth-box{width:100%;max-width:420px;animation:authIn .9s .15s cubic-bezier(.16,1,.3,1) both}
+@keyframes authIn{from{opacity:0;transform:translateY(28px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
 
-.auth-left::before{content:'ZENO';position:absolute;bottom:-40px;left:-14px;font-family:var(--fh);font-size:220px;color:rgba(255,255,255,.04);font-weight:700;line-height:1;pointer-events:none;letter-spacing:-8px}
-.auth-brand .logo{font-family:var(--fh);font-size:52px;letter-spacing:6px;color:#fff;font-weight:700;line-height:1;animation:slideDown .8s cubic-bezier(.16,1,.3,1) both}
-.auth-brand .tagline{font-size:10px;color:rgba(255,255,255,.45);letter-spacing:2.5px;text-transform:uppercase;margin-top:8px;animation:slideDown .8s .1s cubic-bezier(.16,1,.3,1) both}
-.auth-pitch{animation:slideDown .8s .2s cubic-bezier(.16,1,.3,1) both}
-.auth-pitch h2{font-family:var(--fh);font-size:34px;color:#fff;font-weight:600;line-height:1.3;margin-bottom:14px}
-.auth-pitch p{font-size:13px;color:rgba(255,255,255,.5);line-height:1.8}
-.auth-stats{display:flex;gap:28px;animation:slideDown .8s .3s cubic-bezier(.16,1,.3,1) both}
-.auth-stat span{display:block;font-family:var(--fm);font-size:24px;color:#fff;font-weight:600}
-.auth-stat label{font-size:10px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.9px;margin-top:4px}
-
-/* animated lines on auth left */
-.auth-lines{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.auth-line{position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:lineSweep 4s ease-in-out infinite}
-.auth-line:nth-child(1){top:25%;width:60%;left:-10%;animation-delay:0s}
-.auth-line:nth-child(2){top:55%;width:80%;left:-10%;animation-delay:1.5s}
-.auth-line:nth-child(3){top:78%;width:50%;left:-10%;animation-delay:3s}
-@keyframes lineSweep{0%{transform:translateX(-100%);opacity:0}50%{opacity:1}100%{transform:translateX(250%);opacity:0}}
-
-@keyframes slideDown{from{opacity:0;transform:translateY(-16px)}to{opacity:1;transform:translateY(0)}}
-
-.auth-right{flex:1;display:flex;align-items:center;justify-content:center;padding:44px;position:relative}
-/* subtle grid pattern */
-.auth-right::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(26,92,53,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(26,92,53,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
-
-.auth-box{width:100%;max-width:430px;animation:authBoxIn .9s .2s cubic-bezier(.16,1,.3,1) both}
-@keyframes authBoxIn{from{opacity:0;transform:translateY(24px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-
-.auth-tab-row{display:flex;border-bottom:2px solid var(--border);margin-bottom:30px}
-.auth-tab{flex:1;text-align:center;padding:12px;font-size:14px;font-weight:500;cursor:pointer;color:var(--t3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .25s}
-.auth-tab.active{color:var(--g);border-bottom-color:var(--g)}
+.auth-tabs{display:flex;background:var(--surf);border-radius:var(--rm);padding:4px;margin-bottom:32px;gap:4px}
+.auth-tab{flex:1;text-align:center;padding:11px;font-size:13px;font-weight:500;cursor:pointer;color:var(--t3);border-radius:9px;transition:all .25s}
+.auth-tab.active{background:var(--g);color:#fff;box-shadow:0 4px 16px rgba(15,76,42,.3)}
 .auth-panel{display:none}.auth-panel.active{display:block}
-.auth-greeting{font-family:var(--fh);font-size:32px;color:var(--g);font-weight:700;margin-bottom:6px}
-.auth-sub{font-size:13px;color:var(--t3);margin-bottom:28px}
-.auth-form-row{margin-bottom:17px}
-.auth-label{display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:7px;letter-spacing:.2px}
-.auth-input{width:100%;background:var(--surf);border:1.5px solid var(--border2);border-radius:var(--rsm);padding:12px 15px;font-family:var(--fb);font-size:13px;color:var(--text);outline:none;transition:all .2s}
-.auth-input:focus{border-color:var(--g3);background:var(--white);box-shadow:0 0 0 4px rgba(26,92,53,.07)}
-.auth-input::placeholder{color:var(--t4)}
-.auth-btn{width:100%;background:var(--g);color:#fff;border:none;border-radius:var(--rsm);padding:14px;font-family:var(--fb);font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:all .2s;margin-top:6px;position:relative;overflow:hidden}
-.auth-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent);pointer-events:none}
-.auth-btn:hover{background:var(--g2);box-shadow:0 6px 24px rgba(26,92,53,.35);transform:translateY(-1px)}
-.auth-btn:active{transform:translateY(0)}
-.auth-divider{text-align:center;color:var(--t4);font-size:12px;margin:20px 0;position:relative}
-.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:var(--border)}
+.auth-h{font-family:var(--fp);font-size:34px;color:var(--g);font-weight:700;margin-bottom:6px}
+.auth-s{font-size:13px;color:var(--t3);margin-bottom:28px}
+.auth-err{background:var(--red-l);border:1px solid rgba(181,48,31,.2);border-radius:var(--rs);padding:11px 14px;font-size:12px;color:var(--red);margin-bottom:14px;display:none;animation:errShake .4s ease}
+@keyframes errShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.auth-err.show{display:block}
+.frow{margin-bottom:16px}
+.flbl{display:block;font-size:12px;font-weight:600;color:var(--t2);margin-bottom:7px;letter-spacing:.2px}
+.finp{width:100%;background:var(--surf);border:1.5px solid var(--bdr2);border-radius:var(--rm);padding:12px 15px;font-family:var(--fb);font-size:13px;color:var(--txt);outline:none;transition:all .22s}
+.finp:focus{border-color:var(--g4);background:var(--w);box-shadow:0 0 0 4px rgba(15,76,42,.08)}
+.finp::placeholder{color:var(--t4)}
+.auth-btn-main{width:100%;background:linear-gradient(135deg,var(--g),var(--g3));color:#fff;border:none;border-radius:var(--rm);padding:14px;font-family:var(--fb);font-size:14px;font-weight:600;cursor:pointer;transition:all .22s;letter-spacing:.3px;position:relative;overflow:hidden}
+.auth-btn-main::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);pointer-events:none}
+.auth-btn-main:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(15,76,42,.4)}
+.auth-divider{text-align:center;color:var(--t4);font-size:12px;margin:18px 0;position:relative}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:43%;height:1px;background:var(--bdr)}
 .auth-divider::before{left:0}.auth-divider::after{right:0}
-.auth-error{background:var(--red-l);border:1px solid rgba(192,57,43,.2);border-radius:var(--rsm);padding:10px 14px;font-size:12px;color:var(--red);margin-bottom:14px;display:none;animation:shake .4s ease}
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-.auth-error.show{display:block}
-.demo-btn{width:100%;background:var(--gxl);color:var(--g);border:1.5px solid var(--border2);border-radius:var(--rsm);padding:12px;font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:10px}
-.demo-btn:hover{background:var(--gl);border-color:var(--g3);transform:translateY(-1px)}
-.strength-bar{height:3px;border-radius:99px;background:var(--border);margin-top:6px;overflow:hidden}
-.strength-fill{height:100%;border-radius:99px;transition:all .4s;width:0}
+.demo-btn{width:100%;background:transparent;color:var(--g);border:1.5px solid var(--bdr3);border-radius:var(--rm);padding:12px;font-family:var(--fb);font-size:13px;font-weight:600;cursor:pointer;transition:all .22s}
+.demo-btn:hover{background:var(--gl);border-color:var(--g4);transform:translateY(-1px)}
+.str-bar{height:3px;border-radius:99px;background:var(--bdr);margin-top:6px;overflow:hidden}
+.str-fill{height:100%;border-radius:99px;transition:all .4s;width:0}
 
-/* ══ SHELL ══ */
-#appScreen{display:none}
+/* ═══ APP ═══ */
+#appScreen{display:none;position:relative;z-index:1}
 .shell{display:flex;min-height:100vh}
 
-/* ══ SIDEBAR ══ */
+/* ═══ SIDEBAR ═══ */
 .sidebar{
-  width:248px;min-height:100vh;background:linear-gradient(180deg,#0f3820 0%,#1a5c35 40%,#0d2e1a 100%);
-  display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0;
-  box-shadow:4px 0 32px rgba(0,80,40,.22);
+  width:256px;min-height:100vh;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto;
+  background:linear-gradient(180deg,#050f09 0%,#0a2717 30%,#0f4c2a 65%,#081e12 100%);
+  display:flex;flex-direction:column;box-shadow:4px 0 40px rgba(0,0,0,.25);
 }
-/* sidebar shimmer */
-.sidebar::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(180deg,rgba(255,255,255,.04) 0%,transparent 40%);pointer-events:none}
+.sb-shimmer{position:absolute;top:0;left:0;width:100%;height:40%;background:linear-gradient(180deg,rgba(60,201,116,.06),transparent);pointer-events:none}
 
-.main{flex:1;overflow-y:auto;background:var(--off)}
-.page{display:none;padding:32px 38px;animation:pageIn .4s cubic-bezier(.16,1,.3,1);max-width:1120px}
-.page.active{display:block}
-@keyframes pageIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.sb-top{padding:28px 22px 22px;border-bottom:1px solid rgba(255,255,255,.07);position:relative}
+.sb-logo{font-family:var(--fp);font-size:48px;letter-spacing:6px;color:#fff;font-weight:900;line-height:1;position:relative;display:inline-block}
+.sb-logo::after{content:'';position:absolute;right:-8px;bottom:6px;width:7px;height:7px;border-radius:50%;background:var(--g5);animation:dotBlink 2.2s ease-in-out infinite;box-shadow:0 0 10px var(--g5)}
+@keyframes dotBlink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.5)}}
+.sb-sub{font-size:9px;color:rgba(255,255,255,.3);letter-spacing:2px;text-transform:uppercase;margin-top:6px;line-height:1.6}
 
-.sb-top{padding:26px 22px 20px;border-bottom:1px solid rgba(255,255,255,.1);position:relative}
-.logo{font-family:var(--fh);font-size:44px;letter-spacing:5px;color:#fff;font-weight:700;line-height:1;
-  text-shadow:0 0 40px rgba(82,194,130,.3)}
-.logo-sub{font-size:9px;color:rgba(255,255,255,.38);letter-spacing:1.8px;text-transform:uppercase;margin-top:5px;line-height:1.6}
-
-/* animated logo dot */
-.logo::after{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--g5);margin-left:4px;margin-bottom:4px;animation:pulse 2s ease-in-out infinite;box-shadow:0 0 8px var(--g4)}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.6)}}
-
-.nav-sec{padding:18px 20px 6px;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,.28);text-transform:uppercase;font-weight:600}
+.nav-grp{padding:18px 14px 6px;font-size:8.5px;letter-spacing:2.5px;color:rgba(255,255,255,.22);text-transform:uppercase;font-weight:600}
 .nav-item{
-  display:flex;align-items:center;gap:12px;padding:11px 16px;margin:2px 10px;
-  border-radius:var(--rsm);cursor:pointer;font-size:13px;color:rgba(255,255,255,.58);
+  display:flex;align-items:center;gap:12px;padding:11px 16px;margin:1px 10px;
+  border-radius:12px;cursor:pointer;font-size:13px;color:rgba(255,255,255,.52);
   transition:all .22s;border:1px solid transparent;position:relative;overflow:hidden
 }
-.nav-item::before{content:'';position:absolute;left:0;top:0;height:100%;width:3px;background:var(--g5);transform:scaleY(0);transition:transform .22s cubic-bezier(.34,1.56,.64,1);border-radius:0 3px 3px 0}
-.nav-item:hover{background:rgba(255,255,255,.09);color:#fff;padding-left:20px}
-.nav-item.active{background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.15);font-weight:500}
-.nav-item.active::before{transform:scaleY(1)}
-/* ripple on nav click */
-.nav-item .ripple{position:absolute;border-radius:50%;background:rgba(255,255,255,.2);transform:scale(0);animation:rippleAnim .5s ease-out;pointer-events:none}
-@keyframes rippleAnim{to{transform:scale(4);opacity:0}}
+.nav-item:hover{background:rgba(255,255,255,.08);color:rgba(255,255,255,.9);padding-left:20px}
+.nav-item.active{background:linear-gradient(135deg,rgba(60,201,116,.2),rgba(40,160,92,.12));color:#fff;border-color:rgba(60,201,116,.2);font-weight:500}
+.nav-item.active::before{content:'';position:absolute;left:0;top:20%;height:60%;width:3px;background:linear-gradient(180deg,var(--g5),var(--g4));border-radius:0 3px 3px 0;box-shadow:0 0 8px var(--g5)}
+.ni{font-size:15px;width:22px;text-align:center;flex-shrink:0;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.nav-item:hover .ni,.nav-item.active .ni{transform:scale(1.2)}
 
-.ni{font-size:15px;width:22px;text-align:center;flex-shrink:0;transition:transform .22s}
-.nav-item:hover .ni{transform:scale(1.2)}
-.nav-item.active .ni{transform:scale(1.1)}
+.sb-bottom{margin-top:auto;padding:14px 12px 18px;border-top:1px solid rgba(255,255,255,.07)}
+.user-pill{display:flex;align-items:center;gap:11px;padding:12px 14px;border-radius:14px;background:rgba(255,255,255,.07);cursor:pointer;transition:all .2s;border:1px solid rgba(255,255,255,.07)}
+.user-pill:hover{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.14)}
+.u-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--g4),var(--g5));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,.18);box-shadow:0 0 16px rgba(60,201,116,.3)}
+.u-name{font-size:13px;font-weight:600;color:#fff}
+.u-tag{font-size:10px;color:rgba(255,255,255,.38)}
+.sb-out{display:flex;align-items:center;gap:8px;padding:9px 14px;margin-top:6px;border-radius:10px;cursor:pointer;font-size:12px;color:rgba(255,255,255,.35);transition:all .2s}
+.sb-out:hover{color:rgba(255,100,80,.85);background:rgba(255,60,40,.08)}
 
-.sb-bot{margin-top:auto;padding:14px 12px;border-top:1px solid rgba(255,255,255,.09)}
-.user-row{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:var(--rsm);background:rgba(255,255,255,.09);cursor:pointer;transition:all .2s;position:relative;overflow:hidden}
-.user-row:hover{background:rgba(255,255,255,.15)}
-.av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--g4),var(--g5));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid rgba(255,255,255,.22);box-shadow:0 0 12px rgba(82,194,130,.3);animation:avatarGlow 3s ease-in-out infinite}
-@keyframes avatarGlow{0%,100%{box-shadow:0 0 12px rgba(82,194,130,.3)}50%{box-shadow:0 0 22px rgba(82,194,130,.6)}}
-.user-name{font-size:13px;font-weight:600;color:#fff}
-.user-sub{font-size:10px;color:rgba(255,255,255,.42)}
-.sb-logout{display:flex;align-items:center;gap:8px;padding:9px 13px;margin-top:6px;border-radius:var(--rsm);cursor:pointer;font-size:12px;color:rgba(255,255,255,.4);transition:all .2s}
-.sb-logout:hover{color:rgba(255,100,100,.85);background:rgba(255,50,50,.1)}
+/* ═══ MAIN ═══ */
+.main{flex:1;overflow-y:auto;background:var(--off)}
+.page{display:none;padding:34px 40px;animation:pageSlide .4s cubic-bezier(.16,1,.3,1);max-width:1140px}
+.page.active{display:block}
+@keyframes pageSlide{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-/* ══ LAYOUT ══ */
-.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+/* ═══ PAGE HEADER ═══ */
+.ph{margin-bottom:28px}
+.ph-row{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.ph-title{font-family:var(--fp);font-size:48px;font-weight:900;line-height:1;letter-spacing:-1px;background:linear-gradient(135deg,var(--g) 0%,var(--g4) 60%,#2dd68a 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.ph-sub{font-size:13px;color:var(--t3);margin-top:5px}
+.ph-actions{display:flex;gap:10px;align-items:center;flex-shrink:0;margin-top:6px}
+
+/* ═══ GRID ═══ */
+.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
 .g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
 .g4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}.mb24{margin-bottom:24px}
+.g31{display:grid;grid-template-columns:1.6fr 1fr;gap:20px}
+.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}.mb24{margin-bottom:24px}.mb28{margin-bottom:28px}
 
-/* ══ CARDS ══ */
-.card{
-  background:var(--white);border:1px solid var(--border2);border-radius:var(--r);padding:22px 24px;
-  box-shadow:var(--sh3);transition:box-shadow .25s,transform .25s;position:relative;overflow:hidden
+/* ═══ CARDS ═══ */
+.card{background:var(--w);border:1px solid var(--bdr2);border-radius:var(--r);padding:22px 24px;box-shadow:var(--s1);position:relative;overflow:hidden;transition:box-shadow .3s,transform .3s}
+.card:hover{box-shadow:var(--s2);transform:translateY(-2px)}
+/* card shimmer line */
+.card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(15,76,42,.12),transparent);opacity:0;transition:opacity .3s}
+.card:hover::after{opacity:1}
+
+/* ═══ HERO CARDS (green bg) ═══ */
+.hero-card{
+  background:linear-gradient(135deg,#061810 0%,#0b2f18 30%,var(--g) 70%,#0a2411 100%);
+  border-radius:var(--r);padding:28px 32px;position:relative;overflow:hidden;box-shadow:var(--s3);
 }
-.card:hover{box-shadow:var(--sh);transform:translateY(-1px)}
-/* card shimmer on hover */
-.card::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(26,92,53,.15),transparent);transition:left .6s}
-.card:hover::before{left:200%}
+.hero-card::before{content:'';position:absolute;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(60,201,116,.12) 0%,transparent 60%);right:-150px;top:-150px;animation:orbPulse 8s ease-in-out infinite}
+.hero-card-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.42);margin-bottom:10px}
+.hero-card-val{font-family:var(--fp);font-size:62px;letter-spacing:1px;color:#fff;font-weight:900;line-height:1;text-shadow:0 0 40px rgba(60,201,116,.25)}
+.hero-card-row{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap}
+.hcr-item label{font-size:9.5px;color:rgba(255,255,255,.35);display:block;margin-bottom:4px;letter-spacing:1px;text-transform:uppercase}
+.hcr-item span{font-family:var(--fm);font-size:16px;color:rgba(255,255,255,.9);font-weight:500}
 
-/* ══ TYPOGRAPHY ══ */
-.pg-title{
-  font-family:var(--fh);font-size:46px;letter-spacing:2px;color:var(--g);margin-bottom:4px;
-  font-weight:700;line-height:1.05;
-  background:linear-gradient(135deg,#1a5c35 0%,#3da86a 50%,#1a5c35 100%);
-  background-size:200% auto;
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  animation:titleShimmer 4s linear infinite
-}
-@keyframes titleShimmer{0%{background-position:0% center}100%{background-position:200% center}}
-.pg-sub{font-size:13px;color:var(--t3);margin-bottom:26px}
-.sec-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.lbl{font-size:10px;letter-spacing:.9px;text-transform:uppercase;color:var(--t3);margin-bottom:7px;font-weight:600}
+/* ═══ KPI CHIPS ═══ */
+.kpi{background:var(--w);border:1px solid var(--bdr);border-radius:var(--r);padding:18px 20px;position:relative;overflow:hidden;transition:all .3s;cursor:default}
+.kpi:hover{box-shadow:var(--s2);transform:translateY(-3px);border-color:var(--bdr2)}
+.kpi::before{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;border-radius:0 0 var(--r) var(--r);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.34,1.56,.64,1)}
+.kpi:hover::before{transform:scaleX(1)}
+.kpi-g{background:linear-gradient(135deg,var(--gl),#d8f2e4)}.kpi-g::before{background:linear-gradient(90deg,var(--g4),var(--g5))}
+.kpi-go{background:linear-gradient(135deg,var(--gold-l),#faefc8)}.kpi-go::before{background:linear-gradient(90deg,var(--gold),var(--gold2))}
+.kpi-r{background:linear-gradient(135deg,var(--red-l),#fae0dd)}.kpi-r::before{background:linear-gradient(90deg,var(--red),var(--red2))}
+.kpi-b{background:linear-gradient(135deg,var(--blue-l),#d8e9fa)}.kpi-b::before{background:linear-gradient(90deg,var(--blue),#2860b0)}
+.kpi .l{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;font-weight:600}
+.kpi .v{font-family:var(--fm);font-size:26px;color:var(--txt);font-weight:600;animation:numPop .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes numPop{from{opacity:0;transform:scale(.7) translateY(6px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.kpi .s{font-size:11px;color:var(--t3);margin-top:7px}
 
-/* ══ STAT CHIPS ══ */
-.sc{
-  background:var(--surf);border:1px solid var(--border);border-radius:var(--rsm);padding:18px 20px;
-  transition:all .25s;position:relative;overflow:hidden
-}
-.sc::after{content:'';position:absolute;bottom:0;left:0;width:100%;height:2px;background:linear-gradient(90deg,var(--g4),var(--g5));transform:scaleX(0);transform-origin:left;transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
-.sc:hover{box-shadow:var(--sh);border-color:var(--border2);transform:translateY(-2px)}
-.sc:hover::after{transform:scaleX(1)}
-.sc .l{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.9px;margin-bottom:9px;font-weight:600}
-.sc .v{font-family:var(--fm);font-size:24px;color:var(--text);font-weight:500}
-.sc .s{font-size:11px;color:var(--t3);margin-top:6px}
-.sc-g{background:var(--gl);border-color:rgba(26,92,53,.15)}
-.sc-go{background:var(--gold-l);border-color:rgba(184,134,11,.15)}
-.sc-r{background:var(--red-l);border-color:rgba(192,57,43,.15)}
-.sc-b{background:var(--blue-l);border-color:rgba(26,74,138,.15)}
-
-/* ══ BADGES ══ */
-.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:.3px}
+/* ═══ BADGES ═══ */
+.badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:4px 10px;border-radius:20px;letter-spacing:.3px}
 .bg{background:var(--gl);color:var(--g)}
 .br{background:var(--red-l);color:var(--red)}
 .ba{background:var(--gold-l);color:var(--gold)}
 .bb{background:var(--blue-l);color:var(--blue)}
 
-/* ══ BUTTONS ══ */
-.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 20px;border-radius:var(--rsm);font-family:var(--fb);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .2s;position:relative;overflow:hidden}
-.btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);pointer-events:none;opacity:0;transition:opacity .2s}
+/* ═══ BUTTONS ═══ */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:var(--rm);font-family:var(--fb);font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .22s;position:relative;overflow:hidden}
+.btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);pointer-events:none;opacity:0;transition:opacity .2s}
 .btn:hover::after{opacity:1}
-.btn-p{background:var(--g);color:#fff;box-shadow:0 2px 12px rgba(26,92,53,.25)}
-.btn-p:hover{background:var(--g2);transform:translateY(-2px);box-shadow:0 6px 22px rgba(26,92,53,.35)}
-.btn-p:active{transform:translateY(0)}
+.btn-p{background:linear-gradient(135deg,var(--g),var(--g3));color:#fff;box-shadow:0 3px 14px rgba(15,76,42,.3)}
+.btn-p:hover{transform:translateY(-2px);box-shadow:0 7px 24px rgba(15,76,42,.4)}
 .btn-o{background:transparent;color:var(--g);border:1.5px solid var(--g3)}
 .btn-o:hover{background:var(--gl);transform:translateY(-1px)}
-.btn-d{background:var(--red);color:#fff}.btn-d:hover{background:#a93226;transform:translateY(-1px)}
-.btn-go{background:var(--gold);color:#fff;box-shadow:0 2px 12px rgba(184,134,11,.25)}
-.btn-go:hover{transform:translateY(-2px);box-shadow:0 6px 22px rgba(184,134,11,.35)}
+.btn-d{background:linear-gradient(135deg,var(--red),var(--red2));color:#fff}
+.btn-d:hover{transform:translateY(-1px)}
+.btn-go{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff;box-shadow:0 3px 14px rgba(196,154,10,.25)}
+.btn-go:hover{transform:translateY(-2px);box-shadow:0 7px 22px rgba(196,154,10,.4)}
 .btn-sm{padding:7px 14px;font-size:12px}
 
-/* ══ FORM ══ */
-.fr{margin-bottom:15px}
-.fl{font-size:12px;color:var(--t2);margin-bottom:6px;display:block;font-weight:600}
-.fi{width:100%;background:var(--surf);border:1.5px solid var(--border2);border-radius:var(--rsm);padding:10px 13px;color:var(--text);font-family:var(--fb);font-size:13px;outline:none;transition:all .2s}
-.fi:focus{border-color:var(--g3);background:var(--white);box-shadow:0 0 0 4px rgba(26,92,53,.07)}
+/* ═══ FORM ═══ */
+.fr{margin-bottom:16px}
+.fl{font-size:12px;color:var(--t2);margin-bottom:7px;display:block;font-weight:600}
+.fi{width:100%;background:var(--surf);border:1.5px solid var(--bdr2);border-radius:var(--rm);padding:11px 14px;color:var(--txt);font-family:var(--fb);font-size:13px;outline:none;transition:all .22s}
+.fi:focus{border-color:var(--g4);background:var(--w);box-shadow:0 0 0 4px rgba(15,76,42,.08)}
 .fi::placeholder{color:var(--t4)}
-select.fi option{background:#fff}
+select.fi option{background:var(--w)}
 
-/* ══ PROGRESS ══ */
-.pt{height:6px;background:var(--bg4);border-radius:99px;overflow:hidden;position:relative}
-.pf{height:100%;border-radius:99px;transition:width 1.2s cubic-bezier(.4,0,.2,1);position:relative}
-.pf::after{content:'';position:absolute;top:0;right:0;width:20px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4));animation:progressSheen 2s ease-in-out infinite}
-@keyframes progressSheen{0%,100%{opacity:0}50%{opacity:1}}
+/* ═══ PROGRESS ═══ */
+.ptrack{height:6px;background:var(--b4);border-radius:99px;overflow:hidden;position:relative}
+.pfill{height:100%;border-radius:99px;transition:width 1.2s cubic-bezier(.4,0,.2,1);position:relative}
+.pfill::after{content:'';position:absolute;top:0;right:0;width:30px;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5));animation:sheen 2.5s ease-in-out infinite}
+@keyframes sheen{0%,100%{opacity:0;transform:translateX(-20px)}50%{opacity:1;transform:translateX(10px)}}
 
-/* ══ TABS ══ */
-.tabs{display:flex;gap:2px;border-bottom:2px solid var(--border);margin-bottom:22px}
-.tab{padding:10px 18px;font-size:13px;cursor:pointer;color:var(--t3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;font-weight:500}
+/* ═══ TABS ═══ */
+.tabs{display:flex;gap:2px;border-bottom:2px solid var(--bdr);margin-bottom:22px}
+.tab{padding:11px 20px;font-size:13px;cursor:pointer;color:var(--t3);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .22s;font-weight:500}
 .tab.active{color:var(--g);border-bottom-color:var(--g);font-weight:600}
 .tab:hover:not(.active){color:var(--t2)}
 
-/* ══ TABLE ══ */
+/* ═══ TABLE ═══ */
 .tbl{width:100%;border-collapse:collapse}
-.tbl th{font-size:10px;text-transform:uppercase;letter-spacing:.9px;color:var(--t3);padding:10px 13px;text-align:left;border-bottom:2px solid var(--border2);font-weight:600}
-.tbl td{padding:12px 13px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;transition:background .15s}
+.tbl th{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--t3);padding:10px 13px;text-align:left;border-bottom:2px solid var(--bdr2);font-weight:600}
+.tbl td{padding:12px 13px;border-bottom:1px solid var(--bdr);font-size:13px;vertical-align:middle;transition:background .15s}
 .tbl tr:last-child td{border:none}
 .tbl tr:hover td{background:var(--gxl)}
 
-/* ══ WALLET HERO ══ */
-.wh{
-  background:linear-gradient(135deg,#0d3318 0%,var(--g) 50%,#0a2910 100%);
-  border-radius:var(--r);padding:30px 32px;position:relative;overflow:hidden;margin-bottom:22px;
-  box-shadow:var(--sh2);animation:heroBreath 6s ease-in-out infinite
+/* ═══ TRIGGER ALERT ═══ */
+.alert-bar{
+  background:linear-gradient(135deg,var(--gold-l),#fff9e8);
+  border:1.5px solid var(--gold2);border-radius:var(--r);padding:18px 22px;
+  display:flex;align-items:center;gap:18px;margin-bottom:24px;
+  box-shadow:0 4px 24px rgba(196,154,10,.14);
+  animation:alertIn .5s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden
 }
-@keyframes heroBreath{0%,100%{box-shadow:0 8px 40px rgba(0,80,40,.16)}50%{box-shadow:0 12px 50px rgba(0,80,40,.28)}}
-.wh::before{content:'ZENO';position:absolute;right:-14px;top:-28px;font-family:var(--fh);font-size:140px;color:rgba(255,255,255,.05);pointer-events:none;line-height:1;font-weight:700;animation:wTextDrift 10s ease-in-out infinite}
-@keyframes wTextDrift{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-.wh-lbl{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:rgba(255,255,255,.45)}
-.wh-val{font-family:var(--fh);font-size:58px;letter-spacing:2px;color:#fff;line-height:1;margin:8px 0;font-weight:600;
-  text-shadow:0 0 30px rgba(82,194,130,.3)}
-.wh-row{display:flex;gap:32px;margin-top:20px;flex-wrap:wrap}
-.wh-item label{font-size:10px;color:rgba(255,255,255,.38);display:block;margin-bottom:4px;letter-spacing:.9px;text-transform:uppercase}
-.wh-item span{font-family:var(--fm);font-size:16px;color:rgba(255,255,255,.9)}
+.alert-bar::before{content:'';position:absolute;left:0;top:0;height:100%;width:4px;background:linear-gradient(180deg,var(--gold),var(--gold2));animation:alertPulse 2.5s ease-in-out infinite}
+@keyframes alertPulse{0%,100%{box-shadow:0 0 8px rgba(196,154,10,.4)}50%{box-shadow:0 0 22px rgba(196,154,10,.8)}}
+@keyframes alertIn{from{opacity:0;transform:scale(.94) translateY(-10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.alert-icon{font-size:26px;flex-shrink:0;animation:alertIconBounce 1.5s ease-in-out infinite}
+@keyframes alertIconBounce{0%,100%{transform:rotate(-10deg) scale(1)}50%{transform:rotate(10deg) scale(1.15)}}
+.alert-title{font-size:14px;font-weight:700;color:var(--gold);margin-bottom:3px}
+.alert-sub{font-size:12px;color:var(--t2)}
 
-/* ══ TRIGGER ALERT ══ */
-.ta{
-  background:linear-gradient(135deg,#fff9f0,#fffbf0);border:1.5px solid var(--gold2);
-  border-radius:var(--r);padding:18px 22px;display:flex;align-items:center;gap:18px;
-  margin-bottom:22px;box-shadow:0 4px 20px rgba(184,134,11,.12);
-  animation:alertPop .5s cubic-bezier(.34,1.56,.64,1)
-}
-@keyframes alertPop{from{opacity:0;transform:scale(.95) translateY(-8px)}to{opacity:1;transform:scale(1) translateY(0)}}
-/* pulsing left border */
-.ta::before{content:'';position:absolute;left:0;top:0;height:100%;width:3px;background:var(--gold2);border-radius:var(--r) 0 0 var(--r);animation:alertGlow 2s ease-in-out infinite}
-@keyframes alertGlow{0%,100%{box-shadow:0 0 6px rgba(212,160,23,.4)}50%{box-shadow:0 0 18px rgba(212,160,23,.8)}}
-.ta{position:relative;overflow:hidden}
-.ta-title{font-size:14px;font-weight:600;color:var(--gold);margin-bottom:3px}
-.ta-sub{font-size:12px;color:var(--t2)}
+/* ═══ SCORE RING ═══ */
+.score-ring-wrap{position:relative;width:116px;height:116px;flex-shrink:0}
+.score-ring-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-ring-num{font-family:var(--fp);font-size:34px;color:var(--g);line-height:1;font-weight:900}
+.score-ring-lbl{font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase;font-weight:600}
 
-/* ══ DASHBOARD HERO ══ */
-.dash-hero{
-  background:linear-gradient(135deg,#0d3318 0%,var(--g) 60%,#0a2910 100%);
-  border-radius:var(--r);padding:28px 32px;margin-bottom:22px;
-  display:flex;align-items:center;justify-content:space-between;
-  box-shadow:var(--sh2);overflow:hidden;position:relative;
-}
-/* moving gradient mesh */
-.dash-hero::before{
-  content:'';position:absolute;width:600px;height:600px;border-radius:50%;
-  background:radial-gradient(circle,rgba(82,194,130,.1) 0%,transparent 60%);
-  right:-200px;top:-200px;animation:meshRotate 12s linear infinite
-}
-@keyframes meshRotate{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-.dash-hero::after{content:'₹';position:absolute;right:28px;top:-18px;font-family:var(--fh);font-size:180px;color:rgba(255,255,255,.04);font-weight:700;pointer-events:none;animation:wTextDrift 8s ease-in-out infinite}
-.dh-label{font-family:var(--fh);font-size:13px;color:rgba(255,255,255,.45);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:6px}
-.dh-val{font-family:var(--fh);font-size:58px;color:#fff;letter-spacing:2px;font-weight:600;line-height:1;
-  animation:countUp .8s cubic-bezier(.16,1,.3,1)}
-@keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.dh-sub{font-size:12px;color:rgba(255,255,255,.4);margin-top:7px}
-.dhr{display:flex;gap:32px;flex-shrink:0}
-.dhr-item label{font-size:10px;color:rgba(255,255,255,.38);display:block;margin-bottom:4px;letter-spacing:.9px;text-transform:uppercase}
-.dhr-item span{font-family:var(--fm);font-size:20px;color:#fff;font-weight:500}
+/* ═══ ADVISOR ═══ */
+.adv-card{background:linear-gradient(135deg,var(--gxl),#e4f5ec);border:1.5px solid rgba(15,76,42,.16);border-radius:var(--r);padding:22px 24px;margin-bottom:14px;transition:all .25s}
+.adv-card:hover{box-shadow:var(--s2);transform:translateY(-2px)}
+.adv-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:18px;gap:12px}
+.adv-amt{font-family:var(--fm);font-size:28px;color:var(--g);font-weight:700}
+.adv-inv{font-size:13px;color:var(--gold);margin-top:4px;font-weight:600}
+.adv-steps{display:flex;flex-direction:column;gap:13px}
+.adv-step{display:flex;align-items:flex-start;gap:13px;font-size:13px;color:var(--t2);line-height:1.7}
+.adv-num{width:26px;height:26px;min-width:26px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--g3));color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;box-shadow:0 3px 10px rgba(15,76,42,.3);flex-shrink:0}
 
-/* ══ ADVISOR ══ */
-.ac{background:var(--gxl);border:1.5px solid rgba(26,92,53,.15);border-radius:var(--r);padding:22px 24px;margin-bottom:14px}
-.ac-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:12px}
-.ac-save{font-family:var(--fm);font-size:26px;color:var(--g);font-weight:600}
-.ac-invest{font-size:13px;color:var(--gold);margin-top:3px;font-weight:500}
-.ac-steps{display:flex;flex-direction:column;gap:12px}
-.ac-step{display:flex;align-items:flex-start;gap:12px;font-size:13px;color:var(--t2);line-height:1.65}
-.ac-num{width:24px;height:24px;min-width:24px;border-radius:50%;background:var(--g);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:2px;box-shadow:0 2px 8px rgba(26,92,53,.25)}
-
-/* ══ MILESTONE ══ */
-.ms{display:flex;align-items:center;gap:14px;padding:15px 18px;background:var(--surf);border-radius:var(--rsm);border:1px solid var(--border);margin-bottom:10px;transition:all .22s;cursor:default}
-.ms:hover{box-shadow:var(--sh);border-color:var(--border2);transform:translateX(4px)}
-.ms-icon{font-size:24px;width:38px;text-align:center;flex-shrink:0}
+/* ═══ MILESTONE ═══ */
+.ms{display:flex;align-items:center;gap:15px;padding:15px 18px;background:var(--w);border-radius:var(--rm);border:1px solid var(--bdr);margin-bottom:10px;transition:all .25s;cursor:default}
+.ms:hover{box-shadow:var(--s2);border-color:var(--bdr2);transform:translateX(5px)}
+.ms-icon{font-size:24px;width:40px;text-align:center;flex-shrink:0}
 .ms-body{flex:1;min-width:0}
 .ms-name{font-size:13px;font-weight:600}
-.ms-sub{font-size:11px;color:var(--t3);margin-top:2px}
+.ms-sub{font-size:11px;color:var(--t3);margin-top:3px}
 
-/* ══ BRAND CARDS ══ */
-.brand-eco{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
-.bc{background:var(--surf);border:1.5px solid var(--border);border-radius:var(--rsm);padding:16px;cursor:pointer;transition:all .22s;text-align:center;position:relative;overflow:hidden}
-.bc::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(26,92,53,.06),transparent);opacity:0;transition:opacity .22s}
-.bc:hover,.bc.sel{border-color:var(--g3);box-shadow:var(--sh);transform:translateY(-3px)}
-.bc:hover::after,.bc.sel::after{opacity:1}
-.bc .bi{font-size:24px;margin-bottom:8px;display:block;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
-.bc:hover .bi{transform:scale(1.2) rotate(-5deg)}
-.bc .bn{font-size:12px;font-weight:600}
+/* ═══ BRAND CARDS ═══ */
+.brand-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:13px;margin-bottom:22px}
+.bc{background:var(--surf);border:1.5px solid var(--bdr);border-radius:var(--rm);padding:16px;cursor:pointer;transition:all .26s;text-align:center;position:relative;overflow:hidden}
+.bc::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(15,76,42,.06),transparent);opacity:0;transition:opacity .25s}
+.bc:hover,.bc.sel{border-color:var(--g4);box-shadow:var(--s2);transform:translateY(-4px)}
+.bc:hover::before,.bc.sel::before{opacity:1}
+.bc .bi{font-size:26px;margin-bottom:8px;display:block;transition:transform .35s cubic-bezier(.34,1.56,.64,1)}
+.bc:hover .bi{transform:scale(1.25) rotate(-8deg)}
+.bc .bn{font-size:12px;font-weight:600;color:var(--txt)}
 .bc .bp{font-size:10px;color:var(--t3);margin-top:2px}
-.bc .bv{font-family:var(--fm);font-size:14px;margin-top:7px;font-weight:600}
+.bc .bv{font-family:var(--fm);font-size:14px;margin-top:8px;font-weight:700}
 
-/* ══ MODE TOGGLE ══ */
-.mt{display:flex;background:var(--surf);border:1.5px solid var(--border2);border-radius:var(--rsm);padding:4px;margin-bottom:22px;gap:3px;width:fit-content}
-.mt-btn{padding:9px 20px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--t3);transition:all .22s}
-.mt-btn.active{background:var(--g);color:#fff;box-shadow:0 3px 12px rgba(26,92,53,.25)}
+/* ═══ MODE TOGGLE ═══ */
+.mode-toggle{display:flex;background:var(--surf);border:1.5px solid var(--bdr2);border-radius:var(--rm);padding:4px;margin-bottom:24px;gap:4px;width:fit-content}
+.mt-btn{padding:9px 20px;border-radius:9px;font-size:12px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--t3);transition:all .22s}
+.mt-btn.active{background:linear-gradient(135deg,var(--g),var(--g3));color:#fff;box-shadow:0 3px 14px rgba(15,76,42,.3)}
 
-/* ══ SCORE RING ══ */
-.srw{position:relative;width:110px;height:110px;flex-shrink:0}
-.sr-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.sr-num{font-family:var(--fh);font-size:32px;color:var(--g);line-height:1;font-weight:700;animation:scoreCount .8s cubic-bezier(.16,1,.3,1)}
-@keyframes scoreCount{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
-.sr-lbl{font-size:9px;color:var(--t3);letter-spacing:.9px;text-transform:uppercase;font-weight:600}
-
-/* ══ PROFILE CARDS ══ */
-.pc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
-.pc{background:var(--surf);border:1.5px solid var(--border);border-radius:var(--rsm);padding:14px;cursor:pointer;transition:all .22s;text-align:center}
-.pc.active,.pc:hover{border-color:var(--g3);background:var(--gxl);transform:translateY(-2px);box-shadow:var(--sh3)}
-.pc-age{font-family:var(--fh);font-size:24px;color:var(--g);font-weight:600}
-.pc-lbl{font-size:11px;color:var(--t2);margin:3px 0;font-weight:500}
-
-/* ══ VOUCHER ══ */
-.voucher{
-  background:linear-gradient(135deg,var(--gxl),#e4f5ec);border:1.5px solid rgba(26,92,53,.18);
-  border-radius:var(--r);padding:22px 26px;position:relative;overflow:hidden;margin-bottom:14px;
-  box-shadow:var(--sh3);transition:all .25s
-}
-.voucher:hover{transform:translateY(-2px);box-shadow:var(--sh)}
-.voucher::after{content:'';position:absolute;right:-20px;top:50%;transform:translateY(-50%);width:40px;height:40px;background:var(--off);border-radius:50%;border:1px solid var(--border)}
-.voucher::before{content:'';position:absolute;left:-20px;top:50%;transform:translateY(-50%);width:40px;height:40px;background:var(--off);border-radius:50%;border:1px solid var(--border)}
-.v-brand{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--t3);font-weight:600}
-.v-amount{font-family:var(--fh);font-size:44px;letter-spacing:1px;color:var(--g);margin:6px 0;font-weight:700}
+/* ═══ VOUCHER ═══ */
+.voucher{background:linear-gradient(135deg,#f0fbf5,#e4f5ec);border:1.5px solid rgba(15,76,42,.18);border-radius:var(--r);padding:22px 28px;position:relative;overflow:hidden;margin-bottom:14px;box-shadow:var(--s1);transition:all .25s}
+.voucher:hover{transform:translateY(-3px);box-shadow:var(--s2)}
+.voucher::after{content:'';position:absolute;right:-20px;top:50%;transform:translateY(-50%);width:40px;height:40px;background:var(--off);border-radius:50%;border:1px solid var(--bdr)}
+.voucher::before{content:'';position:absolute;left:-20px;top:50%;transform:translateY(-50%);width:40px;height:40px;background:var(--off);border-radius:50%;border:1px solid var(--bdr)}
+.v-brand{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);font-weight:600}
+.v-amount{font-family:var(--fp);font-size:46px;letter-spacing:1px;color:var(--g);margin:6px 0;font-weight:900}
 .v-exp{font-size:11px;color:var(--t3)}
-.v-lock{position:absolute;top:16px;right:30px}
+.v-lock{position:absolute;top:16px;right:32px}
 
-/* ══ MODAL ══ */
-.modal-bd{display:none;position:fixed;inset:0;background:rgba(0,20,10,.6);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
-.modal-bd.show{display:flex}
-.modal{background:var(--white);border:1px solid var(--border2);border-radius:var(--r);padding:30px;max-width:470px;width:92%;animation:modalIn .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 24px 60px rgba(0,0,0,.2)}
-@keyframes modalIn{from{opacity:0;transform:scale(.88) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
-.modal-title{font-family:var(--fh);font-size:30px;letter-spacing:1px;color:var(--g);margin-bottom:6px;font-weight:700}
-.modal-amt{font-family:var(--fm);font-size:42px;color:var(--gold);margin:14px 0;font-weight:600}
+/* ═══ PROFILE ═══ */
+.profile-hero{background:linear-gradient(135deg,#061810,#0a2717,var(--g),#08200f);border-radius:var(--r);padding:32px 36px;margin-bottom:26px;position:relative;overflow:hidden;box-shadow:var(--s3)}
+.profile-hero::before{content:'';position:absolute;right:-80px;top:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(60,201,116,.15),transparent 65%);animation:orbPulse 6s ease-in-out infinite}
+.p-av-lg{width:78px;height:78px;border-radius:50%;background:linear-gradient(135deg,var(--g4),var(--g5));display:flex;align-items:center;justify-content:center;font-family:var(--fp);font-size:30px;font-weight:900;color:#fff;border:3px solid rgba(255,255,255,.22);margin-bottom:16px;box-shadow:0 0 30px rgba(60,201,116,.35)}
+.p-name{font-family:var(--fp);font-size:34px;color:#fff;font-weight:900;letter-spacing:.5px}
+.p-meta{font-size:12px;color:rgba(255,255,255,.45);margin-top:5px}
+.p-badges{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.p-badge{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.82)}
+.pstat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+.pstat{background:var(--w);border:1px solid var(--bdr2);border-radius:var(--rm);padding:18px 20px;text-align:center;box-shadow:var(--s1);transition:all .25s}
+.pstat:hover{transform:translateY(-3px);box-shadow:var(--s2)}
+.pstat .pv{font-family:var(--fp);font-size:28px;color:var(--g);font-weight:900}
+.pstat .pl{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:1px;margin-top:5px;font-weight:600}
+.edit-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--bdr)}
+.edit-row:last-child{border:none}
+.er-lbl{font-size:12px;font-weight:600;color:var(--t2);width:140px;flex-shrink:0}
+.er-val{flex:1;font-size:13px;color:var(--txt)}
+.er-btn{font-size:12px;color:var(--g);cursor:pointer;font-weight:600;padding:4px 12px;border:1px solid var(--bdr2);border-radius:var(--rs);transition:all .18s}
+.er-btn:hover{background:var(--gl);border-color:var(--g4)}
 
-/* ══ INSIGHT ══ */
-.insight{background:var(--surf);border-radius:var(--rsm);padding:13px 16px;border-left:3px solid;font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:10px;transition:all .2s}
-.insight:hover{transform:translateX(4px);box-shadow:var(--sh3)}
+/* ═══ AI PANEL ═══ */
+.ai-panel{background:var(--w);border:1.5px solid var(--bdr2);border-radius:var(--r);display:flex;flex-direction:column;height:590px;box-shadow:var(--s2);overflow:hidden}
+.ai-head{padding:16px 22px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:13px;background:linear-gradient(135deg,var(--gxl),#e6f4ec)}
+.ai-dot{width:10px;height:10px;border-radius:50%;background:var(--g5);animation:aiPulse 1.8s ease-in-out infinite;box-shadow:0 0 10px var(--g5)}
+@keyframes aiPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.2;transform:scale(.4)}}
+.ai-title{font-family:var(--fp);font-size:20px;font-weight:700;color:var(--g);letter-spacing:.5px}
+.ai-stat{font-size:10px;color:var(--t3);margin-left:auto;padding:4px 11px;background:var(--w);border:1px solid var(--bdr);border-radius:20px;font-weight:600;text-transform:uppercase;letter-spacing:.8px}
+.ai-msgs{flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+.msg{display:flex;gap:11px;align-items:flex-start;animation:msgIn .35s cubic-bezier(.16,1,.3,1)}
+@keyframes msgIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.msg-u{flex-direction:row-reverse}
+.msg-av{width:32px;height:32px;min-width:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.av-ai{background:linear-gradient(135deg,var(--g),var(--g4));color:#fff;box-shadow:0 3px 10px rgba(15,76,42,.3)}
+.av-u{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff}
+.bubble{max-width:85%;padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.72}
+.bub-ai{background:var(--surf);border:1px solid var(--bdr2);color:var(--txt)}
+.bub-u{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff}
+.bubble p{margin-bottom:7px}.bubble p:last-child{margin:0}
+.bubble strong{color:var(--g5)}
+.bub-u strong{color:#b0f0c8}
+.bubble ul{margin:7px 0 0 17px}.bubble li{margin-bottom:4px}
+.typing-dots{display:flex;align-items:center;gap:6px;padding:11px 15px;background:var(--surf);border:1px solid var(--bdr2);border-radius:14px;width:fit-content}
+.typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--g4);animation:tBounce .9s ease-in-out infinite}
+.typing-dots span:nth-child(2){animation-delay:.2s}.typing-dots span:nth-child(3){animation-delay:.4s}
+@keyframes tBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-9px)}}
+.quick-prompts{display:flex;flex-wrap:wrap;gap:7px;padding:11px 16px;border-top:1px solid var(--bdr);background:var(--surf)}
+.qp{background:var(--w);border:1px solid var(--bdr2);border-radius:20px;padding:6px 14px;font-size:11px;color:var(--t2);cursor:pointer;transition:all .22s;font-weight:500}
+.qp:hover{border-color:var(--g4);color:var(--g);background:var(--gl);transform:translateY(-2px);box-shadow:0 4px 12px rgba(15,76,42,.12)}
+.ai-inp-area{padding:13px 16px;border-top:1px solid var(--bdr);display:flex;gap:9px;background:var(--w)}
+.ai-inp{flex:1;background:var(--surf);border:1.5px solid var(--bdr2);border-radius:var(--rm);padding:11px 15px;color:var(--txt);font-family:var(--fb);font-size:13px;outline:none;transition:all .22s}
+.ai-inp:focus{border-color:var(--g4);background:var(--w);box-shadow:0 0 0 4px rgba(15,76,42,.08)}
+.ai-inp::placeholder{color:var(--t4)}
+.ai-send{background:linear-gradient(135deg,var(--g),var(--g3));border:none;border-radius:var(--rm);width:42px;height:42px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;transition:all .25s;box-shadow:0 3px 12px rgba(15,76,42,.3)}
+.ai-send:hover{transform:scale(1.12) rotate(8deg);box-shadow:0 6px 20px rgba(15,76,42,.45)}
 
-/* ══ PRGS ══ */
+/* ═══ INSIGHT CARDS ═══ */
+.insight{background:var(--surf);border-radius:var(--rm);padding:13px 16px;border-left:3px solid;font-size:13px;color:var(--t2);line-height:1.7;margin-bottom:10px;transition:all .22s;cursor:default}
+.insight:hover{transform:translateX(5px);box-shadow:var(--s1)}
+
+/* ═══ PRGS ROW ═══ */
 .prw{margin-bottom:16px}
-.prw-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-.prw-lbl{font-size:13px;font-weight:500;color:var(--text);display:flex;align-items:center;gap:7px}
+.prw-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:9px}
+.prw-lbl{font-size:13px;font-weight:500;color:var(--txt);display:flex;align-items:center;gap:8px}
 .prw-nums{font-family:var(--fm);font-size:12px;color:var(--t3)}
 
-/* ══ SPEND LINE ══ */
-.sl{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);transition:all .2s}
+/* ═══ SPEND LINE ═══ */
+.sl{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--bdr);transition:all .2s}
 .sl:last-child{border:none}
-.sl:hover{padding-left:6px}
+.sl:hover{padding-left:7px}
 .sl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 .sl-cat{font-size:13px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
 .sl-num{font-family:var(--fm);font-size:12px;white-space:nowrap;color:var(--t2)}
 
-/* ══ CHART ══ */
-.cw{position:relative;height:190px;margin-top:12px}
+/* ═══ CHART ═══ */
+.cw{position:relative;height:195px;margin-top:12px}
 
-/* ══ TOAST ══ */
-.toast{position:fixed;bottom:28px;right:28px;background:var(--g);color:#fff;font-weight:600;font-size:13px;padding:13px 20px;border-radius:var(--rsm);transform:translateY(80px);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);z-index:9998;box-shadow:var(--sh2);display:flex;align-items:center;gap:8px}
+/* ═══ MODAL ═══ */
+.modal-bd{display:none;position:fixed;inset:0;background:rgba(0,15,8,.65);z-index:999;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.modal-bd.show{display:flex}
+.modal{background:var(--w);border:1px solid var(--bdr2);border-radius:22px;padding:32px;max-width:480px;width:92%;animation:modalPop .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 28px 80px rgba(0,0,0,.22)}
+@keyframes modalPop{from{opacity:0;transform:scale(.84) translateY(24px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-title{font-family:var(--fp);font-size:32px;letter-spacing:.5px;color:var(--g);margin-bottom:7px;font-weight:900}
+.modal-amt{font-family:var(--fm);font-size:44px;color:var(--gold);margin:14px 0;font-weight:700}
+
+/* ═══ TOAST ═══ */
+.toast{position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,var(--g),var(--g3));color:#fff;font-weight:600;font-size:13px;padding:14px 22px;border-radius:var(--rm);transform:translateY(90px);opacity:0;transition:all .45s cubic-bezier(.34,1.56,.64,1);z-index:9998;box-shadow:var(--s3);display:flex;align-items:center;gap:9px}
 .toast.show{transform:translateY(0);opacity:1}
-.toast::before{content:'✦';font-size:10px;opacity:.7}
+.toast::before{content:'✦';font-size:11px;opacity:.7}
 
-/* ══ AI PANEL ══ */
-.ai-panel{background:var(--white);border:1.5px solid var(--border2);border-radius:var(--r);display:flex;flex-direction:column;height:580px;box-shadow:var(--sh)}
-.ai-hdr{padding:15px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,var(--gxl),#e8f5ee);border-radius:var(--r) var(--r) 0 0}
-.ai-dot{width:10px;height:10px;border-radius:50%;background:var(--g4);animation:aiDotBlink 1.8s ease-in-out infinite;box-shadow:0 0 8px var(--g4)}
-@keyframes aiDotBlink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.5)}}
-.ai-title{font-family:var(--fh);font-size:20px;font-weight:700;color:var(--g);letter-spacing:.5px}
-.ai-status{font-size:10px;color:var(--t3);margin-left:auto;padding:4px 10px;background:var(--white);border:1px solid var(--border);border-radius:20px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
-.ai-msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
-.msg{display:flex;gap:10px;align-items:flex-start;animation:msgIn .3s cubic-bezier(.16,1,.3,1)}
-@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.msg-u{flex-direction:row-reverse}
-.msg-av{width:30px;height:30px;min-width:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
-.msg-av-ai{background:linear-gradient(135deg,var(--g),var(--g3));color:#fff;box-shadow:0 2px 8px rgba(26,92,53,.3)}
-.msg-av-u{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#fff}
-.bubble{max-width:85%;padding:12px 16px;border-radius:14px;font-size:13px;line-height:1.7}
-.bubble-ai{background:var(--surf);border:1px solid var(--border2);color:var(--text)}
-.bubble-u{background:linear-gradient(135deg,var(--g),var(--g2));color:#fff}
-.bubble p{margin-bottom:7px}.bubble p:last-child{margin:0}
-.bubble strong{color:var(--g4)}
-.bubble-u strong{color:#b0f0c8}
-.bubble ul{margin:7px 0 0 16px}.bubble li{margin-bottom:4px}
-.typing{display:flex;align-items:center;gap:6px;padding:10px 14px;background:var(--surf);border:1px solid var(--border2);border-radius:14px;width:fit-content}
-.typing span{width:7px;height:7px;border-radius:50%;background:var(--g3);animation:bounce .9s ease-in-out infinite}
-.typing span:nth-child(2){animation-delay:.18s}.typing span:nth-child(3){animation-delay:.36s}
-@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-7px)}}
-.qps{display:flex;flex-wrap:wrap;gap:7px;padding:10px 14px;border-top:1px solid var(--border);background:var(--surf)}
-.qp{background:var(--white);border:1px solid var(--border2);border-radius:20px;padding:6px 13px;font-size:11px;color:var(--t2);cursor:pointer;transition:all .2s;font-weight:500}
-.qp:hover{border-color:var(--g3);color:var(--g);background:var(--gl);transform:translateY(-2px);box-shadow:0 3px 8px rgba(26,92,53,.12)}
-.ai-inp-row{padding:12px 14px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--white);border-radius:0 0 var(--r) var(--r)}
-.ai-inp{flex:1;background:var(--surf);border:1.5px solid var(--border2);border-radius:var(--rsm);padding:10px 14px;color:var(--text);font-family:var(--fb);font-size:13px;outline:none;transition:all .2s}
-.ai-inp:focus{border-color:var(--g3);background:var(--white);box-shadow:0 0 0 4px rgba(26,92,53,.07)}
-.ai-inp::placeholder{color:var(--t4)}
-.ai-send{background:linear-gradient(135deg,var(--g),var(--g2));border:none;border-radius:var(--rsm);width:40px;height:40px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;flex-shrink:0;transition:all .22s;box-shadow:0 2px 10px rgba(26,92,53,.25)}
-.ai-send:hover{transform:scale(1.1) rotate(5deg);box-shadow:0 4px 18px rgba(26,92,53,.4)}
+/* ═══ SETTINGS ═══ */
+.setting-group-title{font-family:var(--fp);font-size:22px;color:var(--g);font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--bdr)}
 
-/* ══ NUMBER COUNTER ANIMATION ══ */
-@keyframes numberFlip{
-  0%{transform:translateY(20px);opacity:0}
-  100%{transform:translateY(0);opacity:1}
-}
-.num-anim{animation:numberFlip .5s cubic-bezier(.16,1,.3,1)}
+/* ═══ PARTICLE CANVAS ═══ */
+#pcanvas{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35}
 
-/* ══ STAGGER CHILDREN ══ */
-.stagger > *{opacity:0;animation:staggerIn .4s cubic-bezier(.16,1,.3,1) both}
-.stagger > *:nth-child(1){animation-delay:.05s}
-.stagger > *:nth-child(2){animation-delay:.1s}
-.stagger > *:nth-child(3){animation-delay:.15s}
-.stagger > *:nth-child(4){animation-delay:.2s}
-@keyframes staggerIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-/* ══ FLOATING PARTICLES ══ */
-.particle{position:fixed;width:4px;height:4px;border-radius:50%;background:var(--g5);pointer-events:none;z-index:0;opacity:0;animation:particleFly linear infinite}
-@keyframes particleFly{0%{transform:translateY(100vh) scale(0);opacity:0}10%{opacity:.4}90%{opacity:.2}100%{transform:translateY(-10vh) scale(1);opacity:0}}
-
-@media(max-width:900px){
-  .auth-left{display:none}
-  .auth-right{padding:24px}
+@media(max-width:960px){
+  .al{display:none}
+  .ar{padding:28px}
   .g4{grid-template-columns:1fr 1fr}
-  .sidebar{width:210px}
-  .page{padding:20px 18px}
-  .dhr{display:none}
+  .sidebar{width:220px}
+  .page{padding:22px 20px}
+  .dhr,.pstat-grid{display:grid;grid-template-columns:1fr 1fr}
 }
 </style>
 </head>
 <body>
+<div class="bg-mesh"></div>
+<canvas id="pcanvas"></canvas>
 
-<!-- FLOATING PARTICLES -->
-<div id="particles"></div>
-
-<!-- ══════════ AUTH ══════════ -->
+<!-- ═══════════ AUTH ═══════════ -->
 <div id="authScreen">
-  <div class="auth-left">
-    <div class="auth-lines">
-      <div class="auth-line"></div><div class="auth-line"></div><div class="auth-line"></div>
+  <div class="al">
+    <div class="al-grid"></div>
+    <div class="al-orb1"></div><div class="al-orb2"></div>
+    <div class="al-lines"><div class="al-line"></div><div class="al-line"></div><div class="al-line"></div></div>
+    <div>
+      <div class="al-logo">ZENO</div>
+      <div class="al-tag">Zero-waste Expense & Net-growth Optimizer</div>
     </div>
-    <div class="orb2"></div>
-    <div class="auth-brand">
-      <div class="logo">ZENO</div>
-      <div class="tagline">Zero-waste Expense & Net-growth Optimizer</div>
+    <div class="al-pitch">
+      <h2>"Turn every rupee of cashback into lasting wealth"</h2>
+      <p>ZENO replaces cashback dependency with genuine financial empowerment — smart voucher allocation, budget discipline, and automatic micro-investment in one elegant platform.</p>
     </div>
-    <div class="auth-pitch">
-      <h2>Turn every rupee of cashback into lasting wealth</h2>
-      <p>ZENO replaces cashback dependency with genuine financial empowerment — budgeting, smart voucher allocation, and automatic micro-investment in one elegant platform.</p>
-    </div>
-    <div class="auth-stats">
-      <div class="auth-stat"><span>₹3.2L</span><label>Avg user invested</label></div>
-      <div class="auth-stat"><span>12.3%</span><label>Portfolio XIRR</label></div>
-      <div class="auth-stat"><span>4.8x</span><label>Cashback utilised</label></div>
+    <div class="al-stats">
+      <div class="al-stat"><span>₹3.2L</span><label>Avg invested</label></div>
+      <div class="al-stat"><span>12.3%</span><label>Portfolio XIRR</label></div>
+      <div class="al-stat"><span>4.8x</span><label>Cashback used</label></div>
     </div>
   </div>
-  <div class="auth-right">
+  <div class="ar">
     <div class="auth-box">
-      <div class="auth-tab-row">
-        <div class="auth-tab active" onclick="switchAuthTab('login')">Sign In</div>
-        <div class="auth-tab" onclick="switchAuthTab('signup')">Create Account</div>
+      <div class="auth-tabs">
+        <div class="auth-tab active" onclick="switchTab('login')">Sign In</div>
+        <div class="auth-tab" onclick="switchTab('signup')">Create Account</div>
       </div>
+      <!-- LOGIN -->
       <div class="auth-panel active" id="loginPanel">
-        <div class="auth-greeting">Welcome back</div>
-        <div class="auth-sub">Sign in to your ZENO account</div>
-        <div class="auth-error" id="loginErr"></div>
-        <div class="auth-form-row"><label class="auth-label">Email Address</label><input class="auth-input" type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"></div>
-        <div class="auth-form-row"><label class="auth-label">Password</label><input class="auth-input" type="password" id="loginPwd" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-        <button class="auth-btn" onclick="doLogin()">Sign In to ZENO</button>
+        <div class="auth-h">Welcome back</div>
+        <div class="auth-s">Sign in to your ZENO account</div>
+        <div class="auth-err" id="loginErr"></div>
+        <div class="frow"><label class="flbl">Email Address</label><input class="finp" type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email"></div>
+        <div class="frow"><label class="flbl">Password</label><input class="finp" type="password" id="loginPwd" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="auth-btn-main" onclick="doLogin()">Sign In to ZENO</button>
         <div class="auth-divider">or</div>
-        <button class="demo-btn" onclick="demoLogin()">▶ Try Demo Account</button>
+        <button class="demo-btn" onclick="demoLogin()">▶ Try Demo Account — no signup needed</button>
       </div>
+      <!-- SIGNUP -->
       <div class="auth-panel" id="signupPanel">
-        <div class="auth-greeting">Get started</div>
-        <div class="auth-sub">Create your ZENO account in seconds</div>
-        <div class="auth-error" id="signupErr"></div>
-        <div class="auth-form-row"><label class="auth-label">Full Name</label><input class="auth-input" id="signupName" placeholder="Arjun Kumar"></div>
-        <div class="auth-form-row"><label class="auth-label">Email Address</label><input class="auth-input" type="email" id="signupEmail" placeholder="you@example.com"></div>
-        <div class="auth-form-row"><label class="auth-label">Age</label><input class="auth-input" type="number" id="signupAge" placeholder="28" min="18" max="80"></div>
-        <div class="auth-form-row"><label class="auth-label">Monthly Income (₹)</label><input class="auth-input" type="number" id="signupIncome" placeholder="50000"></div>
-        <div class="auth-form-row"><label class="auth-label">Password</label><input class="auth-input" type="password" id="signupPwd" placeholder="Min 8 characters" oninput="checkStrength(this.value)"><div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div></div>
-        <button class="auth-btn" onclick="doSignup()">Create My Account</button>
+        <div class="auth-h">Get started</div>
+        <div class="auth-s">Create your ZENO account in seconds</div>
+        <div class="auth-err" id="signupErr"></div>
+        <div class="frow"><label class="flbl">Full Name</label><input class="finp" id="signupName" placeholder="Arjun Kumar"></div>
+        <div class="frow"><label class="flbl">Email</label><input class="finp" type="email" id="signupEmail" placeholder="you@example.com"></div>
+        <div class="g2" style="gap:12px">
+          <div class="frow"><label class="flbl">Age</label><input class="finp" type="number" id="signupAge" placeholder="28" min="18" max="80"></div>
+          <div class="frow"><label class="flbl">Monthly Income (₹)</label><input class="finp" type="number" id="signupIncome" placeholder="50000"></div>
+        </div>
+        <div class="frow"><label class="flbl">Password (min 8 chars)</label><input class="finp" type="password" id="signupPwd" placeholder="••••••••" oninput="checkStr(this.value)"><div class="str-bar"><div class="str-fill" id="strFill"></div></div></div>
+        <button class="auth-btn-main" onclick="doSignup()">Create My Account</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ══════════ APP ══════════ -->
+<!-- ═══════════ APP ═══════════ -->
 <div id="appScreen">
 <div class="shell">
 <div class="sidebar">
+  <div class="sb-shimmer"></div>
   <div class="sb-top">
-    <div class="logo">ZENO</div>
-    <div class="logo-sub">Zero-waste Expense &<br>Net-growth Optimizer</div>
+    <div class="sb-logo">ZENO</div>
+    <div class="sb-sub">Zero-waste Expense &<br>Net-growth Optimizer</div>
   </div>
-  <div class="nav-sec">Overview</div>
+  <div class="nav-grp">Overview</div>
   <div class="nav-item active" onclick="nav('dashboard',this)"><span class="ni">⬡</span>Dashboard</div>
   <div class="nav-item" onclick="nav('wallet',this)"><span class="ni">◎</span>Smart Wallet</div>
   <div class="nav-item" onclick="nav('expenses',this)"><span class="ni">▤</span>Expense Builder</div>
   <div class="nav-item" onclick="nav('advisor',this)"><span class="ni">◈</span>Voucher Advisor</div>
-  <div class="nav-sec">Wealth</div>
+  <div class="nav-grp">Wealth</div>
   <div class="nav-item" onclick="nav('goals',this)"><span class="ni">◎</span>Goals</div>
   <div class="nav-item" onclick="nav('invest',this)"><span class="ni">↑</span>Invest</div>
   <div class="nav-item" onclick="nav('ledger',this)"><span class="ni">☰</span>Ledger</div>
-  <div class="nav-sec">Intelligence</div>
+  <div class="nav-grp">Intelligence</div>
   <div class="nav-item" onclick="nav('ai',this)"><span class="ni">◆</span>ZENO AI Agent</div>
-  <div class="sb-bot">
-    <div class="user-row">
-      <div class="av" id="sbAv">AK</div>
-      <div><div class="user-name" id="sbName">Arjun Kumar</div><div class="user-sub" id="sbSub">Age 28 · Growth Mode</div></div>
+  <div class="nav-grp">Account</div>
+  <div class="nav-item" onclick="nav('profile',this)"><span class="ni">👤</span>My Profile</div>
+  <div class="nav-item" onclick="nav('settings',this)"><span class="ni">⚙</span>Settings</div>
+  <div class="sb-bottom">
+    <div class="user-pill" onclick="nav('profile',document.querySelector('[onclick*=profile]'))">
+      <div class="u-av" id="sbAv">AK</div>
+      <div><div class="u-name" id="sbName">Arjun Kumar</div><div class="u-tag" id="sbTag">Age 28 · Growth Mode</div></div>
     </div>
-    <div class="sb-logout" onclick="doLogout()">⎋ Sign Out</div>
+    <div class="sb-out" onclick="doLogout()">⎋ Sign Out</div>
   </div>
 </div>
 
@@ -547,93 +500,111 @@ select.fi option{background:#fff}
 
 <!-- ══ DASHBOARD ══ -->
 <div class="page active" id="page-dashboard">
-  <div class="pg-title">Dashboard</div>
-  <div class="pg-sub" id="dashDate">Your financial empowerment snapshot</div>
-  <div class="ta" id="trigAlert" style="position:relative">
-    <div style="font-size:24px;flex-shrink:0">⚡</div>
-    <div style="flex:1">
-      <div class="ta-title">Auto-Invest Trigger — Cashback crossed ₹1,000</div>
-      <div class="ta-sub">You have <span id="alertCB">₹1,842</span> idle. Invest now before you spend it impulsively.</div>
+  <div class="ph">
+    <div class="ph-row">
+      <div><div class="ph-title">Dashboard</div><div class="ph-sub" id="dashDate">Your financial empowerment snapshot</div></div>
     </div>
-    <div style="display:flex;gap:8px;flex-shrink:0">
+  </div>
+
+  <div class="alert-bar" id="trigAlert">
+    <div class="alert-icon">⚡</div>
+    <div style="flex:1">
+      <div class="alert-title">Auto-Invest Trigger — Cashback crossed ₹1,000</div>
+      <div class="alert-sub">You have <span id="alertCB">₹1,842</span> sitting idle. Invest now — every day delayed costs you growth.</div>
+    </div>
+    <div style="display:flex;gap:9px;flex-shrink:0">
       <button class="btn btn-go btn-sm" onclick="showModal()">Invest Now</button>
       <button class="btn btn-o btn-sm" onclick="document.getElementById('trigAlert').style.display='none'">Later</button>
     </div>
   </div>
-  <div class="dash-hero mb20">
-    <div>
-      <div class="dh-label">Month Surplus</div>
-      <div class="dh-val" id="dhSurplus">₹6,450</div>
-      <div class="dh-sub" id="dhSub">From ₹50,000 income · Every rupee should grow</div>
-    </div>
-    <div class="dhr">
-      <div class="dhr-item"><label>Cashback Pool</label><span id="dhCB">₹1,842</span></div>
-      <div class="dhr-item"><label>Invested</label><span id="dhInv">₹8,960</span></div>
-      <div class="dhr-item"><label>XIRR</label><span>12.3%</span></div>
+
+  <div class="hero-card mb24">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;position:relative;z-index:1">
+      <div>
+        <div class="hero-card-lbl">Month Surplus — Available to Invest</div>
+        <div class="hero-card-val" id="dhSurplus">₹6,450</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.38);margin-top:8px" id="dhSub">From ₹50,000 income · Every rupee should compound</div>
+      </div>
+      <div style="display:flex;gap:32px;flex-shrink:0">
+        <div class="hcr-item"><label>Cashback Pool</label><span id="dhCB">₹1,842</span></div>
+        <div class="hcr-item"><label>Invested</label><span id="dhInv">₹8,960</span></div>
+        <div class="hcr-item"><label>XIRR</label><span>12.3%</span></div>
+      </div>
     </div>
   </div>
-  <div class="g4 mb20 stagger">
-    <div class="sc sc-g"><div class="l">Eco-Wallet</div><div class="v" id="dashEco">₹4,287</div><div class="s">↑ ₹312 this month</div></div>
-    <div class="sc"><div class="l">Wealth Score</div><div class="v" id="dashScore">72/100</div><div class="s">+8 pts this month</div></div>
-    <div class="sc sc-go"><div class="l">Active Goals</div><div class="v">3</div><div class="s">₹8,333/mo needed</div></div>
-    <div class="sc sc-r"><div class="l">Locked Vouchers</div><div class="v" id="dashVouchers">2</div><div class="s" id="dashVoucherVal">Worth ₹5,800</div></div>
+
+  <div class="g4 mb24">
+    <div class="kpi kpi-g"><div class="l">Eco-Wallet</div><div class="v" id="dashEco">₹4,287</div><div class="s">↑ ₹312 this month</div></div>
+    <div class="kpi"><div class="l">Wealth Score</div><div class="v" id="dashScore">72/100</div><div class="s">+8 pts this month</div></div>
+    <div class="kpi kpi-go"><div class="l">Active Goals</div><div class="v">3</div><div class="s">₹8,333/mo needed</div></div>
+    <div class="kpi kpi-r"><div class="l">Locked Vouchers</div><div class="v" id="dashVouchers">2</div><div class="s" id="dashVoucherVal">Worth ₹5,800</div></div>
   </div>
-  <div class="g2 mb20">
+
+  <div class="g2 mb24">
     <div class="card">
       <div class="sec-title">Empowerment Score <span class="badge bg" id="scoreBadge">+8 pts</span></div>
-      <div style="display:flex;align-items:center;gap:20px">
-        <div class="srw">
-          <svg style="transform:rotate(-90deg)" viewBox="0 0 110 110" width="110" height="110">
-            <circle cx="55" cy="55" r="46" fill="none" stroke="var(--bg4)" stroke-width="7"/>
-            <circle cx="55" cy="55" r="46" fill="none" stroke="url(#scoreGrad)" stroke-width="7" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="81" id="scoreC" style="transition:stroke-dashoffset 1.4s cubic-bezier(.4,0,.2,1)"/>
-            <defs><linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#1a5c35"/><stop offset="100%" stop-color="#52c282"/></linearGradient></defs>
+      <div style="display:flex;align-items:center;gap:22px">
+        <div class="score-ring-wrap">
+          <svg style="transform:rotate(-90deg)" viewBox="0 0 116 116" width="116" height="116">
+            <circle cx="58" cy="58" r="48" fill="none" stroke="var(--b4)" stroke-width="8"/>
+            <circle cx="58" cy="58" r="48" fill="none" stroke="url(#sg)" stroke-width="8" stroke-linecap="round" stroke-dasharray="301" stroke-dashoffset="84" id="scoreC" style="transition:stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1)"/>
+            <defs><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#0f4c2a"/><stop offset="100%" stop-color="#3cc974"/></linearGradient></defs>
           </svg>
-          <div class="sr-val"><div class="sr-num" id="scoreN">72</div><div class="sr-lbl">Score</div></div>
+          <div class="score-ring-val"><div class="score-ring-num" id="scoreN">72</div><div class="score-ring-lbl">Score</div></div>
         </div>
         <div style="flex:1">
-          <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--t3)">Cashback reinvested</span><span style="color:var(--g);font-family:var(--fm)">68%</span></div><div class="pt"><div class="pf" style="width:68%;background:linear-gradient(90deg,var(--g),var(--g4))"></div></div></div>
-          <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--t3)">Goal completion</span><span style="color:var(--gold);font-family:var(--fm)">45%</span></div><div class="pt"><div class="pf" style="width:45%;background:linear-gradient(90deg,var(--gold),var(--gold2))"></div></div></div>
-          <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--t3)">Expense discipline</span><span style="color:var(--blue);font-family:var(--fm)">81%</span></div><div class="pt"><div class="pf" style="width:81%;background:linear-gradient(90deg,var(--blue),#4a7fc1)"></div></div></div>
+          <div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--t3)">Cashback reinvested</span><span style="color:var(--g);font-family:var(--fm);font-weight:600">68%</span></div><div class="ptrack"><div class="pfill" style="width:68%;background:linear-gradient(90deg,var(--g),var(--g5))"></div></div></div>
+          <div style="margin-bottom:13px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--t3)">Goal completion</span><span style="color:var(--gold);font-family:var(--fm);font-weight:600">45%</span></div><div class="ptrack"><div class="pfill" style="width:45%;background:linear-gradient(90deg,var(--gold),var(--gold2))"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:6px"><span style="color:var(--t3)">Expense discipline</span><span style="color:var(--blue);font-family:var(--fm);font-weight:600">81%</span></div><div class="ptrack"><div class="pfill" style="width:81%;background:linear-gradient(90deg,var(--blue),#3a70c0)"></div></div></div>
         </div>
       </div>
     </div>
-    <div class="card"><div class="sec-title">Cashback vs Invested (6M)</div><div class="cw"><canvas id="dashChart"></canvas></div></div>
+    <div class="card">
+      <div class="sec-title">Cashback vs Invested (6 months)</div>
+      <div class="cw"><canvas id="dashChart" role="img" aria-label="Cashback vs invested 6 months"></canvas></div>
+    </div>
   </div>
-  <div class="card mb20"><div class="sec-title">Budget Health <span style="font-size:11px;font-weight:400;color:var(--t3)" id="dashIncLabel">Income ₹50,000</span></div><div id="dashBudget"></div></div>
-  <div class="card"><div class="sec-title">Cashback Substitution Opportunities <span class="badge bg" id="dashOppBadge">₹1,410 real cash to free</span></div><div id="dashOpp"></div></div>
+
+  <div class="card mb24">
+    <div class="sec-title">Budget Health <span style="font-size:11px;font-weight:400;color:var(--t3)" id="dashIncLabel">Income ₹50,000</span></div>
+    <div id="dashBudget"></div>
+  </div>
+  <div class="card">
+    <div class="sec-title">Cashback Substitution — Free Real Cash to Invest <span class="badge bg" id="dashOppBadge">₹1,410 available</span></div>
+    <div id="dashOpp"></div>
+  </div>
 </div>
 
 <!-- ══ WALLET ══ -->
 <div class="page" id="page-wallet">
-  <div class="pg-title">Smart Wallet</div>
-  <div class="pg-sub">Unified Eco-Wallet across brand families · Smart locked voucher management</div>
-  <div class="mt">
+  <div class="ph"><div class="ph-title">Smart Wallet</div><div class="ph-sub">Unified ecosystem balance · Smart locked voucher management</div></div>
+  <div class="mode-toggle">
     <button class="mt-btn active" onclick="wMode('eco',this)">🔓 Eco-Wallet</button>
     <button class="mt-btn" onclick="wMode('locked',this)">🔒 Locked Vouchers</button>
   </div>
   <div id="ecoMode">
-    <div class="wh">
-      <div class="wh-lbl">Total Eco-Balance · Spend anywhere within same brand family</div>
-      <div class="wh-val">₹4,287</div>
-      <div class="wh-row">
-        <div class="wh-item"><label>Fashion</label><span>₹420</span></div>
-        <div class="wh-item"><label>Grocery</label><span>₹310</span></div>
-        <div class="wh-item"><label>Electronics</label><span>₹680</span></div>
-        <div class="wh-item"><label>Fuel</label><span>₹432</span></div>
-        <div class="wh-item"><label>Previous</label><span>₹2,445</span></div>
+    <div class="hero-card mb20">
+      <div style="position:relative;z-index:1">
+        <div class="hero-card-lbl">Total Eco-Balance · Fully interoperable within brand family</div>
+        <div class="hero-card-val">₹4,287</div>
+        <div class="hero-card-row">
+          <div class="hcr-item"><label>Fashion</label><span>₹420</span></div>
+          <div class="hcr-item"><label>Grocery</label><span>₹310</span></div>
+          <div class="hcr-item"><label>Electronics</label><span>₹680</span></div>
+          <div class="hcr-item"><label>Fuel</label><span>₹432</span></div>
+          <div class="hcr-item"><label>Previous</label><span>₹2,445</span></div>
+        </div>
       </div>
     </div>
-    <div class="sec-title mb12">Brand Ecosystem</div>
-    <div class="brand-eco" id="brandEco"></div>
+    <div style="font-size:13px;font-weight:600;color:var(--txt);margin-bottom:14px">Brand Ecosystem</div>
+    <div class="brand-grid" id="brandEco"></div>
     <div class="card">
       <div class="sec-title">Spend Simulator</div>
       <div class="g2">
-        <div class="fr"><label class="fl">Spend Eco-Balance at</label>
-          <select class="fi" id="spendBrand"><option>JioMart (Reliance)</option><option>Reliance Trends (Reliance)</option><option>Reliance Digital (Reliance)</option><option>BigBasket (Tata)</option><option>Croma (Tata)</option></select>
-        </div>
+        <div class="fr"><label class="fl">Spend at</label><select class="fi" id="spendBrand"><option>JioMart (Reliance)</option><option>Reliance Trends (Reliance)</option><option>Reliance Digital (Reliance)</option><option>BigBasket (Tata)</option><option>Croma (Tata)</option></select></div>
         <div class="fr"><label class="fl">Amount (₹)</label><input class="fi" type="number" id="spendAmt" placeholder="e.g. 500" oninput="simSpend()"></div>
       </div>
-      <div id="spendResult" style="display:none;background:var(--gxl);border:1px solid rgba(26,92,53,.15);border-radius:var(--rsm);padding:14px;font-size:13px;color:var(--t2);line-height:1.7;animation:staggerIn .3s ease"></div>
+      <div id="spendResult" style="display:none;background:var(--gxl);border:1px solid rgba(15,76,42,.15);border-radius:var(--rm);padding:14px;font-size:13px;color:var(--t2);line-height:1.7"></div>
     </div>
   </div>
   <div id="lockedMode" style="display:none">
@@ -641,7 +612,7 @@ select.fi option{background:#fff}
     <div class="card">
       <div class="sec-title">Add New Voucher</div>
       <div class="g2">
-        <div class="fr"><label class="fl">Brand / App</label><input class="fi" id="vBrand" placeholder="e.g. Myntra"></div>
+        <div class="fr"><label class="fl">Brand</label><input class="fi" id="vBrand" placeholder="e.g. Myntra"></div>
         <div class="fr"><label class="fl">Value (₹)</label><input class="fi" type="number" id="vAmt" placeholder="e.g. 5000"></div>
         <div class="fr"><label class="fl">Expiry</label><input class="fi" type="date" id="vExp"></div>
         <div class="fr"><label class="fl">Category</label><select class="fi" id="vCat"><option>Fashion / Clothing</option><option>Grocery</option><option>Electronics</option><option>Dining</option><option>Travel</option><option>Health</option></select></div>
@@ -653,11 +624,10 @@ select.fi option{background:#fff}
 
 <!-- ══ EXPENSES ══ -->
 <div class="page" id="page-expenses">
-  <div class="pg-title">Expense Builder</div>
-  <div class="pg-sub">Structure your monthly budget — ZENO uses this to optimise every cashback & voucher</div>
+  <div class="ph"><div class="ph-title">Expense Builder</div><div class="ph-sub">Structure your monthly budget — ZENO uses this for every cashback & voucher optimisation</div></div>
   <div class="g2 mb20">
     <div class="card">
-      <div class="sec-title">Income & Profile</div>
+      <div class="sec-title">Profile & Income</div>
       <div class="fr"><label class="fl">Monthly Take-Home (₹)</label><input class="fi" type="number" id="income" value="50000" oninput="recalc()"></div>
       <div class="fr"><label class="fl">Your Age</label><input class="fi" type="number" id="ageInp" value="28" oninput="updateProfile()"></div>
       <div class="fl" style="margin-bottom:10px">Life Stage</div>
@@ -674,62 +644,60 @@ select.fi option{background:#fff}
       </table>
     </div>
   </div>
-  <div class="card"><div class="sec-title">Budget vs Actual</div><div class="cw" style="height:210px"><canvas id="expChart"></canvas></div></div>
+  <div class="card"><div class="sec-title">Budget vs Actual</div><div class="cw" style="height:215px"><canvas id="expChart" role="img" aria-label="Budget vs actual"></canvas></div></div>
 </div>
 
 <!-- ══ ADVISOR ══ -->
 <div class="page" id="page-advisor">
-  <div class="pg-title">Voucher Advisor</div>
-  <div class="pg-sub">Enter any locked voucher — ZENO maps it to your expenses to free real money for investment</div>
+  <div class="ph"><div class="ph-title">Voucher Advisor</div><div class="ph-sub">Enter any locked voucher — ZENO maps it to your expenses to free real money for investment</div></div>
   <div class="g2 mb20">
     <div class="card">
       <div class="sec-title">Your Voucher</div>
       <div class="fr"><label class="fl">Brand (locked to this brand only)</label><select class="fi" id="avBrand" onchange="runAdvisor()"><option>Myntra</option><option>Swiggy</option><option>MakeMyTrip</option><option>Nykaa</option><option>BigBasket</option><option>BookMyShow</option><option>Zomato</option><option>Amazon</option><option>Flipkart</option><option>PharmEasy</option></select></div>
       <div class="fr"><label class="fl">Voucher Value (₹)</label><input class="fi" type="number" id="avAmt" value="5000" oninput="runAdvisor()"></div>
-      <div class="fr"><label class="fl">Expiry</label><input class="fi" type="date" id="avExp"></div>
-      <div style="background:var(--red-l);border:1px solid rgba(192,57,43,.15);border-radius:var(--rsm);padding:12px 14px;font-size:12px;color:var(--t2);line-height:1.65">🔒 This voucher is <strong style="color:var(--red)">locked</strong> to this brand only. ZENO finds which of your budgeted expenses it can cover — so you invest the freed real cash instead.</div>
+      <div class="fr"><label class="fl">Expiry Date</label><input class="fi" type="date" id="avExp"></div>
+      <div style="background:var(--red-l);border:1px solid rgba(181,48,31,.15);border-radius:var(--rm);padding:12px 14px;font-size:12px;color:var(--t2);line-height:1.65">🔒 Locked to this brand only. ZENO finds matching expense categories so you cover spend with the voucher — and invest the freed real cash instead.</div>
     </div>
     <div class="card">
       <div class="sec-title">Real Money Freed</div>
-      <div class="lbl">Optimal usage per your expense structure</div>
-      <div style="font-family:var(--fh);font-size:58px;letter-spacing:2px;color:var(--g);font-weight:700;line-height:1;margin:8px 0;background:linear-gradient(135deg,var(--g),var(--g4));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text" id="avFreed">₹4,000</div>
-      <div style="font-size:13px;color:var(--t3);margin:9px 0;line-height:1.5">of real bank money freed — redirect to investment instead of spending from your account.</div>
-      <div style="font-family:var(--fh);font-size:26px;color:var(--gold);font-weight:600" id="avInvest">→ ₹4,000 into SIP</div>
-      <div style="font-size:12px;color:var(--t3);margin-top:5px" id="avGrowth">At 12% p.a. → ₹7,180 in 5 years</div>
+      <div style="font-family:var(--fp);font-size:62px;letter-spacing:1px;color:var(--g);font-weight:900;line-height:1;margin:10px 0;background:linear-gradient(135deg,var(--g),var(--g5));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text" id="avFreed">₹4,000</div>
+      <div style="font-size:13px;color:var(--t3);margin:10px 0;line-height:1.6">of real bank money freed — redirect to investment instead of spending from your account.</div>
+      <div style="font-family:var(--fp);font-size:26px;color:var(--gold);font-weight:700" id="avInvest">→ ₹4,000 into SIP</div>
+      <div style="font-size:12px;color:var(--t3);margin-top:6px" id="avGrowth">At 12% p.a. → ₹7,180 in 5 years</div>
     </div>
   </div>
   <div class="card mb20"><div class="sec-title">Smart Spending Plan</div><div id="advisorPlan"></div></div>
-  <div class="card"><div class="sec-title">Expense Structure Match</div><div id="advisorExp"></div></div>
+  <div class="card"><div class="sec-title">Your Expense Structure</div><div id="advisorExp"></div></div>
 </div>
 
 <!-- ══ GOALS ══ -->
 <div class="page" id="page-goals">
-  <div class="pg-title">Goals</div>
-  <div class="pg-sub">Age-based financial milestones — turning every rupee saved into real wealth</div>
+  <div class="ph"><div class="ph-title">Goals</div><div class="ph-sub">Age-based milestones — turning every saved rupee into lasting wealth</div></div>
   <div class="card mb20"><div class="sec-title">Life Stage Profile <span class="badge bg" id="profBadge">Early Career · 26–35</span></div><div id="profDetail"></div></div>
-  <div style="font-family:var(--fh);font-size:24px;color:var(--g);font-weight:600;margin-bottom:16px">Financial Goals</div>
+  <div style="font-family:var(--fp);font-size:26px;color:var(--g);font-weight:700;margin-bottom:18px">Financial Goals</div>
   <div id="goalList" class="mb24"></div>
-  <div style="font-family:var(--fh);font-size:24px;color:var(--g);font-weight:600;margin-bottom:16px">Wealth Milestones</div>
+  <div style="font-family:var(--fp);font-size:26px;color:var(--g);font-weight:700;margin-bottom:18px">Wealth Milestones</div>
   <div id="msList"></div>
 </div>
 
 <!-- ══ INVEST ══ -->
 <div class="page" id="page-invest">
-  <div class="pg-title">Invest</div>
-  <div class="pg-sub">Growth portfolio — sweep surplus & cashback into compounding instruments</div>
-  <div class="wh mb20">
-    <div class="wh-lbl">Total Portfolio Value</div>
-    <div class="wh-val" id="portVal">₹10,632</div>
-    <div class="wh-row">
-      <div class="wh-item"><label>Invested</label><span id="portInvested">₹8,960</span></div>
-      <div class="wh-item"><label>Returns</label><span style="color:#b0f0c8">+₹1,672</span></div>
-      <div class="wh-item"><label>XIRR</label><span>12.3%</span></div>
-      <div class="wh-item"><label>Auto-Sweep</label><span style="color:#b0f0c8">Active ✓</span></div>
+  <div class="ph"><div class="ph-title">Invest</div><div class="ph-sub">Growth portfolio — sweep surplus & cashback into compounding instruments</div></div>
+  <div class="hero-card mb22">
+    <div style="position:relative;z-index:1">
+      <div class="hero-card-lbl">Total Portfolio Value</div>
+      <div class="hero-card-val" id="portVal">₹10,632</div>
+      <div class="hero-card-row">
+        <div class="hcr-item"><label>Invested</label><span id="portInvested">₹8,960</span></div>
+        <div class="hcr-item"><label>Returns</label><span style="color:#a0f0c4">+₹1,672</span></div>
+        <div class="hcr-item"><label>XIRR</label><span>12.3%</span></div>
+        <div class="hcr-item"><label>Auto-Sweep</label><span style="color:#a0f0c4">Active ✓</span></div>
+      </div>
     </div>
   </div>
   <div class="g2 mb20">
     <div class="card"><div class="sec-title">Instruments</div><div id="invList"></div></div>
-    <div class="card"><div class="sec-title">Allocation</div><div class="cw"><canvas id="pieChart"></canvas></div></div>
+    <div class="card"><div class="sec-title">Portfolio Allocation</div><div class="cw"><canvas id="pieChart" role="img" aria-label="Portfolio allocation"></canvas></div></div>
   </div>
   <div class="card">
     <div class="sec-title">Manual Sweep</div>
@@ -743,8 +711,7 @@ select.fi option{background:#fff}
 
 <!-- ══ LEDGER ══ -->
 <div class="page" id="page-ledger">
-  <div class="pg-title">Ledger</div>
-  <div class="pg-sub">Complete transaction history — every earn, spend, invest, and sweep</div>
+  <div class="ph"><div class="ph-title">Ledger</div><div class="ph-sub">Complete transaction history — every earn, spend, invest, and sweep</div></div>
   <div class="tabs" id="ledgTabs">
     <div class="tab active" onclick="ledgFilter('all',this)">All</div>
     <div class="tab" onclick="ledgFilter('earn',this)">Earned</div>
@@ -757,86 +724,221 @@ select.fi option{background:#fff}
 
 <!-- ══ AI AGENT ══ -->
 <div class="page" id="page-ai">
-  <div class="pg-title">ZENO AI Agent</div>
-  <div class="pg-sub">Real-time financial intelligence — powered by Groq · Llama 3.3 70B</div>
+  <div class="ph"><div class="ph-title">ZENO AI Agent</div><div class="ph-sub">Real-time intelligence — Groq · Llama 3.3 70B · Your full financial context loaded</div></div>
   <div class="g2">
     <div class="ai-panel">
-      <div class="ai-hdr">
+      <div class="ai-head">
         <div class="ai-dot"></div>
         <div class="ai-title">ZENO Intelligence</div>
-        <div class="ai-status" id="aiStatus">Ready</div>
+        <div class="ai-stat" id="aiStatus">Live</div>
       </div>
       <div class="ai-msgs" id="aiMsgs">
         <div class="msg">
-          <div class="msg-av msg-av-ai">Z</div>
-          <div class="bubble bubble-ai">
-            <p>Hello! I'm <strong>ZENO Intelligence</strong> — your financial empowerment agent.</p>
-            <p>I have your complete profile loaded. Ask me anything about your money.</p>
+          <div class="msg-av av-ai">Z</div>
+          <div class="bubble bub-ai">
+            <p>Hello! I'm <strong>ZENO Intelligence</strong> — your financial empowerment agent, running live.</p>
+            <p>I have your full profile loaded — income, every expense, cashback, vouchers, goals, and portfolio.</p>
             <ul>
-              <li>How to use a locked voucher smartly</li>
+              <li>How to use any locked voucher smartly</li>
               <li>Which expenses cashback can substitute</li>
               <li>How much to invest this month</li>
-              <li>Goal timeline for your age</li>
+              <li>Goal timeline for your age & income</li>
             </ul>
           </div>
         </div>
       </div>
-      <div class="qps">
+      <div class="quick-prompts">
         <div class="qp" onclick="qpSend(this)">How to use my Myntra voucher?</div>
-        <div class="qp" onclick="qpSend(this)">Am I saving enough for my age?</div>
+        <div class="qp" onclick="qpSend(this)">Am I saving enough for age 28?</div>
         <div class="qp" onclick="qpSend(this)">Which expenses can cashback cover?</div>
         <div class="qp" onclick="qpSend(this)">Fastest path to ₹1L invested?</div>
       </div>
-      <div class="ai-inp-row">
+      <div class="ai-inp-area">
         <input class="ai-inp" id="aiInp" placeholder="Ask ZENO about your finances..." onkeydown="if(event.key==='Enter')sendAI()">
         <button class="ai-send" onclick="sendAI()">➤</button>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:15px">
-      <div class="card"><div class="sec-title">Context in Agent Memory</div><div id="aiContext"></div></div>
-      <div class="card" style="flex:1"><div class="sec-title">Live Insights</div><div id="aiInsights"></div></div>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <div class="card"><div class="sec-title">Context in AI Memory</div><div id="aiContext"></div></div>
+      <div class="card" style="flex:1"><div class="sec-title">Live Proactive Insights</div><div id="aiInsights"></div></div>
     </div>
   </div>
 </div>
 
-</div><!-- /main -->
-</div><!-- /shell -->
-</div><!-- /appScreen -->
+<!-- ══ PROFILE ══ -->
+<div class="page" id="page-profile">
+  <div class="ph"><div class="ph-title">My Profile</div><div class="ph-sub">Your account, financial identity, and empowerment journey</div></div>
+  <div class="profile-hero mb24">
+    <div style="position:relative;z-index:1">
+      <div class="p-av-lg" id="pAvLg">AK</div>
+      <div class="p-name" id="pNameDisp">Arjun Kumar</div>
+      <div class="p-meta" id="pMetaDisp">Age 28 · Early Career · Member since April 2026</div>
+      <div class="p-badges">
+        <div class="p-badge">🌱 First Invest</div>
+        <div class="p-badge">🛡 Emergency 50%</div>
+        <div class="p-badge">📈 Growth Mode</div>
+        <div class="p-badge" id="pStageBadge">Early Career</div>
+      </div>
+    </div>
+  </div>
+  <div class="pstat-grid mb24">
+    <div class="pstat"><div class="pv" id="pStatScore">72</div><div class="pl">Wealth Score</div></div>
+    <div class="pstat"><div class="pv" id="pStatInvested">₹8,960</div><div class="pl">Total Invested</div></div>
+    <div class="pstat"><div class="pv" id="pStatSurplus">₹6,450</div><div class="pl">Month Surplus</div></div>
+    <div class="pstat"><div class="pv">3</div><div class="pl">Active Goals</div></div>
+  </div>
+  <div class="g2 mb20">
+    <div class="card">
+      <div class="sec-title">Personal Details</div>
+      <div class="edit-row"><span class="er-lbl">Full Name</span><span class="er-val" id="efName">Arjun Kumar</span><span class="er-btn" onclick="editField('name')">Edit</span></div>
+      <div class="edit-row"><span class="er-lbl">Email</span><span class="er-val" id="efEmail">arjun@example.com</span><span class="er-btn" onclick="editField('email')">Edit</span></div>
+      <div class="edit-row"><span class="er-lbl">Age</span><span class="er-val" id="efAge">28</span><span class="er-btn" onclick="editField('age')">Edit</span></div>
+      <div class="edit-row"><span class="er-lbl">Monthly Income</span><span class="er-val" id="efIncome">₹50,000</span><span class="er-btn" onclick="editField('income')">Edit</span></div>
+      <div class="edit-row"><span class="er-lbl">Life Stage</span><span class="er-val" id="efStage">Early Career</span><span class="er-btn" onclick="nav('expenses',document.querySelector('[onclick*=expenses]'))">Change</span></div>
+    </div>
+    <div class="card">
+      <div class="sec-title">Empowerment Journey</div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--bdr)"><div style="font-size:20px;width:36px;text-align:center">🌱</div><div style="flex:1"><div style="font-size:13px;font-weight:600">First ₹1,000 Invested</div><div style="font-size:11px;color:var(--t3)">March 2026 · Flexi Cap MF</div></div><span class="badge bg">Done</span></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--bdr)"><div style="font-size:20px;width:36px;text-align:center">🛡️</div><div style="flex:1"><div style="font-size:13px;font-weight:600">Emergency Fund 50%</div><div style="font-size:11px;color:var(--t3)">February 2026 · ₹75K saved</div></div><span class="badge bg">Done</span></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--bdr)"><div style="font-size:20px;width:36px;text-align:center">📈</div><div style="flex:1"><div style="font-size:13px;font-weight:600">₹10,000 Invested</div><div style="font-size:11px;color:var(--t3)">In progress · ₹960 to go</div></div><span class="badge ba">89%</span></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:12px 0"><div style="font-size:20px;width:36px;text-align:center">🔥</div><div style="flex:1"><div style="font-size:13px;font-weight:600">3-Month No-Waste Streak</div><div style="font-size:11px;color:var(--t3)">2 of 3 months complete</div></div><span class="badge ba">67%</span></div>
+    </div>
+  </div>
+</div>
 
-<!-- MODALS -->
+<!-- ══ SETTINGS ══ -->
+<div class="page" id="page-settings">
+  <div class="ph"><div class="ph-title">Settings</div><div class="ph-sub">Preferences, API configuration, and data management</div></div>
+  <div class="g2">
+    <div>
+      <div class="card mb20">
+        <div class="setting-group-title">AI Configuration</div>
+        <div class="fr"><label class="fl">API Key (stored in browser only)</label>
+          <div style="display:flex;gap:8px"><input class="fi" type="password" id="apiKeyInp" placeholder="gsk_..."><button class="btn btn-o btn-sm" onclick="toggleKey()">Show</button></div>
+        </div>
+        <div class="fr"><label class="fl">Model</label>
+          <select class="fi" id="apiModel">
+            <option value="llama-3.3-70b-versatile">Llama 3.3 70B — Recommended</option>
+            <option value="llama-3.1-8b-instant">Llama 3.1 8B — Fast</option>
+            <option value="mixtral-8x7b-32768">Mixtral 8x7B</option>
+          </select>
+        </div>
+        <div style="display:flex;gap:10px;margin-bottom:12px">
+          <button class="btn btn-p" onclick="saveApiKey()">Save Key</button>
+          <button class="btn btn-o" onclick="testApi()">Test Connection</button>
+          <button class="btn btn-d btn-sm" onclick="clearKey()">Clear</button>
+        </div>
+        <div id="apiStatus" style="font-size:12px;color:var(--t3);padding:8px 0"></div>
+      </div>
+      <div class="card">
+        <div class="setting-group-title">Preferences</div>
+        <div class="fr"><label class="fl">Auto-invest trigger (₹)</label><input class="fi" type="number" id="trigAmt" value="1000"></div>
+        <div class="fr"><label class="fl">SIP Frequency</label><select class="fi"><option>Monthly</option><option>Weekly</option><option>Quarterly</option></select></div>
+        <button class="btn btn-p" onclick="toast('✓ Preferences saved')">Save Preferences</button>
+      </div>
+    </div>
+    <div>
+      <div class="card mb20">
+        <div class="setting-group-title">Account</div>
+        <div style="display:flex;flex-direction:column;gap:0">
+          <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bdr);font-size:13px"><span style="color:var(--t3)">Name</span><span style="font-weight:500" id="setName">Arjun Kumar</span></div>
+          <div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bdr);font-size:13px"><span style="color:var(--t3)">Email</span><span style="font-weight:500" id="setEmail">demo@zeno.app</span></div>
+          <div style="display:flex;justify-content:space-between;padding:9px 0;font-size:13px"><span style="color:var(--t3)">Member Since</span><span style="font-weight:500">April 2026</span></div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:16px">
+          <button class="btn btn-o" onclick="nav('profile',document.querySelector('[onclick*=profile]'))">View Profile</button>
+          <button class="btn btn-d btn-sm" onclick="doLogout()">Sign Out</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="setting-group-title">Data Management</div>
+        <div style="display:flex;flex-direction:column;gap:9px">
+          <button class="btn btn-o" onclick="exportData()">⬇ Export Data (JSON)</button>
+          <button class="btn btn-o" onclick="document.getElementById('importFile').click()">⬆ Import Data</button>
+          <button class="btn btn-d" onclick="resetData()">⚠ Reset All Data</button>
+        </div>
+        <input type="file" id="importFile" style="display:none" accept=".json" onchange="handleImport(event)">
+      </div>
+    </div>
+  </div>
+</div>
+
+</div></div></div>
+
+<!-- INVEST MODAL -->
 <div class="modal-bd" id="invModal">
   <div class="modal">
     <div class="modal-title">Auto-Invest ⚡</div>
-    <div style="font-size:13px;color:var(--t3);margin-bottom:8px">Lock your cashback into growth before it gets spent</div>
+    <div style="font-size:13px;color:var(--t3);margin-bottom:8px">Lock your cashback into growth right now</div>
     <div class="modal-amt" id="modalAmt">₹1,842</div>
-    <div style="font-size:13px;color:var(--t2);margin-bottom:13px">Choose destination:</div>
+    <div style="font-size:13px;color:var(--t2);margin-bottom:14px">Choose destination:</div>
     <div id="modalOpts"></div>
-    <div style="display:flex;gap:10px;margin-top:22px">
+    <div style="display:flex;gap:11px;margin-top:22px">
       <button class="btn btn-p" style="flex:1" onclick="confirmInvest()">Invest Now ✦</button>
       <button class="btn btn-o" onclick="document.getElementById('invModal').classList.remove('show')">Cancel</button>
     </div>
   </div>
 </div>
 
+<!-- EDIT MODAL -->
+<div class="modal-bd" id="editModal">
+  <div class="modal">
+    <div class="modal-title" id="editModalTitle">Edit Field</div>
+    <div class="fr" style="margin-top:18px"><label class="fl" id="editModalLabel">Value</label><input class="fi" id="editModalInput" placeholder="Enter new value"></div>
+    <div style="display:flex;gap:11px;margin-top:18px">
+      <button class="btn btn-p" style="flex:1" onclick="saveEdit()">Save Changes</button>
+      <button class="btn btn-o" onclick="document.getElementById('editModal').classList.remove('show')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE CARDS GRID (shared) -->
+<template id="pcTpl"></template>
+<div class="pc-grid" id="profileCards" style="display:none"></div>
+
 <div class="toast" id="toast"></div>
 
 <script>
 // ══════════════════════════════════════
-//  🔑 GROQ API KEY — hardcoded
+//  GROQ CONFIG
 // ══════════════════════════════════════
-const GROQ_API_KEY = 'YOUR_GROQ_KEY_HERE'; // ← paste your gsk_... key here
-const GROQ_MODEL   = 'llama-3.3-70b-versatile';
-const GROQ_URL     = 'https://api.groq.com/openai/v1/chat/completions';
+const GROQ_KEY   = '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';
+const GROQ_MODEL = 'llama-3.3-70b-versatile';
+const GROQ_URL   = 'https://api.groq.com/openai/v1/chat/completions';
+
+// ══════════════════════════════════════
+//  PARTICLES
+// ══════════════════════════════════════
+(function(){
+  const c=document.getElementById('pcanvas');
+  const ctx=c.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize);
+  for(let i=0;i<40;i++) pts.push({x:Math.random()*1200,y:Math.random()*900,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:1+Math.random()*2,a:Math.random()*.4});
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W) p.vx*=-1;
+      if(p.y<0||p.y>H) p.vy*=-1;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(60,201,116,${p.a})`;ctx.fill();
+    });
+    requestAnimationFrame(frame);
+  }
+  frame();
+})();
 
 // ══════════════════════════════════════
 //  DATA
 // ══════════════════════════════════════
 const BRANDS=[
   {name:'JioMart',parent:'Reliance',cat:'Grocery',icon:'🛒',bal:310,color:'#2d8a54'},
-  {name:'Reliance Trends',parent:'Reliance',cat:'Fashion',icon:'👗',bal:420,color:'#b8860b'},
-  {name:'Reliance Digital',parent:'Reliance',cat:'Electronics',icon:'📱',bal:680,color:'#1a4a8a'},
+  {name:'Reliance Trends',parent:'Reliance',cat:'Fashion',icon:'👗',bal:420,color:'#c49a0a'},
+  {name:'Reliance Digital',parent:'Reliance',cat:'Electronics',icon:'📱',bal:680,color:'#16407a'},
   {name:'Jio-BP',parent:'Reliance',cat:'Fuel',icon:'⛽',bal:432,color:'#6b3fa0'},
-  {name:'AJIO',parent:'Reliance',cat:'Fashion',icon:'🧥',bal:0,color:'#c0392b'},
+  {name:'AJIO',parent:'Reliance',cat:'Fashion',icon:'🧥',bal:0,color:'#b5301f'},
   {name:'BigBasket',parent:'Tata',cat:'Grocery',icon:'🥦',bal:220,color:'#27ae60'},
   {name:'Croma',parent:'Tata',cat:'Electronics',icon:'💻',bal:380,color:'#2980b9'},
   {name:'Westside',parent:'Tata',cat:'Fashion',icon:'👔',bal:150,color:'#e67e22'},
@@ -845,13 +947,13 @@ const BRANDS=[
 ];
 
 let EXPENSES=[
-  {cat:'Rent / EMI',budget:15000,actual:15000,cashback:0,color:'#c0392b',group:''},
+  {cat:'Rent / EMI',budget:15000,actual:15000,cashback:0,color:'#b5301f',group:''},
   {cat:'Grocery',budget:8000,actual:6200,cashback:310,color:'#2d8a54',group:'Reliance'},
-  {cat:'Fashion / Clothing',budget:5000,actual:3800,cashback:420,color:'#b8860b',group:'Reliance'},
-  {cat:'Electronics',budget:3000,actual:2100,cashback:680,color:'#1a4a8a',group:'Tata'},
+  {cat:'Fashion / Clothing',budget:5000,actual:3800,cashback:420,color:'#c49a0a',group:'Reliance'},
+  {cat:'Electronics',budget:3000,actual:2100,cashback:680,color:'#16407a',group:'Tata'},
   {cat:'Fuel',budget:4000,actual:3100,cashback:432,color:'#6b3fa0',group:'Reliance'},
   {cat:'Dining',budget:3200,actual:3250,cashback:0,color:'#e67e22',group:''},
-  {cat:'Health',budget:2000,actual:1400,cashback:0,color:'#3da86a',group:''},
+  {cat:'Health',budget:2000,actual:1400,cashback:0,color:'#27ae60',group:''},
   {cat:'Subscriptions',budget:1500,actual:1500,cashback:0,color:'#8e44ad',group:''},
   {cat:'Misc',budget:3300,actual:2700,cashback:0,color:'#7f8c8d',group:''},
 ];
@@ -862,19 +964,19 @@ let VOUCHERS=[
 ];
 
 const INVESTMENTS=[
-  {name:'Digital Gold',icon:'🪙',ret:'8–12%',risk:'Low',allocated:3000,color:'#b8860b'},
+  {name:'Digital Gold',icon:'🪙',ret:'8–12%',risk:'Low',allocated:3000,color:'#c49a0a'},
   {name:'Flexi Cap MF',icon:'📈',ret:'12–18%',risk:'Medium',allocated:4000,color:'#2d8a54'},
-  {name:'Bluechip Fund',icon:'🏛️',ret:'10–14%',risk:'Medium',allocated:1960,color:'#1a4a8a'},
+  {name:'Bluechip Fund',icon:'🏛️',ret:'10–14%',risk:'Medium',allocated:1960,color:'#16407a'},
   {name:'Liquid MF',icon:'💧',ret:'6–7%',risk:'Low',allocated:0,color:'#6b3fa0'},
   {name:'NPS',icon:'🏦',ret:'9–11%',risk:'Low',allocated:0,color:'#e67e22'},
   {name:'PPF',icon:'📋',ret:'7.1%',risk:'None',allocated:0,color:'#27ae60'},
 ];
 
 const PROFILES=[
-  {label:'Student',range:'18–25',risk:'Moderate',desc:'Build an emergency fund first. Start a ₹500/month SIP immediately — even small amounts compound massively over time.',goals:['₹50K Emergency Fund','₹2L wealth by 25']},
-  {label:'Early Career',range:'26–35',risk:'Aggressive',desc:'Maximum growth window. Prioritise SIPs, plan for home, and never waste cashback — every idle rupee is an opportunity cost.',goals:['₹1.5L Emergency Fund','Home in 7 yrs','₹50L by 35']},
-  {label:'Family Builder',range:'36–50',risk:'Balanced',desc:'Balance growth with protection. Child education fund, home loan pre-payment, and building retirement corpus.',goals:['Child Education ₹30L','₹1Cr Retirement']},
-  {label:'Pre-Retirement',range:'50+',risk:'Conservative',desc:'Capital protection and passive income. Shift to guaranteed returns and build steady income streams.',goals:['₹2Cr Corpus','₹40K/mo passive income']},
+  {label:'Student',range:'18–25',risk:'Moderate',desc:'Build an emergency fund first. Start a ₹500/month SIP immediately — even small amounts compound massively over time. Use cashback to cover everyday essentials.',goals:['₹50K Emergency Fund','₹2L wealth by 25']},
+  {label:'Early Career',range:'26–35',risk:'Aggressive',desc:'Maximum growth window. Prioritise SIPs, plan for home down payment, and never waste cashback — every idle rupee is an opportunity cost that compounds against you.',goals:['₹1.5L Emergency Fund','Home in 7 yrs','₹50L by 35']},
+  {label:'Family Builder',range:'36–50',risk:'Balanced',desc:'Balance growth with protection. Build child education corpus, pre-pay your home loan, and accelerate retirement savings while managing family cash flows.',goals:['Child Education ₹30L','₹1Cr Retirement']},
+  {label:'Pre-Retirement',range:'50+',risk:'Conservative',desc:'Capital protection is the priority. Shift toward guaranteed returns, build passive income streams, and ensure your corpus is safe from market volatility.',goals:['₹2Cr Corpus','₹40K/mo passive income']},
 ];
 
 let LEDGER=[
@@ -893,41 +995,18 @@ const BCAT={Myntra:'Fashion / Clothing',Swiggy:'Dining',MakeMyTrip:'Misc',Nykaa:
 let USER={name:'',email:'',age:28,income:50000,profile:1,joined:''};
 let state={score:72,invested:8960,cashback:1842,selProfile:1,selInvest:'Digital Gold',ledgFilter:'all'};
 let aiHistory=[];
+let currentEditField='';
 
-// ══ PARTICLES ══
-function spawnParticles(){
-  const c=document.getElementById('particles');
-  for(let i=0;i<12;i++){
-    const p=document.createElement('div');
-    p.className='particle';
-    p.style.cssText=`left:${Math.random()*100}%;width:${2+Math.random()*4}px;height:${2+Math.random()*4}px;animation-duration:${8+Math.random()*14}s;animation-delay:${Math.random()*10}s;opacity:${.1+Math.random()*.3}`;
-    c.appendChild(p);
-  }
-}
-spawnParticles();
-
-// ══ NAV RIPPLE ══
-document.querySelectorAll('.nav-item').forEach(item=>{
-  item.addEventListener('click',function(e){
-    const r=document.createElement('span');
-    r.className='ripple';
-    const rect=this.getBoundingClientRect();
-    const size=Math.max(rect.width,rect.height);
-    r.style.cssText=`width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
-    this.appendChild(r);
-    setTimeout(()=>r.remove(),500);
-  });
-});
-
-// ══ AUTH ══
-function switchAuthTab(tab){
+// ══════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════
+function switchTab(tab){
   document.querySelectorAll('.auth-tab').forEach((t,i)=>t.classList.toggle('active',i===(tab==='login'?0:1)));
   document.getElementById('loginPanel').classList.toggle('active',tab==='login');
   document.getElementById('signupPanel').classList.toggle('active',tab==='signup');
 }
 function showErr(id,msg){
-  const el=document.getElementById(id);
-  el.textContent=msg;el.classList.add('show');
+  const el=document.getElementById(id);el.textContent=msg;el.classList.add('show');
   setTimeout(()=>el.classList.remove('show'),4000);
 }
 function doLogin(){
@@ -936,9 +1015,9 @@ function doLogin(){
   if(!email||!pwd){showErr('loginErr','Please enter your email and password.');return;}
   if(!email.includes('@')){showErr('loginErr','Enter a valid email address.');return;}
   if(pwd.length<6){showErr('loginErr','Password must be at least 6 characters.');return;}
-  const saved=localStorage.getItem('zeno_user_'+email);
-  if(saved){USER=JSON.parse(saved);}
-  else{USER={name:email.split('@')[0].replace(/[^a-zA-Z ]/g,' ').trim()||'User',email,age:28,income:50000,profile:1,joined:new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})};}
+  const saved=localStorage.getItem('zeno_u_'+email);
+  if(saved) USER=JSON.parse(saved);
+  else USER={name:email.split('@')[0].replace(/[^a-zA-Z ]/g,' ').trim()||'User',email,age:28,income:50000,profile:1,joined:new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})};
   launchApp();
 }
 function doSignup(){
@@ -948,11 +1027,11 @@ function doSignup(){
   const income=parseFloat(document.getElementById('signupIncome').value)||0;
   const pwd=document.getElementById('signupPwd').value;
   if(!name||!email||!age||!income||!pwd){showErr('signupErr','Please fill in all fields.');return;}
-  if(!email.includes('@')){showErr('signupErr','Enter a valid email address.');return;}
+  if(!email.includes('@')){showErr('signupErr','Enter a valid email.');return;}
   if(pwd.length<8){showErr('signupErr','Password must be at least 8 characters.');return;}
-  if(age<18||age>80){showErr('signupErr','Enter a valid age between 18 and 80.');return;}
+  if(age<18||age>80){showErr('signupErr','Enter a valid age (18–80).');return;}
   USER={name,email,age,income,profile:age<26?0:age<=35?1:age<=50?2:3,joined:new Date().toLocaleDateString('en-IN',{month:'long',year:'numeric'})};
-  localStorage.setItem('zeno_user_'+email,JSON.stringify(USER));
+  localStorage.setItem('zeno_u_'+email,JSON.stringify(USER));
   state.income=income;
   launchApp();
 }
@@ -967,10 +1046,13 @@ function launchApp(){
   state.selProfile=USER.profile||1;
   document.getElementById('ageInp').value=USER.age||28;
   document.getElementById('income').value=USER.income||50000;
+  // Load saved key
+  const sk=localStorage.getItem('zeno_gk');
+  if(sk) document.getElementById('apiKeyInp').value=sk;
   updateUserMeta();renderAll();
   setTimeout(()=>{
     const c=document.getElementById('scoreC');
-    if(c) c.style.strokeDashoffset=289*(1-state.score/100);
+    if(c) c.style.strokeDashoffset=301*(1-state.score/100);
   },700);
 }
 function doLogout(){
@@ -980,28 +1062,29 @@ function doLogout(){
   document.getElementById('loginPwd').value='';
   aiHistory=[];USER={};
 }
-function checkStrength(pwd){
-  const fill=document.getElementById('strengthFill');
-  let score=0;
-  if(pwd.length>=8)score++;if(/[A-Z]/.test(pwd))score++;if(/[0-9]/.test(pwd))score++;if(/[^A-Za-z0-9]/.test(pwd))score++;
-  const colors=['#e74c3c','#e67e22','#f1c40f','#2ecc71'];
-  fill.style.width=(score*25)+'%';fill.style.background=colors[score-1]||'var(--border)';
+function checkStr(pwd){
+  const f=document.getElementById('strFill');
+  let s=0;
+  if(pwd.length>=8)s++;if(/[A-Z]/.test(pwd))s++;if(/[0-9]/.test(pwd))s++;if(/[^A-Za-z0-9]/.test(pwd))s++;
+  f.style.width=(s*25)+'%';
+  f.style.background=['#d9392a','#e67e22','#f1c40f','#27ae60'][s-1]||'var(--bdr)';
 }
 
-// ══ NAV ══
+// ══════════════════════════════════════
+//  CORE
+// ══════════════════════════════════════
 function nav(id,el){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
   if(el) el.classList.add('active');
   if(id==='ai'){renderAIContext();renderAIInsights();}
+  if(id==='profile') renderProfile();
 }
-
-// ══ UTILS ══
 function toast(msg,type='g'){
   const t=document.getElementById('toast');
   t.textContent=msg;
-  t.style.background=type==='r'?'var(--red)':type==='go'?'var(--gold)':'var(--g)';
+  t.style.background=type==='r'?'linear-gradient(135deg,var(--red),var(--red2))':type==='go'?'linear-gradient(135deg,var(--gold),var(--gold2))':'linear-gradient(135deg,var(--g),var(--g3))';
   t.classList.add('show');
   setTimeout(()=>t.classList.remove('show'),3400);
 }
@@ -1010,42 +1093,43 @@ function fmt(txt){
 }
 function updateUserMeta(){
   const n=USER.name||'User';
-  const initials=n.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
-  document.getElementById('sbAv').textContent=initials;
+  const ini=n.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('sbAv').textContent=ini;
   document.getElementById('sbName').textContent=n;
-  document.getElementById('sbSub').textContent=`Age ${USER.age||28} · ${PROFILES[state.selProfile].label}`;
+  document.getElementById('sbTag').textContent=`Age ${USER.age||28} · ${PROFILES[state.selProfile].label}`;
+  document.getElementById('setName').textContent=n;
+  document.getElementById('setEmail').textContent=USER.email||'';
 }
-
-// ══ RENDER ALL ══
 function renderAll(){
   document.getElementById('dashDate').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',month:'long',day:'numeric',year:'numeric'});
   renderBrandEco();renderExpenseTable();renderExpSummary();
   renderProfileCards();renderProfileDetail();runAdvisor();renderAdvisorExp();
   renderGoals();renderMilestones();renderInvList();renderLedger();
   renderDashBudget();renderDashOpp();renderAIContext();renderAIInsights();
-  updateUserMeta();updateDashHero();renderVouchers();initCharts();
+  renderVouchers();updateUserMeta();updateDashHero();initCharts();
 }
-
 function updateDashHero(){
   const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
   const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
   const sur=state.income-tA;
   document.getElementById('dhSurplus').textContent=`₹${Math.max(0,sur).toLocaleString()}`;
-  document.getElementById('dhSub').textContent=`From ₹${state.income.toLocaleString()} income · Every rupee should grow`;
+  document.getElementById('dhSub').textContent=`From ₹${state.income.toLocaleString()} income · Every rupee should compound`;
   document.getElementById('dhCB').textContent=`₹${tC.toLocaleString()}`;
   document.getElementById('dhInv').textContent=`₹${state.invested.toLocaleString()}`;
   document.getElementById('dashIncLabel').textContent=`Income ₹${state.income.toLocaleString()}`;
   document.getElementById('alertCB').textContent=`₹${tC.toLocaleString()}`;
-  const vTotal=VOUCHERS.reduce((a,v)=>a+v.amt,0);
+  const vT=VOUCHERS.reduce((a,v)=>a+v.amt,0);
   document.getElementById('dashVouchers').textContent=VOUCHERS.length;
-  document.getElementById('dashVoucherVal').textContent=`Worth ₹${vTotal.toLocaleString()}`;
+  document.getElementById('dashVoucherVal').textContent=`Worth ₹${vT.toLocaleString()}`;
 }
 
+// ══════════════════════════════════════
+//  BRANDS
+// ══════════════════════════════════════
 function renderBrandEco(){
   const el=document.getElementById('brandEco');if(!el)return;
   el.innerHTML=BRANDS.map(b=>`<div class="bc" onclick="this.classList.toggle('sel')"><div class="bi">${b.icon}</div><div class="bn">${b.name}</div><div class="bp">${b.parent}</div><div class="bv" style="color:${b.color}">₹${b.bal.toLocaleString()}</div></div>`).join('');
 }
-
 function wMode(mode,btn){
   document.querySelectorAll('.mt-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
@@ -1053,89 +1137,94 @@ function wMode(mode,btn){
   document.getElementById('lockedMode').style.display=mode==='locked'?'block':'none';
   if(mode==='locked') renderVouchers();
 }
-
 function simSpend(){
   const amt=parseFloat(document.getElementById('spendAmt').value)||0;
   const brand=document.getElementById('spendBrand').value;
   const res=document.getElementById('spendResult');
   if(!amt){res.style.display='none';return;}
-  const rem=4287-amt;
   res.style.display='block';
-  res.innerHTML=`✅ Spending <strong style="color:var(--g)">₹${amt.toLocaleString()}</strong> from Eco-Wallet at <strong>${brand}</strong><br>Balance after: <strong style="color:var(--g)">₹${rem.toLocaleString()}</strong><br>Cashback from any brand in this family is fully interoperable — no brand lock-in.<br><span style="color:var(--gold);font-weight:600">💡 You saved ₹${amt.toLocaleString()} real cash. Redirect it to your SIP?</span>`;
+  res.innerHTML=`✅ Spending <strong style="color:var(--g)">₹${amt.toLocaleString()}</strong> from Eco-Wallet at <strong>${brand}</strong><br>Balance after: <strong style="color:var(--g)">₹${(4287-amt).toLocaleString()}</strong><br>Cashback from any brand in this family is fully interoperable.<br><span style="color:var(--gold);font-weight:600">💡 You saved ₹${amt.toLocaleString()} real cash — redirect it to your SIP?</span>`;
 }
 
+// ══════════════════════════════════════
+//  VOUCHERS
+// ══════════════════════════════════════
 function renderVouchers(){
   const el=document.getElementById('voucherList');if(!el)return;
   if(!VOUCHERS.length){el.innerHTML='<div style="text-align:center;padding:24px;color:var(--t3)">No vouchers yet. Add one below.</div>';return;}
-  el.innerHTML=VOUCHERS.map((v,i)=>`<div class="voucher"><div class="v-brand">🔒 ${v.brand}</div><div class="v-amount">₹${v.amt.toLocaleString()}</div><div class="v-exp">Valid till ${v.exp} · ${v.cat}</div><div class="v-lock"><span class="badge br">LOCKED</span></div><div style="position:absolute;bottom:14px;right:30px"><button class="btn btn-o btn-sm" style="font-size:11px" onclick="VOUCHERS.splice(${i},1);renderVouchers();updateDashHero();toast('Voucher removed')">Remove</button></div></div>`).join('');
+  el.innerHTML=VOUCHERS.map((v,i)=>`<div class="voucher"><div class="v-brand">🔒 ${v.brand}</div><div class="v-amount">₹${v.amt.toLocaleString()}</div><div class="v-exp">Valid till ${v.exp} · ${v.cat}</div><div class="v-lock"><span class="badge br">LOCKED</span></div><div style="position:absolute;bottom:14px;right:32px"><button class="btn btn-o btn-sm" style="font-size:11px" onclick="VOUCHERS.splice(${i},1);renderVouchers();updateDashHero();toast('Voucher removed')">Remove</button></div></div>`).join('');
 }
-
 function addVoucher(){
   const brand=document.getElementById('vBrand').value.trim();
   const amt=parseFloat(document.getElementById('vAmt').value)||0;
   const exp=document.getElementById('vExp').value||'2026-12-31';
   const cat=document.getElementById('vCat').value;
   if(!brand||!amt){toast('Enter brand and amount','r');return;}
-  VOUCHERS.push({brand,cat,amt,exp});
-  renderVouchers();updateDashHero();
+  VOUCHERS.push({brand,cat,amt,exp});renderVouchers();updateDashHero();
   document.getElementById('vBrand').value='';document.getElementById('vAmt').value='';
   toast('✓ Voucher added — check Advisor for smart plan');
 }
 
+// ══════════════════════════════════════
+//  EXPENSES
+// ══════════════════════════════════════
 function renderExpenseTable(){
   document.getElementById('expTable').innerHTML=EXPENSES.map((e,i)=>{
     const sur=e.budget-e.actual;
     return `<tr><td><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${e.color};margin-right:8px"></span>${e.cat}</td>
-    <td><input type="number" value="${e.budget}" style="background:var(--surf);border:1px solid var(--border2);border-radius:6px;padding:5px 8px;color:var(--text);font-size:12px;width:85px" onchange="EXPENSES[${i}].budget=+this.value;recalc()"></td>
-    <td><input type="number" value="${e.actual}" style="background:var(--surf);border:1px solid var(--border2);border-radius:6px;padding:5px 8px;color:var(--text);font-size:12px;width:85px" onchange="EXPENSES[${i}].actual=+this.value;recalc()"></td>
-    <td><span style="font-family:var(--fm);color:var(--g);font-size:12px;font-weight:600">₹${e.cashback}</span></td>
+    <td><input type="number" value="${e.budget}" style="background:var(--surf);border:1px solid var(--bdr2);border-radius:7px;padding:5px 9px;color:var(--txt);font-size:12px;width:85px;font-family:var(--fm)" onchange="EXPENSES[${i}].budget=+this.value;recalc()"></td>
+    <td><input type="number" value="${e.actual}" style="background:var(--surf);border:1px solid var(--bdr2);border-radius:7px;padding:5px 9px;color:var(--txt);font-size:12px;width:85px;font-family:var(--fm)" onchange="EXPENSES[${i}].actual=+this.value;recalc()"></td>
+    <td><span style="font-family:var(--fm);color:var(--g);font-size:12px;font-weight:700">₹${e.cashback}</span></td>
     <td><span style="font-size:11px;color:var(--t3)">${e.group||'—'}</span></td>
     <td><span class="badge ${sur>=0?'bg':'br'}">${sur>=0?'+':''}₹${Math.abs(sur).toLocaleString()}</span>
     <span onclick="EXPENSES.splice(${i},1);renderExpenseTable();recalc()" style="cursor:pointer;margin-left:8px;color:var(--t4);font-size:15px;font-weight:700" title="Remove">×</span></td></tr>`;
   }).join('');
   renderExpChart();
 }
-
 function addExpRow(){EXPENSES.push({cat:'New Category',budget:1000,actual:0,cashback:0,color:'#7f8c8d',group:''});renderExpenseTable();}
-
 function recalc(){
   state.income=parseFloat(document.getElementById('income').value)||50000;
   renderExpSummary();renderExpenseTable();renderDashBudget();runAdvisor();updateDashHero();
 }
-
 function renderExpSummary(){
   const tB=EXPENSES.reduce((a,e)=>a+e.budget,0);
   const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
   const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
   const sur=state.income-tA;
   document.getElementById('expSummary').innerHTML=`
-    <div class="sc mb12"><div class="l">Total Budgeted</div><div class="v">₹${tB.toLocaleString()}</div></div>
-    <div class="sc mb12"><div class="l">Actual Spent</div><div class="v">₹${tA.toLocaleString()}</div></div>
-    <div class="sc sc-go mb12"><div class="l">Cashback Pool</div><div class="v">₹${tC.toLocaleString()}</div><div class="s">Can offset real expenses</div></div>
-    <div class="sc sc-g"><div class="l">Month Surplus</div><div class="v">₹${sur.toLocaleString()}</div><div class="s">→ Invest this immediately</div></div>`;
+    <div class="kpi mb12"><div class="l">Total Budgeted</div><div class="v">₹${tB.toLocaleString()}</div></div>
+    <div class="kpi mb12"><div class="l">Actual Spent</div><div class="v">₹${tA.toLocaleString()}</div></div>
+    <div class="kpi kpi-go mb12"><div class="l">Cashback Pool</div><div class="v">₹${tC.toLocaleString()}</div><div class="s">Can offset real expenses</div></div>
+    <div class="kpi kpi-g"><div class="l">Month Surplus</div><div class="v">₹${sur.toLocaleString()}</div><div class="s">→ Invest this immediately</div></div>`;
 }
-
 function updateProfile(){
   const age=parseInt(document.getElementById('ageInp').value)||28;
   USER.age=age;state.selProfile=age<26?0:age<=35?1:age<=50?2:3;
   renderProfileCards();renderProfileDetail();updateUserMeta();
 }
 
+// Profile cards - inline in expenses page
 function renderProfileCards(){
-  document.getElementById('profileCards').innerHTML=PROFILES.map((p,i)=>`
-    <div class="pc ${i===state.selProfile?'active':''}" onclick="state.selProfile=${i};renderProfileCards();renderProfileDetail()">
-      <div class="pc-age">${p.range}</div><div class="pc-lbl">${p.label}</div>
+  const el=document.getElementById('profileCards');
+  if(!el) return;
+  el.style.display='grid';
+  el.innerHTML=PROFILES.map((p,i)=>`
+    <div style="background:var(--surf);border:1.5px solid ${i===state.selProfile?'var(--g4)':'var(--bdr)'};border-radius:var(--rm);padding:13px;cursor:pointer;transition:all .22s;text-align:center;${i===state.selProfile?'background:var(--gxl);':''}transform:${i===state.selProfile?'translateY(-2px)':'none'}" onclick="state.selProfile=${i};renderProfileCards();renderProfileDetail()">
+      <div style="font-family:var(--fp);font-size:22px;color:var(--g);font-weight:700">${p.range}</div>
+      <div style="font-size:11px;color:var(--t2);margin:3px 0;font-weight:500">${p.label}</div>
       <span class="badge ${['ba','br','bb','bg'][i]}" style="font-size:9px">${p.risk}</span>
     </div>`).join('');
 }
-
 function renderProfileDetail(){
   const p=PROFILES[state.selProfile];
-  const el=document.getElementById('profBadge');if(el) el.textContent=`${p.label} · ${p.range}`;
+  const el=document.getElementById('profBadge');if(el)el.textContent=`${p.label} · ${p.range}`;
   const det=document.getElementById('profDetail');
-  if(det) det.innerHTML=`<div style="font-size:13px;color:var(--t2);margin-bottom:13px;line-height:1.75">${p.desc}</div><div style="display:flex;gap:8px;flex-wrap:wrap">${p.goals.map(g=>`<span class="badge bg" style="font-size:11px;padding:5px 13px">${g}</span>`).join('')}</div>`;
+  if(det)det.innerHTML=`<div style="font-size:13px;color:var(--t2);margin-bottom:14px;line-height:1.75">${p.desc}</div><div style="display:flex;gap:8px;flex-wrap:wrap">${p.goals.map(g=>`<span class="badge bg" style="font-size:11px;padding:5px 14px">${g}</span>`).join('')}</div>`;
 }
 
+// ══════════════════════════════════════
+//  ADVISOR
+// ══════════════════════════════════════
 function runAdvisor(){
   const vAmt=parseFloat(document.getElementById('avAmt')?.value)||5000;
   const vBrand=document.getElementById('avBrand')?.value||'Myntra';
@@ -1144,26 +1233,28 @@ function runAdvisor(){
   const usable=Math.min(vAmt,exp.budget);
   const growth=Math.round(usable*Math.pow(1.12,5));
   const $=id=>document.getElementById(id);
-  if($('avFreed')) $('avFreed').textContent=`₹${usable.toLocaleString()}`;
-  if($('avInvest')) $('avInvest').textContent=`→ ₹${usable.toLocaleString()} into SIP`;
-  if($('avGrowth')) $('avGrowth').textContent=`At 12% p.a. → ₹${growth.toLocaleString()} in 5 years`;
+  if($('avFreed'))$('avFreed').textContent=`₹${usable.toLocaleString()}`;
+  if($('avInvest'))$('avInvest').textContent=`→ ₹${usable.toLocaleString()} into SIP`;
+  if($('avGrowth'))$('avGrowth').textContent=`At 12% p.a. → ₹${growth.toLocaleString()} in 5 years`;
   const pl=$('advisorPlan');if(!pl)return;
-  pl.innerHTML=`<div class="ac"><div class="ac-head"><div><div style="font-size:14px;font-weight:600">${vBrand} — ₹${vAmt.toLocaleString()} (locked)</div><div style="font-size:12px;color:var(--t3);margin-top:3px">Maps to "${tCat}" budget of ₹${exp.budget.toLocaleString()}</div></div><div style="text-align:right;flex-shrink:0"><div class="ac-save">₹${usable.toLocaleString()} freed</div><div class="ac-invest">→ invest this</div></div></div><div class="ac-steps">
-    <div class="ac-step"><div class="ac-num">1</div>Use your ₹${vAmt.toLocaleString()} ${vBrand} voucher for <strong>${tCat}</strong> — you'd spend this anyway from your bank.</div>
-    <div class="ac-step"><div class="ac-num">2</div>This frees <strong>₹${usable.toLocaleString()} of real money</strong> that no longer needs to come from your bank account.</div>
-    <div class="ac-step"><div class="ac-num">3</div>Redirect <strong>₹${usable.toLocaleString()}</strong> into your SIP or Growth portfolio immediately.</div>
-    <div class="ac-step"><div class="ac-num">4</div>At 12% p.a., this becomes <strong style="color:var(--gold)">₹${growth.toLocaleString()}</strong> in 5 years. Your locked voucher created real wealth.</div>
-    </div></div>${vAmt>exp.budget?`<div class="ac"><div class="ac-head"><div style="font-size:13px;font-weight:600">Remaining ₹${(vAmt-exp.budget).toLocaleString()}</div></div><div class="ac-steps"><div class="ac-step"><div class="ac-num">5</div>Use remaining ₹${(vAmt-exp.budget).toLocaleString()} for ${EXPENSES.filter(e=>e.cat!==tCat).slice(0,2).map(e=>e.cat).join(' or ')} — freeing even more real cash to invest.</div></div></div>`:''}`;
+  pl.innerHTML=`<div class="adv-card"><div class="adv-head"><div><div style="font-size:14px;font-weight:700">${vBrand} — ₹${vAmt.toLocaleString()} (locked)</div><div style="font-size:12px;color:var(--t3);margin-top:3px">Maps to "${tCat}" budget — ₹${exp.budget.toLocaleString()}</div></div><div style="text-align:right;flex-shrink:0"><div class="adv-amt">₹${usable.toLocaleString()} freed</div><div class="adv-inv">→ invest this</div></div></div><div class="adv-steps">
+    <div class="adv-step"><div class="adv-num">1</div>Use your ₹${vAmt.toLocaleString()} ${vBrand} voucher for <strong>${tCat}</strong> — you'd spend this money anyway from your bank.</div>
+    <div class="adv-step"><div class="adv-num">2</div><strong>₹${usable.toLocaleString()} of real bank money</strong> is now freed — it no longer needs to come from your account.</div>
+    <div class="adv-step"><div class="adv-num">3</div>Redirect <strong>₹${usable.toLocaleString()}</strong> directly into your SIP or Growth portfolio immediately.</div>
+    <div class="adv-step"><div class="adv-num">4</div>At 12% p.a., this becomes <strong style="color:var(--gold)">₹${growth.toLocaleString()}</strong> in 5 years. Your locked voucher created real lasting wealth.</div>
+    </div></div>${vAmt>exp.budget?`<div class="adv-card"><div class="adv-head"><div style="font-size:13px;font-weight:700">Remaining ₹${(vAmt-exp.budget).toLocaleString()}</div></div><div class="adv-steps"><div class="adv-step"><div class="adv-num">5</div>Use remaining ₹${(vAmt-exp.budget).toLocaleString()} for ${EXPENSES.filter(e=>e.cat!==tCat).slice(0,2).map(e=>e.cat).join(' or ')} — freeing even more real cash to invest this month.</div></div></div>`:''}`;
 }
-
 function renderAdvisorExp(){
   const el=document.getElementById('advisorExp');if(!el)return;
   el.innerHTML=EXPENSES.map(e=>{
     const pct=Math.min(e.actual/e.budget*100,100);const sur=e.budget-e.actual;
-    return `<div class="sl"><div class="sl-dot" style="background:${e.color}"></div><div style="flex:1;min-width:0"><div class="sl-cat">${e.cat}</div><div class="pt" style="height:3px;margin-top:5px"><div class="pf" style="width:${pct.toFixed(0)}%;background:${e.color}"></div></div></div><div class="sl-num">₹${e.budget.toLocaleString()}</div><div class="sl-num">₹${e.actual.toLocaleString()}</div><div class="sl-num" style="color:var(--g)">CB:₹${e.cashback}</div><span class="badge ${sur>=0?'bg':'br'}" style="font-size:10px">${sur>=0?'+':''}₹${Math.abs(sur).toLocaleString()}</span></div>`;
+    return `<div class="sl"><div class="sl-dot" style="background:${e.color}"></div><div style="flex:1;min-width:0"><div class="sl-cat">${e.cat}</div><div class="ptrack" style="height:3px;margin-top:6px"><div class="pfill" style="width:${pct.toFixed(0)}%;background:${e.color}"></div></div></div><div class="sl-num">₹${e.budget.toLocaleString()}</div><div class="sl-num">₹${e.actual.toLocaleString()}</div><div class="sl-num" style="color:var(--g);font-weight:600">CB:₹${e.cashback}</div><span class="badge ${sur>=0?'bg':'br'}" style="font-size:10px">${sur>=0?'+':''}₹${Math.abs(sur).toLocaleString()}</span></div>`;
   }).join('');
 }
 
+// ══════════════════════════════════════
+//  GOALS
+// ══════════════════════════════════════
 function renderGoals(){
   const goals=[
     {name:'Emergency Fund',target:150000,current:80000,monthly:2333,icon:'🛡️',color:'var(--g)'},
@@ -1174,10 +1265,9 @@ function renderGoals(){
   el.innerHTML=goals.map(g=>{
     const pct=Math.round(g.current/g.target*100);
     const mo=Math.ceil((g.target-g.current)/g.monthly);
-    return `<div class="card mb16"><div style="display:flex;align-items:center;gap:14px;margin-bottom:14px"><div style="font-size:30px">${g.icon}</div><div style="flex:1"><div style="font-size:15px;font-weight:600">${g.name}</div><div style="font-size:12px;color:var(--t3);margin-top:3px">₹${g.current.toLocaleString()} of ₹${g.target.toLocaleString()} · ${mo} months at ₹${g.monthly.toLocaleString()}/mo</div></div><div style="text-align:right"><div style="font-family:var(--fh);font-size:30px;color:${g.color};font-weight:700">${pct}%</div></div></div><div class="pt"><div class="pf" style="width:${pct}%;background:${g.color}"></div></div></div>`;
+    return `<div class="card mb16"><div style="display:flex;align-items:center;gap:15px;margin-bottom:15px"><div style="font-size:30px">${g.icon}</div><div style="flex:1"><div style="font-size:15px;font-weight:700">${g.name}</div><div style="font-size:12px;color:var(--t3);margin-top:4px">₹${g.current.toLocaleString()} of ₹${g.target.toLocaleString()} · ${mo} months at ₹${g.monthly.toLocaleString()}/mo</div></div><div style="text-align:right"><div style="font-family:var(--fp);font-size:32px;color:${g.color};font-weight:900">${pct}%</div></div></div><div class="ptrack"><div class="pfill" style="width:${pct}%;background:${g.color}"></div></div></div>`;
   }).join('');
 }
-
 function renderMilestones(){
   const ms=[
     {name:'First ₹1,000 Invested',icon:'🌱',done:true,pct:100,sub:'Completed March 2026'},
@@ -1187,19 +1277,21 @@ function renderMilestones(){
     {name:'12-Month SIP Streak',icon:'🏆',done:false,pct:45,sub:'5.4 of 12 months'},
   ];
   const el=document.getElementById('msList');if(!el)return;
-  el.innerHTML=ms.map(m=>`<div class="ms"><div class="ms-icon">${m.icon}</div><div class="ms-body"><div class="ms-name">${m.name}</div><div class="ms-sub">${m.sub}</div>${!m.done?`<div style="margin-top:7px"><div class="pt" style="height:3px"><div class="pf" style="width:${m.pct}%;background:var(--g)"></div></div></div>`:''}</div><div style="flex-shrink:0">${m.done?'<span class="badge bg">✓ Done</span>':`<span class="badge ba">${m.pct}%</span>`}</div></div>`).join('');
+  el.innerHTML=ms.map(m=>`<div class="ms"><div class="ms-icon">${m.icon}</div><div class="ms-body"><div class="ms-name">${m.name}</div><div class="ms-sub">${m.sub}</div>${!m.done?`<div style="margin-top:8px"><div class="ptrack" style="height:3px"><div class="pfill" style="width:${m.pct}%;background:var(--g)"></div></div></div>`:''}</div><div style="flex-shrink:0">${m.done?'<span class="badge bg">✓ Done</span>':`<span class="badge ba">${m.pct}%</span>`}</div></div>`).join('');
 }
 
+// ══════════════════════════════════════
+//  INVEST
+// ══════════════════════════════════════
 function renderInvList(){
   const el=document.getElementById('invList');if(!el)return;
-  el.innerHTML=INVESTMENTS.map(inv=>`<div style="display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all .2s" onclick="state.selInvest='${inv.name}';toast('Selected: ${inv.name}')"><div style="font-size:22px;width:32px;text-align:center">${inv.icon}</div><div style="flex:1"><div style="font-size:13px;font-weight:600">${inv.name}</div><div style="font-size:11px;color:var(--t3)">${inv.ret} · ${inv.risk} Risk</div></div><div style="text-align:right"><div style="font-family:var(--fm);font-size:14px;color:${inv.color};font-weight:600">₹${inv.allocated.toLocaleString()}</div><div style="font-size:10px;color:var(--t4)">allocated</div></div></div>`).join('');
+  el.innerHTML=INVESTMENTS.map(inv=>`<div style="display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--bdr);cursor:pointer;transition:all .22s" onclick="state.selInvest='${inv.name}';toast('Selected: ${inv.name}')" onmouseover="this.style.paddingLeft='8px'" onmouseout="this.style.paddingLeft='0'"><div style="font-size:22px;width:32px;text-align:center">${inv.icon}</div><div style="flex:1"><div style="font-size:13px;font-weight:700">${inv.name}</div><div style="font-size:11px;color:var(--t3)">${inv.ret} · ${inv.risk} Risk</div></div><div style="text-align:right"><div style="font-family:var(--fm);font-size:15px;color:${inv.color};font-weight:700">₹${inv.allocated.toLocaleString()}</div><div style="font-size:10px;color:var(--t4)">allocated</div></div></div>`).join('');
 }
-
 function doSweep(){
   const amt=parseFloat(document.getElementById('sweepAmt').value)||0;
   const tgt=document.getElementById('sweepTgt').value;
   if(!amt){toast('Enter amount','r');return;}
-  const inv=INVESTMENTS.find(i=>i.name===tgt);if(inv) inv.allocated+=amt;
+  const inv=INVESTMENTS.find(i=>i.name===tgt);if(inv)inv.allocated+=amt;
   state.invested+=amt;state.score=Math.min(state.score+2,100);
   LEDGER.unshift({date:'Now',desc:`Swept → ${tgt}`,brand:'Growth List',type:'sweep',amt:-amt});
   renderInvList();renderLedger();renderPieChart();
@@ -1211,108 +1303,298 @@ function doSweep(){
   toast(`✓ ₹${amt.toLocaleString()} swept to ${tgt}`);
 }
 
+// ══════════════════════════════════════
+//  LEDGER
+// ══════════════════════════════════════
 function ledgFilter(type,el){
   state.ledgFilter=type;
   document.querySelectorAll('#ledgTabs .tab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');renderLedger();
 }
-
 function renderLedger(){
   const cmap={earn:'var(--g)',spend:'var(--red)',invest:'var(--gold)',sweep:'var(--blue)'};
   const bmap={earn:'bg',spend:'br',invest:'ba',sweep:'bb'};
   const list=state.ledgFilter==='all'?LEDGER:LEDGER.filter(t=>t.type===state.ledgFilter);
   const el=document.getElementById('ledgBody');if(!el)return;
-  el.innerHTML=list.map(t=>`<tr><td style="color:var(--t3);white-space:nowrap;font-size:12px">${t.date}</td><td style="font-size:13px">${t.desc}</td><td style="font-size:12px;color:var(--t2)">${t.brand}</td><td><span class="badge ${bmap[t.type]||'bg'}">${t.type}</span></td><td style="font-family:var(--fm);color:${cmap[t.type]};font-weight:600;white-space:nowrap">${t.amt>0?'+':''}₹${Math.abs(t.amt).toLocaleString()}</td></tr>`).join('');
+  el.innerHTML=list.map(t=>`<tr><td style="color:var(--t3);white-space:nowrap;font-size:12px">${t.date}</td><td style="font-size:13px">${t.desc}</td><td style="font-size:12px;color:var(--t2)">${t.brand}</td><td><span class="badge ${bmap[t.type]||'bg'}">${t.type}</span></td><td style="font-family:var(--fm);color:${cmap[t.type]};font-weight:700;white-space:nowrap">${t.amt>0?'+':''}₹${Math.abs(t.amt).toLocaleString()}</td></tr>`).join('');
 }
 
+// ══════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════
 function renderDashBudget(){
   const el=document.getElementById('dashBudget');if(!el)return;
   el.innerHTML=EXPENSES.slice(0,6).map(e=>{
     const pct=Math.min(e.actual/e.budget*100,100);const sur=e.budget-e.actual;
-    return `<div class="prw"><div class="prw-meta"><span class="prw-lbl">${e.cat}${e.cashback>0?` <span class="badge bg" style="font-size:9px">CB ₹${e.cashback}</span>`:''}</span><div style="display:flex;align-items:center;gap:9px"><span class="prw-nums">₹${e.actual.toLocaleString()} / ₹${e.budget.toLocaleString()}</span><span class="badge ${sur>=0?'bg':'br'}" style="font-size:9px">${sur>=0?'+':''}₹${Math.abs(sur).toLocaleString()}</span></div></div><div class="pt"><div class="pf" style="width:${pct.toFixed(0)}%;background:${e.color}"></div></div></div>`;
+    return `<div class="prw"><div class="prw-meta"><span class="prw-lbl">${e.cat}${e.cashback>0?` <span class="badge bg" style="font-size:9px">CB ₹${e.cashback}</span>`:''}</span><div style="display:flex;align-items:center;gap:9px"><span class="prw-nums">₹${e.actual.toLocaleString()} / ₹${e.budget.toLocaleString()}</span><span class="badge ${sur>=0?'bg':'br'}" style="font-size:9px">${sur>=0?'+':''}₹${Math.abs(sur).toLocaleString()}</span></div></div><div class="ptrack"><div class="pfill" style="width:${pct.toFixed(0)}%;background:${e.color}"></div></div></div>`;
   }).join('');
 }
-
 function renderDashOpp(){
   const el=document.getElementById('dashOpp');if(!el)return;
   const withCB=EXPENSES.filter(e=>e.cashback>0);
   const total=withCB.reduce((a,e)=>a+Math.min(e.cashback,e.actual),0);
   const badge=document.getElementById('dashOppBadge');
-  if(badge) badge.textContent=`₹${total.toLocaleString()} real cash to free`;
+  if(badge)badge.textContent=`₹${total.toLocaleString()} available`;
   el.innerHTML=withCB.map(e=>{
     const freed=Math.min(e.cashback,e.actual);
-    return `<div style="display:flex;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--border)"><div style="width:10px;height:10px;border-radius:50%;background:${e.color};flex-shrink:0"></div><div style="flex:1"><div style="font-size:13px;font-weight:600">${e.cat}</div><div style="font-size:12px;color:var(--t3);margin-top:3px">Use ₹${e.cashback} cashback → real spend drops from ₹${e.actual.toLocaleString()} to ₹${(e.actual-freed).toLocaleString()}</div></div><div style="text-align:right;flex-shrink:0"><div style="font-family:var(--fm);font-size:16px;color:var(--g);font-weight:600">₹${freed.toLocaleString()} freed</div><div style="font-size:11px;color:var(--t3)">→ invest this</div></div></div>`;
+    return `<div style="display:flex;align-items:center;gap:15px;padding:14px 0;border-bottom:1px solid var(--bdr)"><div style="width:10px;height:10px;border-radius:50%;background:${e.color};flex-shrink:0"></div><div style="flex:1"><div style="font-size:13px;font-weight:700">${e.cat}</div><div style="font-size:12px;color:var(--t3);margin-top:3px">Use ₹${e.cashback} cashback → real bank spend drops from ₹${e.actual.toLocaleString()} to ₹${(e.actual-freed).toLocaleString()}</div></div><div style="text-align:right;flex-shrink:0"><div style="font-family:var(--fm);font-size:17px;color:var(--g);font-weight:700">₹${freed.toLocaleString()} freed</div><div style="font-size:11px;color:var(--t3)">→ invest this</div></div></div>`;
   }).join('');
 }
 
-// ══ AI CONTEXT ══
+// ══════════════════════════════════════
+//  PROFILE PAGE
+// ══════════════════════════════════════
+function renderProfile(){
+  const n=USER.name||'User';
+  const ini=n.split(' ').map(x=>x[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('pAvLg').textContent=ini;
+  document.getElementById('pNameDisp').textContent=n;
+  document.getElementById('pMetaDisp').textContent=`Age ${USER.age||28} · ${PROFILES[state.selProfile].label} · Member since ${USER.joined||'2026'}`;
+  document.getElementById('pStageBadge').textContent=PROFILES[state.selProfile].label;
+  document.getElementById('efName').textContent=n;
+  document.getElementById('efEmail').textContent=USER.email||'—';
+  document.getElementById('efAge').textContent=USER.age||28;
+  document.getElementById('efIncome').textContent=`₹${(USER.income||50000).toLocaleString()}`;
+  document.getElementById('efStage').textContent=`${PROFILES[state.selProfile].label} (${PROFILES[state.selProfile].range})`;
+  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
+  document.getElementById('pStatScore').textContent=state.score;
+  document.getElementById('pStatInvested').textContent=`₹${state.invested.toLocaleString()}`;
+  document.getElementById('pStatSurplus').textContent=`₹${Math.max(0,state.income-tA).toLocaleString()}`;
+}
+function editField(field){
+  currentEditField=field;
+  const labels={name:'Full Name',email:'Email Address',age:'Age',income:'Monthly Income (₹)'};
+  const vals={name:USER.name,email:USER.email,age:USER.age,income:USER.income||50000};
+  document.getElementById('editModalTitle').textContent=`Edit ${labels[field]||field}`;
+  document.getElementById('editModalLabel').textContent=labels[field]||field;
+  document.getElementById('editModalInput').value=vals[field]||'';
+  document.getElementById('editModal').classList.add('show');
+}
+function saveEdit(){
+  const val=document.getElementById('editModalInput').value.trim();
+  if(!val){toast('Enter a value','r');return;}
+  if(currentEditField==='name'){USER.name=val;updateUserMeta();}
+  else if(currentEditField==='email'){USER.email=val;}
+  else if(currentEditField==='age'){USER.age=parseInt(val)||28;document.getElementById('ageInp').value=USER.age;updateProfile();}
+  else if(currentEditField==='income'){USER.income=parseFloat(val)||50000;state.income=USER.income;document.getElementById('income').value=USER.income;recalc();}
+  document.getElementById('editModal').classList.remove('show');
+  if(USER.email) localStorage.setItem('zeno_u_'+USER.email,JSON.stringify(USER));
+  renderProfile();toast('✓ Profile updated');
+}
+
+// ══════════════════════════════════════
+//  AI
+// ══════════════════════════════════════
 function renderAIContext(){
   const el=document.getElementById('aiContext');if(!el)return;
   const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
   const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
   const sur=state.income-tA;
   const rows=[['Income',`₹${state.income.toLocaleString()}`],['Expenses',`₹${tA.toLocaleString()}`],['Surplus',`₹${sur.toLocaleString()}`],['Cashback',`₹${tC.toLocaleString()}`],['Invested',`₹${state.invested.toLocaleString()}`],['Score',`${state.score}/100`],['Goals','3 active'],['Vouchers',`${VOUCHERS.length} locked`]];
-  el.innerHTML=rows.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px"><span style="color:var(--t3)">${k}</span><span style="font-family:var(--fm);font-weight:500">${v}</span></div>`).join('');
+  el.innerHTML=rows.map(([k,v])=>`<div style="display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--bdr);font-size:13px"><span style="color:var(--t3)">${k}</span><span style="font-family:var(--fm);font-weight:600">${v}</span></div>`).join('');
 }
-
 function renderAIInsights(){
   const el=document.getElementById('aiInsights');if(!el)return;
   const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
   const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
   const sur=state.income-tA;
   el.innerHTML=`
-    <div class="insight" style="border-color:var(--g)">💡 You have ₹${tC.toLocaleString()} in cashback — use it on matching expenses and redirect the freed cash to SIP.</div>
-    <div class="insight" style="border-color:var(--red2,#e74c3c)">⚡ Emergency fund should be ₹1.5L at age ${USER.age||28}. Gap: ₹70K — just ₹2,333/mo for 3 months.</div>
+    <div class="insight" style="border-color:var(--g)">💡 You have ₹${tC.toLocaleString()} in cashback — use on matching expenses and redirect the freed cash to SIP today.</div>
+    <div class="insight" style="border-color:var(--red2)">⚡ Emergency fund should be ₹1.5L at age ${USER.age||28}. Gap: ₹70K — ₹2,333/mo for 3 months closes it.</div>
     <div class="insight" style="border-color:var(--gold)">📈 ₹${tC.toLocaleString()} invested today at 12% = ₹${Math.round(tC*1.762).toLocaleString()} in 5 years. Every month delayed = ₹${Math.round(tC*0.012).toLocaleString()} lost.</div>
-    <div class="insight" style="border-color:var(--blue)">🎯 Myntra voucher (₹5K) covers fashion budget (₹5K). Use it → invest ₹5K real cash.</div>`;
+    <div class="insight" style="border-color:var(--blue)">🎯 Myntra voucher (₹5K) covers your fashion budget (₹5K). Use it → invest ₹5K real cash instead.</div>`;
 }
 
-// ══ CHARTS ══
+function getSysPrompt(){
+  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
+  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
+  const sur=state.income-tA;
+  return `You are ZENO Intelligence, a premium financial empowerment agent.
+
+Core philosophy: Every cashback, voucher, and reward should free up real money to invest. Financial empowerment means turning consumer rewards into lasting compounding wealth — never wasting them.
+
+Two wallet modes:
+1. Eco-Wallet: cashback from same parent brand group (Reliance: JioMart, Reliance Trends, Reliance Digital, Jio-BP) is fungible — spend anywhere within the group
+2. Locked Vouchers: cashback from standalone apps (Myntra, Swiggy etc.) locked to that brand — ZENO maps them to matching expense categories to free real cash for investment
+
+User financial data:
+Name: ${USER.name||'User'} | Age: ${USER.age||28} | Life stage: ${PROFILES[state.selProfile].label}
+Income: ₹${state.income.toLocaleString()} | Expenses: ₹${tA.toLocaleString()} | Surplus: ₹${sur.toLocaleString()}
+Cashback pool: ₹${tC.toLocaleString()} | Portfolio: ₹${state.invested.toLocaleString()} at 12.3% XIRR | Score: ${state.score}/100
+
+Expense breakdown:
+${EXPENSES.map(e=>`  ${e.cat}: Budget ₹${e.budget.toLocaleString()}, Actual ₹${e.actual.toLocaleString()}, Cashback ₹${e.cashback}${e.group?' ('+e.group+')':''}`).join('\n')}
+
+Locked vouchers: ${VOUCHERS.map(v=>`${v.brand} ₹${v.amt.toLocaleString()} (${v.cat}, expires ${v.exp})`).join('; ')||'None'}
+Goals: Emergency Fund ₹80K/₹1.5L (53%) · Home DP ₹1.2L/₹8L (15%) · Retirement ₹89K/₹50L (2%)
+
+Instructions: Always use specific rupee figures. Bold key amounts with **₹X**. Give 2–3 clear actionable steps. Keep under 200 words. Never mention any AI model or company name.`;
+}
+
+function addMsg(role,html){
+  const msgs=document.getElementById('aiMsgs');
+  const d=document.createElement('div');
+  d.className='msg'+(role==='user'?' msg-u':'');
+  const avTxt=role==='ai'?'Z':(USER.name||'U')[0].toUpperCase();
+  d.innerHTML=role==='ai'
+    ?`<div class="msg-av av-ai">${avTxt}</div><div class="bubble bub-ai">${html}</div>`
+    :`<div class="bubble bub-u">${html}</div><div class="msg-av av-u">${avTxt}</div>`;
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+}
+function showTyping(){
+  const msgs=document.getElementById('aiMsgs');
+  const d=document.createElement('div');d.className='msg';d.id='typing';
+  d.innerHTML=`<div class="msg-av av-ai">Z</div><div class="typing-dots"><span></span><span></span><span></span></div>`;
+  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
+}
+function offlineReply(msg){
+  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
+  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
+  const sur=state.income-tA;
+  const m=msg.toLowerCase();
+  if(m.includes('myntra')||m.includes('voucher')||m.includes('locked'))
+    return `<p>Your ₹5,000 Myntra voucher maps to your <strong>Fashion/Clothing budget of ₹5,000</strong>.</p><p>1. Use the voucher for all fashion this month<br>2. <strong>₹5,000 real bank money</strong> is now freed<br>3. Sweep that ₹5,000 to Flexi Cap MF → becomes <strong>₹8,811</strong> in 5 years at 12% p.a.</p>`;
+  if(m.includes('cashback')||m.includes('cover'))
+    return `<p>You have <strong>₹${tC.toLocaleString()} in cashback</strong> across brands. Use ₹310 at JioMart, ₹420 at Reliance Trends, ₹680 at Reliance Digital — all interoperable in the Reliance Eco-Wallet. Invest the freed <strong>₹${tC.toLocaleString()} real cash</strong> immediately.</p>`;
+  if(m.includes('invest')||m.includes('1l')||m.includes('lakh'))
+    return `<p>You need <strong>₹${Math.max(0,100000-state.invested).toLocaleString()} more</strong> to reach ₹1L invested. At your surplus of <strong>₹${sur.toLocaleString()}/mo</strong>, you can get there in <strong>${Math.ceil(Math.max(0,100000-state.invested)/Math.min(sur,8000))} months</strong>.</p>`;
+  if(m.includes('age')||m.includes('enough'))
+    return `<p>At age ${USER.age||28}, emergency fund should be <strong>₹1.5L</strong>. You're at ₹80K — just ₹2,333/mo for 3 months closes it. Your surplus of <strong>₹${sur.toLocaleString()}/mo</strong> is healthy. Prioritise emergency fund, then SIP ₹8K/mo.</p>`;
+  return `<p>Your profile: income <strong>₹${state.income.toLocaleString()}</strong>, surplus <strong>₹${sur.toLocaleString()}</strong>, cashback <strong>₹${tC.toLocaleString()}</strong>. Action: sweep your full cashback pool into the Growth List right now.</p>`;
+}
+
+async function sendAI(){
+  const inp=document.getElementById('aiInp');
+  const msg=inp.value.trim();if(!msg)return;
+  inp.value='';
+  addMsg('user',`<p>${msg}</p>`);
+  aiHistory.push({role:'user',content:msg});
+  showTyping();
+  const statusEl=document.getElementById('aiStatus');
+  if(statusEl)statusEl.textContent='Thinking...';
+
+  const activeKey=localStorage.getItem('zeno_gk')||GROQ_KEY;
+  const activeModel=localStorage.getItem('zeno_gm')||GROQ_MODEL;
+
+  try{
+    const r=await fetch(GROQ_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${activeKey}`},
+      body:JSON.stringify({model:activeModel,max_tokens:800,messages:[{role:'system',content:getSysPrompt()},...aiHistory]})
+    });
+    document.getElementById('typing')?.remove();
+    if(statusEl)statusEl.textContent='Live';
+    if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${r.status}`);}
+    const data=await r.json();
+    const reply=data.choices?.[0]?.message?.content||'No response received.';
+    aiHistory.push({role:'assistant',content:reply});
+    addMsg('ai',fmt(reply));
+  }catch(e){
+    document.getElementById('typing')?.remove();
+    if(statusEl)statusEl.textContent='Ready';
+    addMsg('ai',offlineReply(msg));
+  }
+}
+function qpSend(el){document.getElementById('aiInp').value=el.textContent;sendAI();}
+
+// ══════════════════════════════════════
+//  SETTINGS
+// ══════════════════════════════════════
+function toggleKey(){
+  const i=document.getElementById('apiKeyInp');i.type=i.type==='password'?'text':'password';
+}
+function saveApiKey(){
+  const k=document.getElementById('apiKeyInp').value.trim();
+  const m=document.getElementById('apiModel').value;
+  if(!k){toast('Enter a key first','r');return;}
+  localStorage.setItem('zeno_gk',k);localStorage.setItem('zeno_gm',m);
+  document.getElementById('apiStatus').innerHTML='<span style="color:var(--g)">✓ Key saved — AI Agent is live</span>';
+  toast('✓ API key saved');
+}
+function clearKey(){localStorage.removeItem('zeno_gk');document.getElementById('apiKeyInp').value='';toast('Key cleared');}
+async function testApi(){
+  const k=localStorage.getItem('zeno_gk')||GROQ_KEY;
+  const m=localStorage.getItem('zeno_gm')||GROQ_MODEL;
+  document.getElementById('apiStatus').innerHTML='<span style="color:var(--t3)">Testing...</span>';
+  try{
+    const r=await fetch(GROQ_URL,{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${k}`},body:JSON.stringify({model:m,max_tokens:10,messages:[{role:'user',content:'Hi'}]})});
+    if(!r.ok)throw new Error(`HTTP ${r.status}`);
+    document.getElementById('apiStatus').innerHTML='<span style="color:var(--g)">✓ Connection successful — ZENO AI is live</span>';
+    toast('✓ API working');
+  }catch(e){
+    document.getElementById('apiStatus').innerHTML=`<span style="color:var(--red)">✗ Failed: ${e.message}</span>`;
+    toast('Connection failed','r');
+  }
+}
+function exportData(){
+  const d={expenses:EXPENSES,vouchers:VOUCHERS,state,investments:INVESTMENTS,ledger:LEDGER,user:USER,ts:new Date().toISOString()};
+  const a=document.createElement('a');a.href='data:application/json,'+encodeURIComponent(JSON.stringify(d,null,2));
+  a.download=`zeno-${new Date().toISOString().split('T')[0]}.json`;a.click();toast('✓ Exported');
+}
+function handleImport(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      if(d.expenses)EXPENSES.splice(0,EXPENSES.length,...d.expenses);
+      if(d.vouchers)VOUCHERS.splice(0,VOUCHERS.length,...d.vouchers);
+      if(d.state)Object.assign(state,d.state);
+      if(d.user)Object.assign(USER,d.user);
+      renderAll();toast('✓ Imported');
+    }catch{toast('Import failed','r');}
+  };
+  r.readAsText(f);
+}
+function resetData(){if(!confirm('Reset all ZENO data?'))return;localStorage.clear();location.reload();}
+
+// ══════════════════════════════════════
+//  CHARTS
+// ══════════════════════════════════════
 function initCharts(){
   const el=document.getElementById('dashChart');
   if(el){const ex=Chart.getChart('dashChart');if(ex)ex.destroy();
     new Chart(el,{type:'bar',data:{labels:['Nov','Dec','Jan','Feb','Mar','Apr'],datasets:[
-      {label:'Cashback',data:[980,1200,1050,1400,1620,1842],backgroundColor:'rgba(192,57,43,.12)',borderColor:'var(--red)',borderWidth:2,borderRadius:6},
-      {label:'Invested',data:[0,400,500,700,850,980],backgroundColor:'rgba(26,92,53,.12)',borderColor:'var(--g)',borderWidth:2,borderRadius:6}
+      {label:'Cashback',data:[980,1200,1050,1400,1620,1842],backgroundColor:'rgba(181,48,31,.14)',borderColor:'var(--red2)',borderWidth:2,borderRadius:7},
+      {label:'Invested',data:[0,400,500,700,850,980],backgroundColor:'rgba(15,76,42,.14)',borderColor:'var(--g)',borderWidth:2,borderRadius:7}
     ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{x:{grid:{color:'rgba(0,0,0,0.03)'},ticks:{color:'#7a9c84',font:{size:11}}},
-               y:{grid:{color:'rgba(0,0,0,0.03)'},ticks:{color:'#7a9c84',font:{size:11},callback:v=>'₹'+v/1000+'k'}}}}});
+      scales:{x:{grid:{color:'rgba(0,0,0,0.03)'},ticks:{color:'#6b9478',font:{size:11}}},
+               y:{grid:{color:'rgba(0,0,0,0.03)'},ticks:{color:'#6b9478',font:{size:11},callback:v=>'₹'+v/1000+'k'}}}}});
   }
   renderPieChart();renderExpChart();
 }
-
 function renderExpChart(){
   const ex=Chart.getChart('expChart');if(ex)ex.destroy();
   const el=document.getElementById('expChart');if(!el)return;
   new Chart(el,{type:'bar',data:{labels:EXPENSES.map(e=>e.cat.split('/')[0].trim()),datasets:[
-    {label:'Budget',data:EXPENSES.map(e=>e.budget),backgroundColor:'rgba(26,92,53,.1)',borderColor:'var(--g)',borderWidth:2,borderRadius:5},
-    {label:'Actual',data:EXPENSES.map(e=>e.actual),backgroundColor:'rgba(192,57,43,.15)',borderColor:'var(--red)',borderWidth:2,borderRadius:5}
+    {label:'Budget',data:EXPENSES.map(e=>e.budget),backgroundColor:'rgba(15,76,42,.1)',borderColor:'var(--g)',borderWidth:2,borderRadius:5},
+    {label:'Actual',data:EXPENSES.map(e=>e.actual),backgroundColor:'rgba(181,48,31,.16)',borderColor:'var(--red)',borderWidth:2,borderRadius:5}
   ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-    scales:{x:{grid:{color:'rgba(0,0,0,0.03)'},ticks:{color:'#7a9c84',font:{size:10},maxRotation:30}},
-             y:{grid:{color:'rgba(0,0,0,0.03)'},ticks:{color:'#7a9c84',font:{size:10},callback:v=>'₹'+v/1000+'k'}}}}});
+    scales:{x:{grid:{color:'rgba(0,0,0,0.03)'},ticks:{color:'#6b9478',font:{size:10},maxRotation:30}},
+             y:{grid:{color:'rgba(0,0,0,0.03)'},ticks:{color:'#6b9478',font:{size:10},callback:v=>'₹'+v/1000+'k'}}}}});
 }
-
 function renderPieChart(){
   const ex=Chart.getChart('pieChart');if(ex)ex.destroy();
   const el=document.getElementById('pieChart');if(!el)return;
   const active=INVESTMENTS.filter(i=>i.allocated>0);if(!active.length)return;
-  new Chart(el,{type:'doughnut',data:{labels:active.map(i=>i.name),datasets:[{data:active.map(i=>i.allocated),backgroundColor:active.map(i=>i.color+'20'),borderColor:active.map(i=>i.color),borderWidth:2.5}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#3d5c46',font:{size:11},padding:12}}},cutout:'62%'}});
+  new Chart(el,{type:'doughnut',data:{labels:active.map(i=>i.name),datasets:[{data:active.map(i=>i.allocated),backgroundColor:active.map(i=>i.color+'22'),borderColor:active.map(i=>i.color),borderWidth:2.5}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'bottom',labels:{color:'#2d5040',font:{size:11},padding:14}}},cutout:'62%'}});
 }
 
-// ══ MODAL ══
+// ══════════════════════════════════════
+//  MODAL
+// ══════════════════════════════════════
 function showModal(){
   const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
   document.getElementById('modalAmt').textContent=`₹${tC.toLocaleString()}`;
   document.getElementById('modalOpts').innerHTML=INVESTMENTS.map(inv=>`
-    <div onclick="state.selInvest='${inv.name}';document.querySelectorAll('#modalOpts>div').forEach(d=>d.style.borderColor='var(--border2)');this.style.borderColor='var(--g)'"
-      style="display:flex;align-items:center;gap:12px;padding:12px 15px;background:var(--surf);border-radius:var(--rsm);margin-bottom:9px;cursor:pointer;border:1.5px solid var(--border2);transition:all .2s">
+    <div onclick="state.selInvest='${inv.name}';document.querySelectorAll('#modalOpts>div').forEach(d=>d.style.borderColor='var(--bdr2)');this.style.borderColor='var(--g4)'"
+      style="display:flex;align-items:center;gap:12px;padding:12px 15px;background:var(--surf);border-radius:var(--rm);margin-bottom:10px;cursor:pointer;border:1.5px solid var(--bdr2);transition:all .22s">
       <span style="font-size:20px">${inv.icon}</span>
-      <div style="flex:1"><div style="font-size:13px;font-weight:600">${inv.name}</div><div style="font-size:11px;color:var(--t3)">${inv.ret} · ${inv.risk} Risk</div></div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:700">${inv.name}</div><div style="font-size:11px;color:var(--t3)">${inv.ret} · ${inv.risk} Risk</div></div>
     </div>`).join('');
   document.getElementById('invModal').classList.add('show');
 }
-
 function confirmInvest(){
   const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
   const inv=INVESTMENTS.find(i=>i.name===state.selInvest)||INVESTMENTS[0];
@@ -1326,109 +1608,6 @@ function confirmInvest(){
   document.getElementById('portVal').textContent=`₹${Math.round(state.invested*1.186).toLocaleString()}`;
   toast(`✓ ₹${tC.toLocaleString()} invested in ${inv.name} — Score +5`);
 }
-
-// ══ GROQ AI ══
-function getSystemPrompt(){
-  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
-  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
-  const sur=state.income-tA;
-  return `You are ZENO Intelligence, a premium financial empowerment agent.
-
-Core philosophy: Every cashback, reward, and voucher should free up real money to invest — not just be spent.
-
-User profile:
-Name: ${USER.name||'User'} | Age: ${USER.age||28} | Life stage: ${PROFILES[state.selProfile].label}
-Income: ₹${state.income.toLocaleString()} | Expenses: ₹${tA.toLocaleString()} | Surplus: ₹${sur.toLocaleString()}
-Cashback pool: ₹${tC.toLocaleString()} | Portfolio: ₹${state.invested.toLocaleString()} at 12.3% XIRR | Score: ${state.score}/100
-
-Expenses:
-${EXPENSES.map(e=>`  ${e.cat}: Budget ₹${e.budget.toLocaleString()}, Actual ₹${e.actual.toLocaleString()}, Cashback ₹${e.cashback}${e.group?' ('+e.group+' ecosystem)':''}`).join('\n')}
-
-Locked vouchers: ${VOUCHERS.map(v=>`${v.brand} ₹${v.amt.toLocaleString()} (${v.cat}, expires ${v.exp})`).join('; ')||'None'}
-Goals: Emergency Fund ₹80K/₹1.5L · Home DP ₹1.2L/₹8L · Retirement ₹89K/₹50L
-
-Rules: Use specific rupee figures. Bold key amounts with **₹X**. Give 2–3 actionable steps. Max 200 words. Never mention AI model names.`;
-}
-
-function addMsg(role,html){
-  const msgs=document.getElementById('aiMsgs');
-  const d=document.createElement('div');
-  d.className='msg'+(role==='user'?' msg-u':'');
-  const avTxt=role==='ai'?'Z':(USER.name||'U')[0].toUpperCase();
-  const avCls=role==='ai'?'msg-av-ai':'msg-av-u';
-  const bCls=role==='ai'?'bubble-ai':'bubble-u';
-  d.innerHTML=role==='ai'
-    ?`<div class="msg-av ${avCls}">${avTxt}</div><div class="bubble ${bCls}">${html}</div>`
-    :`<div class="bubble ${bCls}">${html}</div><div class="msg-av ${avCls}">${avTxt}</div>`;
-  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
-}
-
-function showTyping(){
-  const msgs=document.getElementById('aiMsgs');
-  const d=document.createElement('div');d.className='msg';d.id='typing';
-  d.innerHTML=`<div class="msg-av msg-av-ai">Z</div><div class="typing"><span></span><span></span><span></span></div>`;
-  msgs.appendChild(d);msgs.scrollTop=msgs.scrollHeight;
-}
-
-function offlineResponse(msg){
-  const tC=EXPENSES.reduce((a,e)=>a+e.cashback,0);
-  const tA=EXPENSES.reduce((a,e)=>a+e.actual,0);
-  const sur=state.income-tA;
-  const m=msg.toLowerCase();
-  if(m.includes('myntra')||m.includes('voucher')||m.includes('locked'))
-    return `<p>Your ₹5,000 Myntra voucher maps to your <strong>Fashion/Clothing budget of ₹5,000</strong>.</p><p>1. Use voucher for all fashion purchases this month<br>2. <strong>₹5,000 real bank money</strong> is now freed<br>3. Sweep that ₹5,000 to Flexi Cap MF → becomes <strong>₹8,811</strong> in 5 years at 12% p.a.</p>`;
-  if(m.includes('cashback')||m.includes('cover'))
-    return `<p>You have <strong>₹${tC.toLocaleString()} in cashback</strong> across brands.</p><p>Use ₹310 at JioMart, ₹420 at Reliance Trends, ₹680 at Reliance Digital — all interoperable within the Reliance Eco-Wallet. Invest the freed <strong>₹${tC.toLocaleString()} real cash</strong> immediately.</p>`;
-  if(m.includes('invest')||m.includes('1l')||m.includes('lakh'))
-    return `<p>You need <strong>₹${Math.max(0,100000-state.invested).toLocaleString()} more</strong> to reach ₹1L invested.</p><p>At your surplus of <strong>₹${sur.toLocaleString()}/mo</strong>, you can get there in <strong>${Math.ceil(Math.max(0,100000-state.invested)/Math.min(sur,8000))} months</strong>.</p>`;
-  if(m.includes('age')||m.includes('enough'))
-    return `<p>At age ${USER.age||28}, your emergency fund should be <strong>₹1.5L</strong>. You're at ₹80K — just ₹2,333/mo for 3 months closes that gap.</p><p>Your surplus of <strong>₹${sur.toLocaleString()}/mo</strong> is healthy. Priority: emergency fund first, then increase SIP to ₹8,000/mo.</p>`;
-  return `<p>Based on your profile: income <strong>₹${state.income.toLocaleString()}</strong>, surplus <strong>₹${sur.toLocaleString()}</strong>, cashback <strong>₹${tC.toLocaleString()}</strong>.</p><p>Key action: invest your full cashback pool of ₹${tC.toLocaleString()} immediately into your Growth List.</p>`;
-}
-
-async function sendAI(){
-  const inp=document.getElementById('aiInp');
-  const msg=inp.value.trim();if(!msg)return;
-  inp.value='';
-  addMsg('user',`<p>${msg}</p>`);
-  aiHistory.push({role:'user',content:msg});
-  showTyping();
-  const statusEl=document.getElementById('aiStatus');
-  if(statusEl) statusEl.textContent='Thinking...';
-
-  // Check if key is set
-  if(!GROQ_API_KEY||GROQ_API_KEY==='YOUR_GROQ_KEY_HERE'){
-    document.getElementById('typing')?.remove();
-    if(statusEl) statusEl.textContent='Ready';
-    addMsg('ai',offlineResponse(msg));
-    return;
-  }
-
-  try{
-    const r=await fetch(GROQ_URL,{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${GROQ_API_KEY}`},
-      body:JSON.stringify({
-        model:GROQ_MODEL,
-        max_tokens:800,
-        messages:[{role:'system',content:getSystemPrompt()},...aiHistory]
-      })
-    });
-    document.getElementById('typing')?.remove();
-    if(statusEl) statusEl.textContent='Ready';
-    if(!r.ok){const err=await r.json().catch(()=>({}));throw new Error(err.error?.message||`HTTP ${r.status}`);}
-    const data=await r.json();
-    const reply=data.choices?.[0]?.message?.content||'No response received.';
-    aiHistory.push({role:'assistant',content:reply});
-    addMsg('ai',fmt(reply));
-  }catch(e){
-    document.getElementById('typing')?.remove();
-    if(statusEl) statusEl.textContent='Ready';
-    addMsg('ai',offlineResponse(msg));
-  }
-}
-
-function qpSend(el){document.getElementById('aiInp').value=el.textContent;sendAI();}
 </script>
 </body>
 </html>
